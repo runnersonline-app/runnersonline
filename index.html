@@ -50,7 +50,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .filters{padding:6px 16px 8px;display:flex;gap:5px;flex-wrap:wrap;flex-shrink:0}
 .chip{background:var(--surface);border:1.5px solid var(--border);border-radius:4px;padding:4px 10px;font-size:10px;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;transition:all .15s;user-select:none}
 .chip.active{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
-.content{flex:1;overflow-y:auto;padding:0 16px 16px}
+.content{flex:1;overflow-y:auto;overscroll-behavior-y:contain;padding:0 16px 16px}
 .content::-webkit-scrollbar{width:3px}
 .content::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .empty{padding:50px 0;text-align:center;color:var(--muted)}
@@ -67,10 +67,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .stat-pill .num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);line-height:1}
 .stat-pill .lbl{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
 .sect-title{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--muted);letter-spacing:2px;margin:12px 0 8px}
-.race-table{width:100%;border-collapse:collapse;display:none;font-size:12px}
+.race-table{width:100%;table-layout:fixed;border-collapse:collapse;display:none;font-size:12px}
 .race-table.show{display:table}
 .race-table th{text-align:left;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:0 8px 6px;border-bottom:1px solid var(--border);font-weight:500}
-.race-table td{padding:8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.race-table td{padding:8px;border-bottom:1px solid var(--border);vertical-align:middle;overflow-wrap:break-word;word-break:break-word}
+.race-table td:first-child{width:34%}
+.race-table td:nth-child(2){width:16%}
 .race-table tbody tr:last-child td{border-bottom:none}
 .race-table tbody tr:hover{background:var(--surface)}
 .dist-badge{display:inline-block;background:var(--border);color:var(--muted);border-radius:2px;padding:1px 5px;font-family:'DM Mono',monospace;font-size:9px}
@@ -165,9 +167,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 /* ── AUTH MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
 .modal-overlay.center-modal{align-items:center}
-.modal-overlay.center-modal .modal-sheet{border-radius:16px;max-height:85vh}
+.modal-overlay.center-modal .modal-sheet{border-radius:16px;max-height:85vh;overflow-y:auto}
 .modal-overlay.hidden{display:none}
-.modal-sheet{background:var(--surface);border-radius:16px 16px 0 0;padding:28px 24px 40px;width:100%;max-width:420px;border-top:1px solid var(--border)}
+.modal-sheet{background:var(--surface);border-radius:16px 16px 0 0;padding:28px 24px 40px;width:100%;max-width:420px;border-top:1px solid var(--border);overscroll-behavior-y:contain}
 .modal-logo{font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--accent);letter-spacing:3px;margin-bottom:4px}
 .modal-tagline{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px}
 .disclaimer-box{background:rgba(232,255,71,0.04);border:1px solid rgba(232,255,71,0.15);border-radius:8px;padding:14px;margin-bottom:22px}
@@ -181,7 +183,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .btn-skip:hover{border-color:var(--muted)}
 
 /* ── VINCULAR CORREDOR MODAL ── */
-.modal-link{background:var(--surface);border-radius:16px 16px 0 0;padding:28px 24px 40px;width:100%;max-width:420px;border-top:1px solid var(--border);max-height:85vh;overflow-y:auto;box-sizing:border-box}
+.modal-link{background:var(--surface);border-radius:16px 16px 0 0;padding:28px 24px 40px;width:100%;max-width:420px;border-top:1px solid var(--border);max-height:85vh;overflow-y:auto;overscroll-behavior-y:contain;box-sizing:border-box}
 .modal-link h2{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--accent);letter-spacing:1px;margin-bottom:6px}
 .modal-link p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:20px}
 .link-search-box{position:relative;margin-bottom:12px}
@@ -224,17 +226,29 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 
     <!-- Login form -->
     <div id="loginForm">
-      <input type="email" id="loginEmail" placeholder="Email" onkeydown="if(event.key==='Enter')loginEmail()" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:10px">
-      <input type="password" id="loginPassword" placeholder="Contraseña" onkeydown="if(event.key==='Enter')loginEmail()" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:14px">
+      <input type="email" id="loginEmail" placeholder="Email" onkeydown="if(event.key==='Enter')loginEmail()" onfocus="this.scrollIntoView({behavior:'smooth',block:'center'})" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:10px">
+      <div style="position:relative;margin-bottom:14px">
+        <input type="password" id="loginPassword" placeholder="Contraseña" onkeydown="if(event.key==='Enter')loginEmail()" onfocus="this.scrollIntoView({behavior:'smooth',block:'center'})" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 44px 12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;box-sizing:border-box">
+        <button type="button" onclick="togglePwd('loginPassword',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:17px;padding:4px"><svg class="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
       <button class="btn-confirm" onclick="loginEmail()">Ingresar</button>
       <div id="loginError" style="color:#ff6b6b;font-size:11px;text-align:center;margin-top:8px;display:none"></div>
+      <div style="text-align:center;margin-top:12px">
+        <span onclick="showModal('forgotPasswordModal')" style="font-size:12px;color:var(--muted);text-decoration:underline;cursor:pointer">¿Olvidaste tu contraseña?</span>
+      </div>
     </div>
 
     <!-- Register form -->
     <div id="registerForm" style="display:none">
-      <input type="email" id="regEmail" placeholder="Email" onkeydown="if(event.key==='Enter')registerEmail()" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:10px">
-      <input type="password" id="regPassword" placeholder="Contraseña (mínimo 6 caracteres)" onkeydown="if(event.key==='Enter')registerEmail()" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:10px">
-      <input type="password" id="regPassword2" placeholder="Repetir contraseña" onkeydown="if(event.key==='Enter')registerEmail()" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:14px">
+      <input type="email" id="regEmail" placeholder="Email" onkeydown="if(event.key==='Enter')registerEmail()" onfocus="this.scrollIntoView({behavior:'smooth',block:'center'})" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:10px">
+      <div style="position:relative;margin-bottom:10px">
+        <input type="password" id="regPassword" placeholder="Contraseña (mínimo 6 caracteres)" onkeydown="if(event.key==='Enter')registerEmail()" onfocus="this.scrollIntoView({behavior:'smooth',block:'center'})" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 44px 12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;box-sizing:border-box">
+        <button type="button" onclick="togglePwd('regPassword',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:17px;padding:4px"><svg class="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+      <div style="position:relative;margin-bottom:14px">
+        <input type="password" id="regPassword2" placeholder="Repetir contraseña" onkeydown="if(event.key==='Enter')registerEmail()" onfocus="this.scrollIntoView({behavior:'smooth',block:'center'})" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 44px 12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;box-sizing:border-box">
+        <button type="button" onclick="togglePwd('regPassword2',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:17px;padding:4px"><svg class="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
       <button class="btn-confirm" onclick="registerEmail()">Crear cuenta</button>
       <div id="registerError" style="color:#ff6b6b;font-size:11px;text-align:center;margin-top:8px;display:none"></div>
     </div>
@@ -628,6 +642,39 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
   </div>
 </div>
 
+<!-- MODAL OLVIDE MI CONTRASEÑA -->
+<div class="modal-overlay hidden center-modal" id="forgotPasswordModal">
+  <div class="modal-sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px">Recuperar contraseña</span>
+      <button onclick="hideModal('forgotPasswordModal')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px"><i class="ti ti-x"></i></button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Escribí tu email y te mandamos un link para elegir una contraseña nueva.</p>
+    <input type="email" id="forgotEmail" placeholder="Email" onkeydown="if(event.key==='Enter')enviarResetPassword()" onfocus="this.scrollIntoView({behavior:'smooth',block:'center'})" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:14px">
+    <button class="btn-confirm" onclick="enviarResetPassword()">Enviar link</button>
+    <div id="forgotMsg" style="font-size:11px;text-align:center;margin-top:10px;display:none"></div>
+  </div>
+</div>
+
+<!-- MODAL NUEVA CONTRASEÑA (se abre solo al volver del link del mail) -->
+<div class="modal-overlay hidden center-modal" id="newPasswordModal">
+  <div class="modal-sheet">
+    <div style="margin-bottom:14px">
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px">Elegí tu nueva contraseña</span>
+    </div>
+    <div style="position:relative;margin-bottom:10px">
+      <input type="password" id="newPassword1" placeholder="Contraseña nueva (mínimo 6 caracteres)" onfocus="this.scrollIntoView({behavior:'smooth',block:'center'})" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 44px 12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;box-sizing:border-box">
+      <button type="button" onclick="togglePwd('newPassword1',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:17px;padding:4px"><svg class="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    </div>
+    <div style="position:relative;margin-bottom:14px">
+      <input type="password" id="newPassword2" placeholder="Repetir contraseña" onkeydown="if(event.key==='Enter')guardarNuevaPassword()" onfocus="this.scrollIntoView({behavior:'smooth',block:'center'})" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:12px 44px 12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;box-sizing:border-box">
+      <button type="button" onclick="togglePwd('newPassword2',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:17px;padding:4px"><svg class="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    </div>
+    <button class="btn-confirm" onclick="guardarNuevaPassword()">Guardar contraseña</button>
+    <div id="newPasswordMsg" style="color:#ff6b6b;font-size:11px;text-align:center;margin-top:8px;display:none"></div>
+  </div>
+</div>
+
 <!-- MODAL CLASIFICACION -->
 <div class="modal-overlay hidden center-modal" id="clasificacionModal">
   <div class="modal-sheet" style="padding-bottom:32px;max-height:85vh;overflow-y:auto">
@@ -643,8 +690,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
       </label>
       <button class="btn-confirm" onclick="compartirClasificacion()"><i class="ti ti-share"></i> Compartir</button>
       <div id="clasifPreviewBox" style="display:none;margin-top:14px;text-align:center">
-        <canvas id="clasifCanvas" style="width:100%;border-radius:10px;border:1px solid var(--border)"></canvas>
-        <a id="clasifDownloadLink" download="clasificacion.png" style="display:block;margin-top:10px;background:var(--accent);color:#000;border-radius:6px;padding:10px;font-size:12px;font-weight:700;text-decoration:none">Descargar imagen</a>
+        <canvas id="clasifCanvas" style="display:none"></canvas>
+        <img id="clasifImg" style="width:100%;border-radius:10px;border:1px solid var(--border);display:block">
+        <p style="font-size:11px;color:var(--muted);margin-top:8px">Mantené presionada la imagen o usá el botón para guardarla.</p>
+        <a id="clasifDownloadLink" download="clasificacion.png" style="display:block;margin-top:6px;background:var(--accent);color:#000;border-radius:6px;padding:10px;font-size:12px;font-weight:700;text-decoration:none">Descargar imagen</a>
       </div>
     </div>
   </div>
@@ -712,8 +761,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
     </label>
     <button class="btn-confirm" onclick="generateShareImage()">Generar imagen</button>
     <div id="sharePreviewBox" style="display:none;margin-top:14px;text-align:center">
-      <canvas id="shareCanvas" style="width:100%;border-radius:10px;border:1px solid var(--border)"></canvas>
-      <a id="shareDownloadLink" download="mis-carreras.png" style="display:block;margin-top:10px;background:var(--accent);color:#000;border-radius:6px;padding:10px;font-size:12px;font-weight:700;text-decoration:none">Descargar imagen</a>
+      <canvas id="shareCanvas" style="display:none"></canvas>
+      <img id="shareImg" style="width:100%;border-radius:10px;border:1px solid var(--border);display:block">
+      <p style="font-size:11px;color:var(--muted);margin-top:8px">Mantené presionada la imagen o usá el botón para guardarla.</p>
+      <a id="shareDownloadLink" download="mis-carreras.png" style="display:block;margin-top:6px;background:var(--accent);color:#000;border-radius:6px;padding:10px;font-size:12px;font-weight:700;text-decoration:none">Descargar imagen</a>
     </div>
   </div>
 </div>
@@ -777,6 +828,7 @@ const RACE_MEDALS_BY_YEAR = {
   '15adi_15_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/15adi_15_2025.png?v=2`,
   '15adi_15_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/15adi_15_2026.png?v=2`,
   '15nbba_15_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/15nbba_15_2025.png?v=2`,
+  '15nbba_15_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/15nbba_15_2026.png`,
   '15nbba_15_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/15nbba_15_2026.png?v=2`,
   '15nbros_15_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/15nbros_15_2025.png?v=2`,
   '21comodoro_21_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/21comodoro_21_2025.png?v=2`,
@@ -847,6 +899,24 @@ let ALL_TEAMS_CACHE = null;
 let teamsListCache = [];
 const activeF = new Set();
 let cur = 'runners', prev = null;
+
+// Estado inicial del historial, para que el primer back tenga algo con que comparar
+try { history.replaceState({ tipo: 'screen', id: 'runners' }, ''); } catch (e) {}
+
+window.addEventListener('popstate', (e) => {
+  // Cerrar cualquier modal abierto que no sea el que corresponde al nuevo estado
+  document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(m => {
+    if (!(e.state?.tipo === 'modal' && e.state?.id === m.id)) {
+      m.classList.add('hidden');
+    }
+  });
+  if (e.state?.tipo === 'screen') {
+    applyScreen(e.state.id);
+  } else if (!e.state) {
+    // Se llegó al principio del historial (antes de cualquier pushState nuestro)
+    applyScreen('runners');
+  }
+});
 let selectedRunnerKey = null;
 let selectedRunnerName = null;
 let currentPostId = null;
@@ -913,9 +983,79 @@ async function registerEmail() {
   }
 }
 
+const EYE_OPEN_SVG = '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>';
+const EYE_CLOSED_SVG = '<path d="M3 3l18 18"/><path d="M10.585 10.587a2 2 0 0 0 2.828 2.828"/><path d="M16.68 16.673A8.717 8.717 0 0 1 12 18c-6.5 0-10-6-10-6a18.45 18.45 0 0 1 4.32-4.674m2.86-1.146A9.06 9.06 0 0 1 12 6c6.5 0 10 6 10 6a18.5 18.5 0 0 1-2.138 2.87"/>';
+
+function togglePwd(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const svg = btn.querySelector('svg');
+  if (input.type === 'password') {
+    input.type = 'text';
+    svg.innerHTML = EYE_CLOSED_SVG;
+  } else {
+    input.type = 'password';
+    svg.innerHTML = EYE_OPEN_SVG;
+  }
+}
+
 function skipAuth() { hideModal('authModal'); }
 
+async function enviarResetPassword() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  const msg = document.getElementById('forgotMsg');
+  if (!email) {
+    msg.textContent = 'Escribí tu email primero';
+    msg.style.color = '#ff6b6b';
+    msg.style.display = 'block';
+    return;
+  }
+  try {
+    const { error } = await sbClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + window.location.pathname });
+    if (error) throw error;
+    msg.textContent = 'Listo, revisá tu mail para el link de reseteo.';
+    msg.style.color = 'var(--accent)';
+    msg.style.display = 'block';
+  } catch (e) {
+    msg.textContent = 'Error: ' + e.message;
+    msg.style.color = '#ff6b6b';
+    msg.style.display = 'block';
+  }
+}
+
+async function guardarNuevaPassword() {
+  const p1 = document.getElementById('newPassword1').value;
+  const p2 = document.getElementById('newPassword2').value;
+  const msg = document.getElementById('newPasswordMsg');
+  msg.style.display = 'none';
+  if (!p1 || p1.length < 6) {
+    msg.textContent = 'La contraseña debe tener al menos 6 caracteres';
+    msg.style.display = 'block';
+    return;
+  }
+  if (p1 !== p2) {
+    msg.textContent = 'Las contraseñas no coinciden';
+    msg.style.display = 'block';
+    return;
+  }
+  try {
+    const { error } = await sbClient.auth.updateUser({ password: p1 });
+    if (error) throw error;
+    hideModal('newPasswordModal');
+    alert('¡Contraseña actualizada! Ya podés usarla para ingresar.');
+    goTo('feed');
+  } catch (e) {
+    msg.textContent = 'Error: ' + e.message;
+    msg.style.display = 'block';
+  }
+}
+
 sbClient.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    currentUser = session?.user || null;
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
+    showModal('newPasswordModal');
+    return;
+  }
   if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
     currentUser = session.user;
     hideModal('authModal');
@@ -1060,8 +1200,14 @@ function skipLink() { hideModal('linkModal'); }
 function showModal(id) {
   document.getElementById(id).classList.remove('hidden');
   if (id === 'inscripcionModal') buscarCarreras('');
+  try { history.pushState({ tipo: 'modal', id }, ''); } catch (e) {}
 }
-function hideModal(id) { document.getElementById(id).classList.add('hidden'); }
+function hideModal(id) {
+  document.getElementById(id).classList.add('hidden');
+  if (history.state?.tipo === 'modal' && history.state?.id === id) {
+    try { history.back(); } catch (e) {}
+  }
+}
 
 // ─── SUPABASE FETCH ───────────────────────────────────────────────────────────
 // Arma un valor de filtro ilike a prueba de caracteres especiales de PostgREST
@@ -1158,10 +1304,10 @@ function archToLabel(archivo) {
     '42mdq':'Maraton MdP','21nbcom':'21K NB BSAS','10nbba':'10K BsAs','mmza':'Mendoza',
     'valencia':'Valencia','misanjuan':'San Juan',
     'lapampa':'La Pampa','42krosario':'Maraton Rosario','42nbcor':'Maraton Cordoba',
-    'fila':'FILA Run','asics':'ASICS','hoka':'HOKA','farma':'Farmacity','fma':'FMA',
+    'fila':'FILA Run','asics':'ASICS','hoka':'HOKA','farma':'Farmacity','fma':'Fiestas Mayas',
     'marat':'Maraton','invierno':'Invierno','verano':'Verano','otono':'Otono',
     'primavera':'Primavera','sauco':'El Sauco','sunset':'Sunset Run',
-    '15nbba':'15K BsAs','15under':'15K Under','15adi':'15K Adidas','15nbros':'15K Rosario',
+    '15nbba':'15K New Balance','15under':'15K Under','15adi':'15K Adidas','15nbros':'15K Rosario',
     '25nbba':'25K BsAs','30nbba':'30K BsAs','10si':'10K SI','10super':'10K Super',
     '10vl':'10K VL','10night':'10K Night','21nbsal':'Media Salta','21nbmdq':'Media MdP'
   };
@@ -1200,7 +1346,7 @@ function buildNav(active) {
   });
 }
 
-function goTo(id) {
+function applyScreen(id) {
   prev = cur; cur = id;
   sessionStorage.setItem('lastScreen', id);
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1211,6 +1357,13 @@ function goTo(id) {
   if (id === 'perfil') renderProfile();
   if (id === 'carreras') { loadCarrerasSection(document.getElementById('carrerasSearchInput').value); loadInscripciones(); }
   if (id === 'servicios') initServiciosScreen();
+}
+
+function goTo(id) {
+  applyScreen(id);
+  // Registrar en el historial del navegador para que el botón atrás (físico o del
+  // navegador) navegue entre pantallas de la app en vez de cerrarla directamente.
+  try { history.pushState({ tipo: 'screen', id }, ''); } catch (e) {}
 }
 
 function goBack() { goTo(prev || 'teams'); }
@@ -2574,6 +2727,21 @@ async function publicarPost() {
   if (!currentUser) return;
   const contenido = document.getElementById('postContenido').value.trim();
   if (!contenido) { alert('Escribi algo primero'); return; }
+
+  // Asegurar que la sesion este vigente antes de publicar (en algunos WebView
+  // el token puede vencerse sin refrescarse solo, y eso rompe el permiso).
+  try {
+    const { data: sessionData, error: sessionErr } = await sbClient.auth.getSession();
+    if (sessionErr || !sessionData?.session) {
+      alert('Tu sesión venció. Cerrá sesión y volvé a entrar para poder publicar.');
+      return;
+    }
+    currentUser = sessionData.session.user;
+  } catch (e) {
+    alert('No se pudo confirmar tu sesión. Probá cerrar sesión y volver a entrar.');
+    return;
+  }
+
   if (!(await tieneCarrerasCorridas())) {
     alert('Todavía no tenés carreras corridas vinculadas a tu perfil. Vinculá tu corredor para poder publicar en Pista.');
     return;
@@ -2919,7 +3087,11 @@ async function renderProfile() {
   content.innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando tu historial...</div>';
   try {
     const rows = await sbFetch('corredores', { runner_key: `eq.${currentProfile.runner_key}`, select: 'runner,runner_key,sex,team,archivo_fuente,time', limit: 200 });
-    const team = rows.find(r => r.team)?.team || null;
+    let team = null;
+    try {
+      const teamRows = await sbFetch('corredores_team_canon', { runner_key: `eq.${currentProfile.runner_key}`, select: 'team_canonico', limit: 1 });
+      team = teamRows[0]?.team_canonico || null;
+    } catch (e) {}
     const seenArchivos = new Set();
     const filteredRows = rows.filter(r => {
       if (!r.archivo_fuente) return false;
@@ -2978,7 +3150,7 @@ async function renderProfile() {
         </div>
         <div class="stats-row">
           <div class="stat-pill"><div class="num" style="font-size:18px">${bestPace}</div><div class="lbl">Mejor ritmo</div></div>
-          <div class="stat-pill"><div class="num" style="font-size:10px;color:var(--blue);margin-top:4px">${team||'—'}</div><div class="lbl">Mi team</div></div>
+          <div class="stat-pill"><div class="num" style="font-size:10px;color:var(--blue);margin-top:4px;${team?'cursor:pointer;text-decoration:underline':''}" ${team?`onclick="showTeam('${team.replace(/'/g,"\\'")}')"`:''}>${team||'—'}</div><div class="lbl">Mi team</div></div>
         </div>
       </div>
       <div class="profile-section">
@@ -2992,7 +3164,7 @@ async function renderProfile() {
         <div class="profile-section-title" style="display:flex;justify-content:space-between;align-items:center">
           <span>Medallero</span>
           <div style="display:flex;gap:6px">
-            ${races.length?`<button onclick="openVisibilidadMedallasModal()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--muted);cursor:pointer"><i class="ti ti-eye"></i> Visibilidad</button>`:''}
+            ${races.length?`<button onclick="openVisibilidadMedallasModal()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--muted);cursor:pointer"><svg class="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg> Visibilidad</button>`:''}
             ${races.length?`<button onclick="openShareModal('medallero')" style="background:none;border:1px solid var(--accent);border-radius:4px;padding:4px 10px;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--accent);cursor:pointer"><i class="ti ti-share"></i> Compartir</button>`:''}
           </div>
         </div>
@@ -3196,6 +3368,37 @@ function openShareModal(tab) {
   photoOption.style.display = currentProfile?.avatar_url ? 'flex' : 'none';
   document.getElementById('sharePreviewBox').style.display = 'none';
   showModal('shareModal');
+}
+
+// Usar Blob + Object URL en vez de data-URI: mucho mas compatible con la
+// descarga de archivos dentro de un WebView (APK), que suele fallar/cerrar
+// la app con data-URIs grandes.
+// Mostrar el resultado como <img> real (para poder guardarla con "mantener
+// presionado", que es lo mas compatible dentro de un WebView de Android) y
+// ademas dejar el link de descarga como alternativa para navegador/desktop.
+async function setDownloadFromCanvas(canvas, linkEl, imgEl, filename) {
+  if (imgEl) imgEl.src = canvas.toDataURL('image/png');
+  linkEl.textContent = 'Preparando descarga...';
+  linkEl.removeAttribute('href');
+
+  canvas.toBlob(async (blob) => {
+    if (!blob || !currentUser) {
+      linkEl.textContent = 'Descargar imagen';
+      return;
+    }
+    try {
+      const path = `${currentUser.id}/${Date.now()}_${filename}`;
+      const { error } = await sbClient.storage.from('compartidos').upload(path, blob, { contentType: 'image/png' });
+      if (error) throw error;
+      const { data } = sbClient.storage.from('compartidos').getPublicUrl(path);
+      linkEl.href = data.publicUrl;
+      linkEl.setAttribute('download', filename);
+      linkEl.removeAttribute('target');
+      linkEl.textContent = 'Descargar imagen';
+    } catch (e) {
+      linkEl.textContent = 'Error: ' + (e.message || 'desconocido');
+    }
+  }, 'image/png');
 }
 
 function loadImageSafe(url) {
@@ -3425,7 +3628,7 @@ async function generateShareImage() {
 
   document.getElementById('sharePreviewBox').style.display = 'block';
   const link = document.getElementById('shareDownloadLink');
-  link.href = canvas.toDataURL('image/png');
+  setDownloadFromCanvas(canvas, link, document.getElementById('shareImg'), 'runners-online.png');
 }
 
 async function compartirClasificacion() {
@@ -3482,7 +3685,7 @@ async function compartirClasificacion() {
 
   document.getElementById('clasifPreviewBox').style.display = 'block';
   const link = document.getElementById('clasifDownloadLink');
-  link.href = canvas.toDataURL('image/png');
+  setDownloadFromCanvas(canvas, link, document.getElementById('clasifImg'), 'clasificacion.png');
 }
 
 async function uploadAvatar(input) {
@@ -3567,21 +3770,25 @@ function wheelAvatarZoom(e) {
 }
 
 // ─── PREVENT PULL TO REFRESH ─────────────────────────────────────────────────
-let touchStartY = 0;
+let lastTouchY = 0;
+let blockPull = false;
+
 document.addEventListener('touchstart', e => {
-  touchStartY = e.touches[0].clientY;
-}, { passive: true });
+  if (e.touches.length !== 1) return;
+  lastTouchY = e.touches[0].clientY;
+  const scrollable = e.target.closest('.content, .modal-sheet, .modal-link');
+  // Si no hay contenedor scrollable, o ya está en el tope, este gesto puede disparar pull-to-refresh
+  blockPull = !scrollable || scrollable.scrollTop <= 0;
+}, { passive: false });
 
 document.addEventListener('touchmove', e => {
-  // Solo prevenir si el touch NO está en un elemento scrollable (pantallas o modales)
+  if (e.touches.length !== 1) return;
+  const touchY = e.touches[0].clientY;
+  const deltaY = touchY - lastTouchY;
+  lastTouchY = touchY;
   const scrollable = e.target.closest('.content, .modal-sheet, .modal-link');
-  if (!scrollable) {
-    e.preventDefault();
-    return;
-  }
-  // Prevenir pull-to-refresh solo cuando el scroll está en el tope y el dedo arrastra hacia abajo
-  const deltaY = e.changedTouches[0].clientY - touchStartY;
-  if (scrollable.scrollTop <= 0 && deltaY > 0) {
+  // Recalcular en cada movimiento: si en este instante seguimos en el tope y arrastrando hacia abajo, bloquear
+  if ((!scrollable || scrollable.scrollTop <= 0) && deltaY > 0) {
     e.preventDefault();
   }
 }, { passive: false });
@@ -3945,7 +4152,7 @@ initAuth();
 // ─── ANDROID BACK BUTTON (Capacitor) ─────────────────────────────────────────
 function handleBackButton() {
   // Si hay un modal abierto, cerrarlo
-  const modals = ['newPostModal', 'comentariosModal', 'linkModal', 'authModal', 'shareModal', 'medalleroModal', 'dondeEntrenarModal', 'notificacionesModal', 'avatarLightboxModal', 'seguidoresModal', 'servicioModal', 'carreraDetalleModal', 'visibilidadMedallasModal', 'clasificacionModal'];
+  const modals = ['newPostModal', 'comentariosModal', 'linkModal', 'authModal', 'shareModal', 'medalleroModal', 'dondeEntrenarModal', 'notificacionesModal', 'avatarLightboxModal', 'seguidoresModal', 'servicioModal', 'carreraDetalleModal', 'visibilidadMedallasModal', 'clasificacionModal', 'forgotPasswordModal'];
   for (const id of modals) {
     const el = document.getElementById(id);
     if (el && !el.classList.contains('hidden')) {

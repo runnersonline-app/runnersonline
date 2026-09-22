@@ -1332,7 +1332,8 @@ function parseArchivo(archivo) {
   if (!archivo) return { year: '—', dist: '—' };
   const parts = archivo.replace('.csv', '').split('_');
   const year = parts.find(p => /^20\d{2}$/.test(p)) || '—';
-  const dist = parts[parts.length - 1] || '—';
+  // Algunos archivos traen la distancia como "5k": nos quedamos con el número
+  const dist = (parts[parts.length - 1] || '').replace(/k$/i, '') || '—';
   return { year, dist };
 }
 
@@ -4147,7 +4148,7 @@ function normTxt(s) {
 
 // races_meta a veces trae el nombre del archivo como race_name ("15pn_2026_10")
 function nombreCarreraResultado(c) {
-  return (!c.race_name || /^[a-z0-9]+_20\d{2}_\d+(\.csv)?$/i.test(c.race_name)) ? archToLabel(c.archivo_fuente) : c.race_name;
+  return (!c.race_name || /^[a-z0-9]+_20\d{2}_[a-z0-9]+(\.csv)?$/i.test(c.race_name)) ? archToLabel(c.archivo_fuente) : c.race_name;
 }
 
 async function initCarrerasScreen() {

@@ -203,6 +203,66 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .btn-confirm:not(:disabled):hover{opacity:.9}
 .btn-skip-link{width:100%;background:none;border:none;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);cursor:pointer;margin-top:10px;padding:8px}
 .calendar-popover-item:hover{background:var(--surface)}
+
+/* ── TEAMS: filtros en pantalla + ficha del team ── */
+.tf-panel{background:var(--card);border:1px solid var(--border);border-radius:8px;margin:10px 0 12px}
+.tf-head{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--blue)}
+.tf-count{background:var(--blue);color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:4px}
+#tfBody{padding:0 14px 12px}
+#teamFiltersPanel.collapsed #tfBody{display:none}
+.tf-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tf-lbl{font-size:10px;color:var(--muted);margin:8px 0 4px;text-transform:uppercase;letter-spacing:.5px}
+.tf-select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:12px;color:var(--text);outline:none;box-sizing:border-box;font-family:'DM Sans',sans-serif}
+.tf-chips{display:flex;flex-wrap:wrap;gap:5px}
+.tf-chips .chip{padding:5px 9px}
+.team-card-trainings{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5}
+.td-info{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:14px}
+.td-info-row{display:flex;gap:10px;align-items:flex-start;padding:6px 0}
+.td-info-row + .td-info-row{border-top:1px solid var(--border)}
+.td-info-row > i{font-size:17px;color:var(--blue);margin-top:1px}
+.td-info-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.td-info-val{font-size:13px;font-weight:600;margin-top:1px}
+.td-info-val.vacio{font-weight:400;color:var(--muted2);font-style:italic}
+.td-social{display:flex;gap:10px;margin-top:10px}
+.td-social a,.td-social span{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--border);border-radius:8px;padding:9px;font-size:12px;font-weight:600;text-decoration:none;color:var(--text)}
+.td-social i{font-size:18px}
+.td-social .off{color:var(--muted2);cursor:default;background:var(--bg)}
+.td-social .off i{color:var(--muted2) !important}
+
+/* ── RUNNERS: comparar ── */
+.cmp-btn{display:inline-flex;align-items:center;gap:5px;background:none;border:1.5px solid var(--accent);border-radius:14px;padding:4px 12px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:var(--text);cursor:pointer;margin-top:10px}
+.cmp-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0 4px}
+.cmp-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.cmp-vs{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.5px;line-height:1.1}
+.cmp-vs .a{color:var(--accent)}
+.cmp-vs .b{color:var(--blue)}
+.cmp-score{display:flex;gap:6px;margin-bottom:10px}
+.cmp-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
+.cmp-table th{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;text-align:left;padding:0 4px 6px;font-weight:500;border-bottom:1px solid var(--border);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmp-table td{padding:7px 4px;border-bottom:1px solid var(--border);vertical-align:middle}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table .t{font-family:'DM Mono',monospace;font-size:11px}
+.cmp-table .win{font-weight:700}
+.cmp-table .win.a{color:#8a9400}
+.cmp-table .win.b{color:var(--blue)}
+.cmp-table .dif{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)}
+
+/* ── CARRERAS: tabs por año + clasificación ── */
+.year-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:10px}
+.year-tabs::-webkit-scrollbar{display:none}
+.year-tabs .chip{flex-shrink:0;font-size:12px;padding:6px 14px}
+.rk-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.rk-row:last-child{border-bottom:none}
+.rk-row:hover .rk-name{color:var(--accent)}
+.rk-row.me{background:rgba(195,209,0,0.08);border-radius:6px;padding-left:6px;padding-right:6px}
+.rk-pos{font-family:'Bebas Neue',sans-serif;font-size:22px;min-width:40px;text-align:center;line-height:1;color:var(--text)}
+.rk-pos.podio{color:var(--accent)}
+.rk-info{flex:1;min-width:0}
+.rk-name{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rk-meta{font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px}
+.rk-time{text-align:right;flex-shrink:0}
+.rk-time .t{font-family:'DM Mono',monospace;font-size:12px}
+.rk-time .p{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -287,7 +347,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
   </div>
   <div class="search-area">
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Buscar corredor..." autocomplete="off">
+      <input type="text" id="searchInput" placeholder="Buscar por nombre o dorsal..." autocomplete="off">
       <div class="autocomplete" id="ac"></div>
     </div>
   </div>
@@ -311,6 +371,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
       <div class="runner-tags" id="runTags"></div>
       <div class="stats-row" id="runStats"></div>
       <div id="runMedallero" style="display:none;margin-top:10px"></div>
+      <div id="runCompareBox"></div>
     </div>
     <div class="empty" id="emptyR">
       <div class="icon"><i class="ti ti-run"></i></div>
@@ -339,7 +400,42 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
     </div>
   </div>
   <div class="content">
-    <button onclick="openDondeEntrenarModal()" style="width:100%;background:rgba(71,200,255,0.06);border:1px solid rgba(71,200,255,0.3);border-radius:8px;padding:11px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--blue);cursor:pointer;margin-bottom:12px;font-weight:600"><i class="ti ti-map-pin-search"></i> Buscar dónde entrenar</button>
+    <!-- Filtros de dónde entrenar (en pantalla, sin popup) -->
+    <div class="tf-panel" id="teamFiltersPanel">
+      <div class="tf-head" onclick="toggleTeamFilters()">
+        <span><i class="ti ti-map-pin-search"></i> Buscar dónde entrenar <span id="tfActiveCount" class="tf-count" style="display:none"></span></span>
+        <i class="ti ti-chevron-up" id="tfChevron"></i>
+      </div>
+      <div id="tfBody">
+        <div class="tf-grid">
+          <div>
+            <div class="tf-lbl">Provincia</div>
+            <select id="deqProvinciaSelect" class="tf-select" onchange="onDeqProvinciaChange()"><option value="">Todas</option></select>
+          </div>
+          <div>
+            <div class="tf-lbl">Partido</div>
+            <select id="deqPartidoSelect" class="tf-select" onchange="onDeqPartidoChange()"><option value="">Todos</option></select>
+          </div>
+        </div>
+        <div class="tf-lbl">Lugar</div>
+        <select id="deqLugarSelect" class="tf-select" onchange="aplicarFiltrosTeams()"><option value="">Todos los lugares</option></select>
+
+        <div class="tf-lbl">Modalidad</div>
+        <div class="tf-chips">
+          <div class="chip active" id="deqModTodos" onclick="setDeqModalidad('todos')">Todos</div>
+          <div class="chip" id="deqModPresencial" onclick="setDeqModalidad('presencial')">Presencial</div>
+          <div class="chip" id="deqModVirtual" onclick="setDeqModalidad('virtual')">Virtual</div>
+        </div>
+
+        <div class="tf-lbl">Días</div>
+        <div class="tf-chips" id="deqDiasBox"></div>
+
+        <div class="tf-lbl">Horario</div>
+        <div class="tf-chips" id="deqHorariosBox"></div>
+
+        <button id="tfClearBtn" onclick="limpiarFiltrosTeams()" style="display:none;background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;padding:6px 0 0;text-decoration:underline">Limpiar filtros</button>
+      </div>
+    </div>
     <div class="teams-grid" id="teamsGrid"><div class="loading"><i class="ti ti-refresh"></i>Cargando teams...</div></div>
   </div>
   <div class="bottom-nav" id="nav1"></div>
@@ -367,17 +463,18 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 <div id="sc-carreras" class="screen">
   <div class="header yellow" data-bg="42K">
     <h1>Carreras</h1>
-    <p>Próximas en Buenos Aires</p>
-  
+    <p>Resultados y próximas</p>
+
     <button class="global-home" onclick="goTo('runners')"><i class="ti ti-home"></i> Inicio</button>
   </div>
   <div class="search-area">
     <div class="search-box">
-      <input type="text" id="carrerasSearchInput" placeholder="Buscar carrera..." autocomplete="off" oninput="loadCarrerasSection(this.value)">
+      <input type="text" id="carrerasSearchInput" placeholder="Buscar carrera..." autocomplete="off" oninput="onCarrerasSearch(this.value)">
     </div>
   </div>
+  <div class="filters year-tabs" id="carrerasYearTabs"></div>
   <div class="content">
-    <div style="padding-top:10px">
+    <div id="carrerasProximasBox" style="padding-top:10px">
       <div class="sect-title" style="display:flex;justify-content:space-between;align-items:center">
         <span>Mis próximas carreras</span>
         <button onclick="showModal('inscripcionModal')" style="background:none;border:1px solid var(--accent);border-radius:4px;padding:3px 10px;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--accent);cursor:pointer">+ Agregar</button>
@@ -396,9 +493,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
           <div class="cd-unit"><div class="cd-num" id="cd-s">--</div><div class="cd-lbl">seg</div></div>
         </div>
       </div>
+      <div class="sect-title">Próximas carreras</div>
       <div class="races-list" id="carrerasSectionList">
         <div class="loading"><i class="ti ti-refresh"></i>Cargando carreras...</div>
       </div>
+    </div>
+    <div class="sect-title" id="carrerasResultadosTitle" style="margin-top:18px">Resultados</div>
+    <div class="races-list" id="carrerasResultadosList" style="padding-top:0">
+      <div class="loading"><i class="ti ti-refresh"></i>Cargando resultados...</div>
     </div>
   </div>
   <div class="bottom-nav" id="nav3"></div>
@@ -534,47 +636,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
   </div>
 </div>
 
-<!-- MODAL DONDE ENTRENAR -->
-<div class="modal-overlay hidden" id="dondeEntrenarModal">
-  <div class="modal-sheet" style="padding-bottom:32px;max-height:85vh;overflow-y:auto">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px">¿Dónde entrenar?</span>
-      <button onclick="hideModal('dondeEntrenarModal')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px"><i class="ti ti-x"></i></button>
-    </div>
-
-    <div style="font-size:10px;color:var(--muted);margin-bottom:3px">Provincia</div>
-    <select id="deqProvinciaSelect" onchange="onDeqProvinciaChange()" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:8px;box-sizing:border-box">
-      <option value="">Todas las provincias</option>
-    </select>
-
-    <div style="font-size:10px;color:var(--muted);margin-bottom:3px">Partido</div>
-    <select id="deqPartidoSelect" onchange="onDeqPartidoChange()" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:8px;box-sizing:border-box">
-      <option value="">Todos los partidos</option>
-    </select>
-
-    <div style="font-size:10px;color:var(--muted);margin-bottom:3px">Lugar (opcional)</div>
-    <select id="deqLugarSelect" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:10px;box-sizing:border-box">
-      <option value="">Todos los lugares</option>
-    </select>
-
-    <div style="font-size:10px;color:var(--muted);margin-bottom:5px">Modalidad</div>
-    <div style="display:flex;gap:6px;margin-bottom:10px">
-      <div class="chip active" id="deqModTodos" data-mod="todos" onclick="setDeqModalidad('todos')">Todos</div>
-      <div class="chip" id="deqModPresencial" data-mod="presencial" onclick="setDeqModalidad('presencial')">Presencial</div>
-      <div class="chip" id="deqModVirtual" data-mod="virtual" onclick="setDeqModalidad('virtual')">Virtual</div>
-    </div>
-
-    <div style="font-size:10px;color:var(--muted);margin-bottom:5px">Días</div>
-    <div id="deqDiasBox" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
-
-    <div style="font-size:10px;color:var(--muted);margin-bottom:5px">Horarios</div>
-    <div id="deqHorariosBox" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
-
-    <button class="btn-confirm" onclick="buscarDondeEntrenar()">Buscar</button>
-    <div id="deqResults" style="margin-top:14px"></div>
-  </div>
-</div>
-
 <!-- MODAL SERVICIO PROFESIONAL -->
 <div class="modal-overlay hidden" id="servicioModal">
   <div class="modal-sheet" style="padding-bottom:32px;max-height:85vh;overflow-y:auto">
@@ -696,6 +757,22 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
         <a id="clasifDownloadLink" download="clasificacion.png" style="display:block;margin-top:6px;background:var(--accent);color:#000;border-radius:6px;padding:10px;font-size:12px;font-weight:700;text-decoration:none">Descargar imagen</a>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- MODAL CLASIFICACIÓN DE UNA CARRERA (top 20 + búsqueda) -->
+<div class="modal-overlay hidden center-modal" id="rankingCarreraModal">
+  <div class="modal-sheet" style="padding-bottom:24px;max-height:85vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:4px">
+      <span id="rkNombre" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px;line-height:1.1">Clasificación</span>
+      <button onclick="hideModal('rankingCarreraModal')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;flex-shrink:0"><i class="ti ti-x"></i></button>
+    </div>
+    <div id="rkSub" style="font-size:10px;color:var(--muted);margin-bottom:12px"></div>
+    <select id="rkTeamSelect" onchange="onRankingTeamChange()" style="display:none;width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;margin-bottom:8px">
+      <option value="">Todos los teams</option>
+    </select>
+    <input type="text" id="rkSearchInput" placeholder="Buscar por nombre o dorsal..." autocomplete="off" oninput="onRankingSearch(this.value)" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;margin-bottom:10px">
+    <div id="rkBody"></div>
   </div>
 </div>
 
@@ -1355,7 +1432,7 @@ function applyScreen(id) {
   if (id === 'teams') loadTeams();
   if (id === 'feed') { loadFeed(); loadNotifBadge(); }
   if (id === 'perfil') renderProfile();
-  if (id === 'carreras') { loadCarrerasSection(document.getElementById('carrerasSearchInput').value); loadInscripciones(); }
+  if (id === 'carreras') initCarrerasScreen();
   if (id === 'servicios') initServiciosScreen();
 }
 
@@ -1375,7 +1452,8 @@ let searchTimeout = null;
 
 searchIn.addEventListener('input', function() {
   const q = this.value.trim();
-  if (q.length < 2) { acEl.classList.remove('show'); return; }
+  // Un dorsal puede tener 1 dígito; para nombres seguimos pidiendo 2 letras
+  if (q.length < (/^\d+$/.test(q) ? 1 : 2)) { acEl.classList.remove('show'); return; }
   clearTimeout(searchTimeout);
   acEl.innerHTML = '<div class="no-res">Buscando...</div>';
   acEl.classList.add('show');
@@ -1387,8 +1465,31 @@ document.addEventListener('click', e => {
   if (!e.target.closest('.link-search-box')) linkAc.classList.remove('show');
 });
 
+// Si se escriben solo números se busca por dorsal. El mismo número se repite
+// entre carreras, así que se lista cada resultado con su carrera y año.
+async function searchByDorsal(q) {
+  const params = { dorsal: `eq.${parseInt(q, 10)}`, select: 'runner,runner_key,sex,team,archivo_fuente,dorsal', order: 'archivo_fuente.desc', limit: 100 };
+  if (activeF.has('sexM')) params.sex = 'eq.M';
+  if (activeF.has('sexF')) params.sex = 'eq.F';
+  let rows = await sbFetch('corredores', params);
+  rows = rows.filter(r => r.archivo_fuente && r.archivo_fuente !== 'corredores_unicos.csv' && r.archivo_fuente !== 'runners_base.csv');
+  if (activeF.has('has42')) rows = rows.filter(r => parseArchivo(r.archivo_fuente).dist === '42');
+  if (activeF.has('has21')) rows = rows.filter(r => parseArchivo(r.archivo_fuente).dist === '21');
+  rows.sort((a, b) => parseArchivo(b.archivo_fuente).year.localeCompare(parseArchivo(a.archivo_fuente).year));
+  rows = rows.slice(0, 20);
+  if (!rows.length) { acEl.innerHTML = '<div class="no-res">Ningún corredor con ese dorsal</div>'; return; }
+  acEl.innerHTML = rows.map(r => {
+    const safeKey = encAttr(r.runner_key || r.runner || '');
+    const safeName = encAttr(r.runner || '');
+    const { dist } = parseArchivo(r.archivo_fuente);
+    return `<div class="ac-item" onclick="selectR(decodeURIComponent('${safeKey}'),decodeURIComponent('${safeName}'))"><span>${r.runner}</span><span class="ac-meta">#${r.dorsal} · ${archToLabel(r.archivo_fuente)} · ${dist}K</span></div>`;
+  }).join('');
+  acEl.classList.add('show');
+}
+
 async function searchRunners(q) {
   try {
+    if (/^\d+$/.test(q)) { await searchByDorsal(q); return; }
     const params = { runner: ilikeSafe(q), select: 'runner,runner_key,sex,team,archivo_fuente,time', order: 'runner.asc', limit: 500 };
     if (activeF.has('sexM')) params.sex = 'eq.M';
     if (activeF.has('sexF')) params.sex = 'eq.F';
@@ -1409,8 +1510,8 @@ async function searchRunners(q) {
     list = list.slice(0, 7);
     if (!list.length) { acEl.innerHTML = '<div class="no-res">Sin resultados</div>'; return; }
     acEl.innerHTML = list.map(r => {
-      const safeKey = encodeURIComponent(r.key||'');
-      const safeName = encodeURIComponent(r.name||'');
+      const safeKey = encAttr(r.key||'');
+      const safeName = encAttr(r.name||'');
       return `<div class="ac-item" onclick="selectR(decodeURIComponent('${safeKey}'),decodeURIComponent('${safeName}'))"><span>${r.name}</span><span class="ac-meta">${r.team||''}</span></div>`;
     }).join('');
     acEl.classList.add('show');
@@ -1440,7 +1541,7 @@ async function loadRunner(key) {
     let team = null;
     try {
       const teamRows = await sbFetch('corredores_team_canon', { runner_key: `eq.${key}`, select: 'team_canonico', limit: 1 });
-      team = teamRows[0]?.team_canonico || null;
+      team = esTeamValido(teamRows[0]?.team_canonico) ? teamRows[0].team_canonico : null;
     } catch (e) {}
     const seenArchivos = new Set();
     const filteredRows = rows.filter(r => {
@@ -1532,6 +1633,10 @@ async function loadRunner(key) {
     const runMedalleroEl = document.getElementById('runMedallero');
     currentRunnerRaces = racesParaMedallero;
     currentRunnerKey = key;
+    // Comparar: usa el historial completo (no el filtrado del medallero)
+    cmpBase = { key, name: info.runner, races };
+    cmpOtro = null;
+    renderCompareBox();
     if (racesParaMedallero.length) {
       runMedalleroEl.style.display = 'block';
       const distsDisponibles = ['42','30','25','21','15','10'].filter(d => racesParaMedallero.some(r=>r.dist===d));
@@ -1561,6 +1666,138 @@ async function loadRunner(key) {
   }
 }
 
+// ─── COMPARAR CORREDORES (+1) ────────────────────────────────────────────────
+// Se suma otro corredor y se muestran solo las carreras que corrieron ambos.
+let cmpBase = null;   // { key, name, races } del corredor que se está viendo
+let cmpOtro = null;   // { key, name, races } del sumado para comparar
+let cmpSearchTimeout = null;
+
+function tiempoASeg(t) {
+  const p = String(t || '').split(':').map(Number);
+  if (p.some(isNaN)) return null;
+  if (p.length === 3) return p[0] * 3600 + p[1] * 60 + p[2];
+  if (p.length === 2) return p[0] * 60 + p[1];
+  return null;
+}
+
+function segATexto(s) {
+  s = Math.round(Math.abs(s));
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), ss = s % 60;
+  return h ? `${h}:${String(m).padStart(2, '0')}:${String(ss).padStart(2, '0')}` : `${m}:${String(ss).padStart(2, '0')}`;
+}
+
+// "RAMIREZ, Juan Ignacio" → "Juan"; "Juan Pérez" → "Juan"
+function nombreCorto(n) {
+  const s = String(n || '').trim();
+  const base = s.includes(',') ? s.split(',')[1].trim() : s;
+  const w = base.split(/\s+/)[0] || s;
+  return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+}
+
+function renderCompareBox(buscando = false) {
+  const box = document.getElementById('runCompareBox');
+  if (!cmpBase) { box.innerHTML = ''; return; }
+  if (buscando) {
+    box.innerHTML = `<div class="cmp-box">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px">Comparar a <b style="color:var(--text)">${escHtml(cmpBase.name)}</b> con...</div>
+      <div class="search-box">
+        <input type="text" id="cmpSearchInput" placeholder="Nombre del otro corredor..." autocomplete="off" oninput="onCmpSearch(this.value)" style="width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:6px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none">
+        <div class="autocomplete" id="cmpAc"></div>
+      </div>
+      <button onclick="renderCompareBox()" style="background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;margin-top:8px;padding:0">Cancelar</button>
+    </div>`;
+    setTimeout(() => document.getElementById('cmpSearchInput')?.focus(), 50);
+    return;
+  }
+  if (!cmpOtro) {
+    box.innerHTML = `<button class="cmp-btn" onclick="renderCompareBox(true)"><i class="ti ti-plus"></i>1 Comparar</button>`;
+    return;
+  }
+  box.innerHTML = renderCompareResult();
+}
+
+function onCmpSearch(q) {
+  const ac = document.getElementById('cmpAc');
+  q = q.trim();
+  clearTimeout(cmpSearchTimeout);
+  if (q.length < 2) { ac.classList.remove('show'); return; }
+  ac.innerHTML = '<div class="no-res">Buscando...</div>';
+  ac.classList.add('show');
+  cmpSearchTimeout = setTimeout(async () => {
+    try {
+      const rows = await sbFetch('corredores', { runner: ilikeSafe(q), select: 'runner,runner_key,team', order: 'runner.asc', limit: 300 });
+      const seen = new Set([cmpBase.key]);
+      const unicos = rows.filter(r => { const k = r.runner_key || r.runner; if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 7);
+      ac.innerHTML = unicos.length
+        ? unicos.map(r => `<div class="ac-item" onclick="elegirComparado(decodeURIComponent('${encAttr(r.runner_key || r.runner)}'),decodeURIComponent('${encAttr(r.runner)}'))"><span>${escHtml(r.runner)}</span><span class="ac-meta">${esTeamValido(r.team) ? escHtml(r.team) : ''}</span></div>`).join('')
+        : '<div class="no-res">Sin resultados</div>';
+    } catch (e) {
+      ac.innerHTML = '<div class="no-res">Error de conexión</div>';
+    }
+  }, 350);
+}
+
+async function elegirComparado(key, name) {
+  const box = document.getElementById('runCompareBox');
+  box.innerHTML = '<div class="cmp-box"><div class="loading" style="padding:10px 0"><i class="ti ti-refresh"></i>Comparando...</div></div>';
+  try {
+    const rows = await sbFetch('corredores', { runner_key: `eq.${key}`, select: 'runner,archivo_fuente,time', limit: 300 });
+    const porArchivo = {};
+    rows.forEach(r => { if (r.archivo_fuente && !(r.archivo_fuente in porArchivo)) porArchivo[r.archivo_fuente] = r.time; });
+    cmpOtro = { key, name, tiempos: porArchivo };
+    renderCompareBox();
+  } catch (e) {
+    box.innerHTML = '<div class="cmp-box" style="font-size:12px;color:var(--muted)">No se pudo cargar el corredor. <a href="#" onclick="renderCompareBox(true);return false">Probar de nuevo</a></div>';
+  }
+}
+
+function quitarComparado() { cmpOtro = null; renderCompareBox(); }
+
+function renderCompareResult() {
+  const a = cmpBase, b = cmpOtro;
+  const na = nombreCorto(a.name), nb = nombreCorto(b.name);
+  const comunes = a.races.filter(r => r.archivo_fuente in b.tiempos);
+  let ganaA = 0, ganaB = 0;
+  const filas = comunes.map(r => {
+    const sa = tiempoASeg(r.time), sb = tiempoASeg(b.tiempos[r.archivo_fuente]);
+    let win = '', dif = '—';
+    if (sa != null && sb != null) {
+      if (sa < sb) { win = 'a'; ganaA++; } else if (sb < sa) { win = 'b'; ganaB++; }
+      dif = sa === sb ? 'empate' : segATexto(sa - sb);
+    }
+    return `<tr onclick="openRankingCarrera(decodeURIComponent('${encAttr(r.archivo_fuente)}'))" style="cursor:pointer">
+      <td style="font-size:11px;font-weight:500">${escHtml(r.label)} <span class="dist-badge">${escHtml(r.dist)}k</span></td>
+      <td class="t ${win === 'a' ? 'win a' : ''}">${escHtml(r.time)}</td>
+      <td class="t ${win === 'b' ? 'win b' : ''}">${escHtml(b.tiempos[r.archivo_fuente] || '—')}</td>
+      <td class="dif">${dif}</td>
+    </tr>`;
+  }).join('');
+
+  const header = `<div class="cmp-title">
+      <div class="cmp-vs"><span class="a">${escHtml(a.name)}</span> <span style="color:var(--muted);font-size:13px">vs</span> <span class="b">${escHtml(b.name)}</span></div>
+      <div style="display:flex;gap:4px;flex-shrink:0">
+        <button onclick="renderCompareBox(true)" title="Cambiar" style="background:none;border:1px solid var(--border);border-radius:4px;padding:3px 7px;color:var(--muted);cursor:pointer"><i class="ti ti-switch-horizontal"></i></button>
+        <button onclick="quitarComparado()" title="Quitar" style="background:none;border:1px solid var(--border);border-radius:4px;padding:3px 7px;color:var(--muted);cursor:pointer"><i class="ti ti-x"></i></button>
+      </div>
+    </div>`;
+
+  if (!comunes.length) {
+    return `<div class="cmp-box">${header}<p style="font-size:12px;color:var(--muted);padding:6px 0">No corrieron ninguna carrera en común (de las que tenemos cargadas).</p></div>`;
+  }
+  return `<div class="cmp-box">${header}
+    <div class="cmp-score">
+      <div class="stat-pill"><div class="num" style="color:var(--text)">${comunes.length}</div><div class="lbl">En común</div></div>
+      <div class="stat-pill"><div class="num">${ganaA}</div><div class="lbl">Gana ${escHtml(na)}</div></div>
+      <div class="stat-pill"><div class="num" style="color:var(--blue)">${ganaB}</div><div class="lbl">Gana ${escHtml(nb)}</div></div>
+    </div>
+    <table class="cmp-table">
+      <thead><tr><th style="width:42%">Carrera</th><th>${escHtml(na)}</th><th>${escHtml(nb)}</th><th>Dif.</th></tr></thead>
+      <tbody>${filas}</tbody>
+    </table>
+    <div style="font-size:9px;color:var(--muted);margin-top:6px">Tocá una carrera para ver la clasificación completa.</div>
+  </div>`;
+}
+
 function renderRaceHistoryTable(racesList) {
   if (!racesList.length) {
     document.getElementById('raceBody').innerHTML = '<tr><td colspan="5" style="color:var(--muted);font-size:11px;padding:12px">Sin carreras de esa distancia</td></tr>';
@@ -1572,7 +1809,7 @@ function renderRaceHistoryTable(racesList) {
   document.getElementById('raceBody').innerHTML = racesList.map(rc => {
     const isBest = rc.pm === minP && rc.pm < 999;
     const pct = maxP===minP ? 70 : Math.round(20+70*(1-(rc.pm-minP)/(maxP-minP)));
-    return `<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentRunnerKey, decodeURIComponent('${encodeURIComponent(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}<br><span style="color:var(--muted);font-size:9px;font-family:'DM Mono',monospace">${rc.year}</span></td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}</td><td class="pace-val">${rc.pace}${isBest&&rc.pace!=='—'?'<span class="best-tag">PR</span>':''}</td><td><div class="bar-wrap"><div class="bar" style="width:${rc.pm<999?pct:0}%"></div></div></td></tr>`;
+    return `<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentRunnerKey, decodeURIComponent('${encAttr(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}<br><span style="color:var(--muted);font-size:9px;font-family:'DM Mono',monospace">${rc.year}</span></td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}</td><td class="pace-val">${rc.pace}${isBest&&rc.pace!=='—'?'<span class="best-tag">PR</span>':''}</td><td><div class="bar-wrap"><div class="bar" style="width:${rc.pm<999?pct:0}%"></div></div></td></tr>`;
   }).join('');
 }
 
@@ -1584,28 +1821,33 @@ function toggleF(el) {
 
 // ─── TEAMS ────────────────────────────────────────────────────────────────────
 async function loadTeams() {
-  if (ALL_TEAMS_CACHE) { renderTeamsGrid(document.getElementById('teamSearch').value); return; }
+  initTeamFilters();
+  if (ALL_TEAMS_CACHE) { aplicarFiltrosTeams(); return; }
   document.getElementById('teamsGrid').innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando teams...</div>';
   try {
     const rows = await sbFetch('team_counts', { select: 'team,member_count', order: 'member_count.desc', limit: 5000 });
     const counts = {};
     rows.forEach(r => { counts[r.team] = r.member_count; });
     ALL_TEAMS_CACHE = counts;
-    teamsListCache = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+    teamsListCache = Object.entries(counts).filter(([n]) => esTeamValido(n)).sort((a,b) => b[1]-a[1]);
     document.getElementById('teamsSubtitle').textContent = `Buenos Aires · ${teamsListCache.length} teams`;
-    renderTeamsGrid('');
+    aplicarFiltrosTeams();
   } catch(e) {
     document.getElementById('teamsGrid').innerHTML = '<div class="loading">Error al cargar teams</div>';
   }
 }
 
-function filterTeams(q) { renderTeamsGrid(q); }
+let filterTeamsTimeout = null;
+function filterTeams(q) {
+  clearTimeout(filterTeamsTimeout);
+  filterTeamsTimeout = setTimeout(aplicarFiltrosTeams, 250);
+}
 
 function renderTeamsGrid(q) {
   const f = q ? teamsListCache.filter(([n]) => n.toLowerCase().includes(q.toLowerCase())) : teamsListCache;
   if (!f.length) { document.getElementById('teamsGrid').innerHTML = '<div class="empty"><p>Sin resultados</p></div>'; return; }
   document.getElementById('teamsGrid').innerHTML = f.map(([name,count]) => {
-    return `<div class="team-card" onclick="showTeam(decodeURIComponent('${encodeURIComponent(name)}'))"><div class="team-card-name">${name}</div><div class="team-card-count"><span>${count}${count>=100?'+':''}</span> integrantes</div></div>`;
+    return `<div class="team-card" onclick="showTeam(decodeURIComponent('${encAttr(name)}'))"><div class="team-card-name">${name}</div><div class="team-card-count"><span>${count}${count>=100?'+':''}</span> integrantes</div></div>`;
   }).join('');
 }
 
@@ -1614,10 +1856,14 @@ async function showTeam(name) {
   document.getElementById('tdName').textContent = name;
   document.getElementById('tdSub').textContent = 'Cargando...';
   document.getElementById('tdStats').innerHTML = '';
+  ['tdContact', 'tdAnnouncement', 'tdPosts'].forEach(id => { document.getElementById(id).innerHTML = ''; });
   document.getElementById('tdMembers').innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando integrantes...</div>';
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('sc-td').classList.add('active');
   buildNav('teams');
+  // La ficha (coach, lugar, redes) no depende de los integrantes: se muestra ya
+  const isOwner = currentUser && currentProfile?.owned_team === name && currentProfile?.owned_team_status === 'confirmed';
+  renderTeamContact(name, isOwner);
   try {
     const rows = await sbFetchAll('corredores_team_canon', { team_canonico: `eq.${name}`, select: 'runner,runner_key,time,archivo_fuente' });
     const members = {};
@@ -1632,17 +1878,15 @@ async function showTeam(name) {
     document.getElementById('tdSub').textContent = `${count}${count>=100?'+':''} integrantes`;
     document.getElementById('tdStats').innerHTML = `<div class="stat-pill"><div class="num">${count}${count>=100?'+':''}</div><div class="lbl">Corredores</div></div><div class="stat-pill"><div class="num" style="font-size:18px">${memberList[0]?.bestPace||'—'}</div><div class="lbl">Mejor ritmo</div></div>`;
 
-    const isOwner = currentUser && currentProfile?.owned_team === name && currentProfile?.owned_team_status === 'confirmed';
     const isMember = currentUser && currentProfile?.runner_key && memberList.some(m => m.key === currentProfile.runner_key);
     const canViewMembers = isOwner || isMember;
 
     document.getElementById('tdMembers').innerHTML = memberList.length
-      ? memberList.map(m => `<div class="member-row" onclick="goToRunner(decodeURIComponent('${encodeURIComponent(m.key)}'),decodeURIComponent('${encodeURIComponent(m.name)}'))"><div class="member-name">${m.name}</div><div class="member-pace">${m.bestPace||'—'} <small style="color:var(--muted);font-size:9px">/km</small></div></div>`).join('')
+      ? memberList.map(m => `<div class="member-row" onclick="goToRunner(decodeURIComponent('${encAttr(m.key)}'),decodeURIComponent('${encAttr(m.name)}'))"><div class="member-name">${m.name}</div><div class="member-pace">${m.bestPace||'—'} <small style="color:var(--muted);font-size:9px">/km</small></div></div>`).join('')
       : '<div style="color:var(--muted);font-size:12px;padding:16px 0">Sin datos</div>';
 
     await renderTeamAnnouncement(name);
     await renderTeamPosts(name, isOwner, canViewMembers);
-    await renderTeamContact(name, isOwner);
   } catch(e) {
     document.getElementById('tdMembers').innerHTML = '<div style="color:var(--muted);font-size:12px;padding:16px 0">Error al cargar</div>';
   }
@@ -1793,6 +2037,7 @@ async function addTeamTraining(name) {
     document.getElementById('tdVirtualCb').checked = false;
     document.getElementById('tdUbicacionBox').style.display = 'block';
     await renderTeamAnnouncement(name);
+    renderTeamContact(name, true);
   } catch (e) {
     alert('Error al agregar el entrenamiento: ' + (e.message || e));
   }
@@ -1804,6 +2049,7 @@ async function deleteTeamTraining(id, name) {
     const { error } = await sbClient.from('team_trainings').delete().eq('id', id);
     if (error) throw error;
     await renderTeamAnnouncement(name);
+    renderTeamContact(name, true);
   } catch (e) {
     alert('Error al borrar: ' + (e.message || e));
   }
@@ -1829,43 +2075,76 @@ function normalizeWebUrl(url) {
   return /^https?:\/\//i.test(clean) ? clean : `https://${clean}`;
 }
 
+// Ficha del team: head coach, dónde entrena y redes. Instagram y WhatsApp se
+// muestran siempre; si no están cargados, el ícono aparece apagado.
 async function renderTeamContact(name, isOwner) {
   const box = document.getElementById('tdContact');
   let contact = null;
+  let trainings = [];
   try {
-    const rows = await sbFetch('team_contact', { select: 'whatsapp,instagram', team: `eq.${name}` });
+    const [rows, tr] = await Promise.all([
+      sbFetch('team_contact', { select: 'whatsapp,instagram,head_coach', team: `eq.${name}` }),
+      sbFetch('team_trainings', { select: 'partido,lugar', team: `eq.${name}` }).catch(() => [])
+    ]);
     contact = rows[0] || null;
+    trainings = tr;
   } catch (e) {}
 
-  const iconsRow = (contact && (contact.whatsapp || contact.instagram)) ? `
-    <div style="display:flex;gap:10px;margin-bottom:${isOwner?'10px':'14px'}">
-      ${contact.instagram?`<a href="${instagramLink(contact.instagram)}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 14px;text-decoration:none;color:var(--text);font-size:12px;font-weight:600"><i class="ti ti-brand-instagram" style="font-size:16px;color:#e1306c"></i> Instagram</a>`:''}
-      ${contact.whatsapp?`<a href="${whatsappLink(contact.whatsapp)}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 14px;text-decoration:none;color:var(--text);font-size:12px;font-weight:600"><i class="ti ti-brand-whatsapp" style="font-size:16px;color:#25d366"></i> WhatsApp</a>`:''}
-    </div>` : '';
+  const lugares = [...new Set(trainings.map(t =>
+    t.lugar === 'Virtual' ? 'Virtual' : [t.lugar, t.partido].filter(Boolean).join(' · ')
+  ).filter(Boolean))];
+
+  const coach = contact?.head_coach;
+  const ig = contact?.instagram;
+  const wa = contact?.whatsapp;
+  const vacio = '<div class="td-info-val vacio">Sin cargar</div>';
+
+  const info = `
+    <div class="td-info">
+      <div class="td-info-row">
+        <i class="ti ti-user-star"></i>
+        <div><div class="td-info-lbl">Head coach</div>${coach ? `<div class="td-info-val">${escHtml(coach)}</div>` : vacio}</div>
+      </div>
+      <div class="td-info-row">
+        <i class="ti ti-map-pin"></i>
+        <div><div class="td-info-lbl">Lugar de entrenamiento</div>${lugares.length ? lugares.map(l => `<div class="td-info-val">${escHtml(l)}</div>`).join('') : vacio}</div>
+      </div>
+      <div class="td-social">
+        ${ig
+          ? `<a href="${instagramLink(ig)}" target="_blank" rel="noopener"><i class="ti ti-brand-instagram" style="color:#e1306c"></i> Instagram</a>`
+          : `<span class="off" title="Instagram no cargado"><i class="ti ti-brand-instagram"></i> Instagram</span>`}
+        ${wa
+          ? `<a href="${whatsappLink(wa)}" target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp" style="color:#25d366"></i> WhatsApp</a>`
+          : `<span class="off" title="WhatsApp no cargado"><i class="ti ti-brand-whatsapp"></i> WhatsApp</span>`}
+      </div>
+    </div>`;
 
   const ownerForm = isOwner ? `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:14px">
-      <div style="font-size:11px;color:var(--muted);margin-bottom:8px"><i class="ti ti-crown" style="color:var(--accent)"></i> Contacto del team</div>
-      <input type="text" id="tdWhatsappInput" placeholder="WhatsApp (ej: 11 2388-4268)" value="${contact?.whatsapp||''}" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:8px;box-sizing:border-box">
-      <input type="text" id="tdInstagramInput" placeholder="Instagram (ej: @miteam)" value="${contact?.instagram||''}" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:10px;box-sizing:border-box">
-      <button onclick="saveTeamContact('${name.replace(/'/g,"\\'")}')" style="background:var(--accent);color:#000;border:none;border-radius:6px;padding:9px 18px;font-size:12px;font-weight:700;cursor:pointer">Guardar contacto</button>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px"><i class="ti ti-crown" style="color:var(--accent)"></i> Datos del team</div>
+      <input type="text" id="tdCoachInput" placeholder="Head coach (nombre y apellido)" value="${escHtml(coach || '')}" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:8px;box-sizing:border-box">
+      <input type="text" id="tdWhatsappInput" placeholder="WhatsApp (ej: 11 2388-4268)" value="${escHtml(wa || '')}" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:8px;box-sizing:border-box">
+      <input type="text" id="tdInstagramInput" placeholder="Instagram (ej: @miteam)" value="${escHtml(ig || '')}" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:10px;box-sizing:border-box">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:10px">El lugar de entrenamiento sale de los entrenamientos que cargues más abajo.</div>
+      <button onclick="saveTeamContact(decodeURIComponent('${encAttr(name)}'))" style="background:var(--accent);color:#000;border:none;border-radius:6px;padding:9px 18px;font-size:12px;font-weight:700;cursor:pointer">Guardar datos</button>
     </div>` : '';
 
-  box.innerHTML = iconsRow + ownerForm;
+  box.innerHTML = info + ownerForm;
 }
 
 async function saveTeamContact(name) {
   if (!currentUser) return;
-  const whatsapp = document.getElementById('tdWhatsappInput').value.trim();
-  const instagram = document.getElementById('tdInstagramInput').value.trim();
+  const head_coach = document.getElementById('tdCoachInput').value.trim() || null;
+  const whatsapp = document.getElementById('tdWhatsappInput').value.trim() || null;
+  const instagram = document.getElementById('tdInstagramInput').value.trim() || null;
   try {
     const { error } = await sbClient.from('team_contact').upsert({
-      team: name, whatsapp, instagram, updated_by: currentUser.id, updated_at: new Date().toISOString()
+      team: name, head_coach, whatsapp, instagram, updated_by: currentUser.id, updated_at: new Date().toISOString()
     }, { onConflict: 'team' });
     if (error) throw error;
     await renderTeamContact(name, true);
   } catch (e) {
-    alert('Error al guardar el contacto: ' + (e.message || e));
+    alert('Error al guardar los datos del team: ' + (e.message || e));
   }
 }
 
@@ -2056,113 +2335,161 @@ async function buscarServicios() {
   }
 }
 
-// ─── BUSCAR DÓNDE ENTRENAR ──────────────────────────────────────────────────
-async function openDondeEntrenarModal() {
-  const provinciaSel = document.getElementById('deqProvinciaSelect');
-  const diasBox = document.getElementById('deqDiasBox');
-  const horariosBox = document.getElementById('deqHorariosBox');
+// ─── BUSCAR DÓNDE ENTRENAR (filtros en la pantalla Teams) ───────────────────
+// Sin filtros se ve la lista completa de teams. Con algún filtro activo, la
+// lista pasa a mostrar solo los teams con entrenamientos que coinciden.
+let teamFiltersInit = false;
+let deqModalidad = 'todos';
+let teamFiltersReqId = 0;
 
-  if (!diasBox.dataset.built) {
-    diasBox.innerHTML = DIAS_SEMANA.map(d => `<label style="display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:10px;cursor:pointer">
-      <input type="checkbox" class="deqDiaCb" value="${d}" style="width:12px;height:12px;accent-color:var(--accent)">${d}
-    </label>`).join('');
-    horariosBox.innerHTML = HORAS_FIJAS.map(h => `<label style="display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:10px;cursor:pointer">
-      <input type="checkbox" class="deqHoraCb" value="${h}" style="width:12px;height:12px;accent-color:var(--accent)">${h}
-    </label>`).join('') + PERIODOS_FIJOS.map(p => `<label style="display:flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:6px 14px;font-size:11px;cursor:pointer;font-weight:600">
-      <input type="checkbox" class="deqPeriodoCb" value="${p}" style="width:12px;height:12px;accent-color:var(--accent)">${p}
-    </label>`).join('');
-    diasBox.dataset.built = '1';
-  }
+async function initTeamFilters() {
+  if (teamFiltersInit) return;
+  teamFiltersInit = true;
+  const chip = (cls, v) => `<div class="chip ${cls}" data-v="${v}" onclick="this.classList.toggle('active');aplicarFiltrosTeams()">${v}</div>`;
+  document.getElementById('deqDiasBox').innerHTML = DIAS_SEMANA.map(d => chip('deqDiaChip', d)).join('');
+  document.getElementById('deqHorariosBox').innerHTML =
+    HORAS_FIJAS.map(h => chip('deqHoraChip', h)).join('') + PERIODOS_FIJOS.map(p => chip('deqPeriodoChip', p)).join('');
+  try { if (localStorage.getItem('teamFiltersCollapsed') === '1') toggleTeamFilters(true); } catch (e) {}
+  try {
+    const provs = await sbFetch('partidos_indec', { select: 'provincia', order: 'provincia.asc' });
+    const unicas = [...new Set(provs.map(p => p.provincia))];
+    document.getElementById('deqProvinciaSelect').innerHTML = '<option value="">Todas</option>' + unicas.map(p => `<option value="${escHtml(p)}">${escHtml(p)}</option>`).join('');
+  } catch (e) {}
+}
 
-  if (provinciaSel.options.length <= 1) {
-    try {
-      const provs = await sbFetch('partidos_indec', { select: 'provincia', order: 'provincia.asc' });
-      const unicas = [...new Set(provs.map(p => p.provincia))];
-      provinciaSel.innerHTML = '<option value="">Todas las provincias</option>' + unicas.map(p => `<option value="${p}">${p}</option>`).join('');
-    } catch (e) {}
-  }
-
-  document.getElementById('deqResults').innerHTML = '';
-  showModal('dondeEntrenarModal');
+function toggleTeamFilters(forceCollapse) {
+  const panel = document.getElementById('teamFiltersPanel');
+  const collapsed = forceCollapse === true ? true : !panel.classList.contains('collapsed');
+  panel.classList.toggle('collapsed', collapsed);
+  document.getElementById('tfChevron').className = 'ti ' + (collapsed ? 'ti-chevron-down' : 'ti-chevron-up');
+  try { localStorage.setItem('teamFiltersCollapsed', collapsed ? '1' : '0'); } catch (e) {}
 }
 
 async function onDeqProvinciaChange() {
   const provincia = document.getElementById('deqProvinciaSelect').value;
   const partidoSel = document.getElementById('deqPartidoSelect');
-  const lugarSel = document.getElementById('deqLugarSelect');
-  lugarSel.innerHTML = '<option value="">Todos los lugares</option>';
-  if (!provincia) { partidoSel.innerHTML = '<option value="">Todos los partidos</option>'; return; }
+  document.getElementById('deqLugarSelect').innerHTML = '<option value="">Todos los lugares</option>';
+  if (!provincia) { partidoSel.innerHTML = '<option value="">Todos</option>'; aplicarFiltrosTeams(); return; }
   partidoSel.innerHTML = '<option value="">Cargando...</option>';
   try {
     const partidos = await sbFetch('partidos_indec', { select: 'partido', provincia: `eq.${provincia}`, order: 'partido.asc' });
-    partidoSel.innerHTML = '<option value="">Todos los partidos</option>' + partidos.map(p => `<option value="${p.partido}">${p.partido}</option>`).join('');
+    partidoSel.innerHTML = '<option value="">Todos</option>' + partidos.map(p => `<option value="${escHtml(p.partido)}">${escHtml(p.partido)}</option>`).join('');
   } catch (e) {
     partidoSel.innerHTML = '<option value="">Error al cargar</option>';
   }
+  aplicarFiltrosTeams();
 }
 
 async function onDeqPartidoChange() {
   const partido = document.getElementById('deqPartidoSelect').value;
   const lugarSel = document.getElementById('deqLugarSelect');
-  if (!partido) { lugarSel.innerHTML = '<option value="">Todos los lugares</option>'; return; }
+  if (!partido) { lugarSel.innerHTML = '<option value="">Todos los lugares</option>'; aplicarFiltrosTeams(); return; }
   lugarSel.innerHTML = '<option value="">Cargando...</option>';
   try {
     const lugares = await sbFetch('lugares_entrenamiento', { select: 'lugar', partido: `eq.${partido}`, order: 'lugar.asc' });
-    lugarSel.innerHTML = '<option value="">Todos los lugares</option>' + lugares.map(l => `<option value="${l.lugar}">${l.lugar}</option>`).join('');
+    lugarSel.innerHTML = '<option value="">Todos los lugares</option>' + lugares.map(l => `<option value="${escHtml(l.lugar)}">${escHtml(l.lugar)}</option>`).join('');
   } catch (e) {
     lugarSel.innerHTML = '<option value="">Error al cargar</option>';
   }
+  aplicarFiltrosTeams();
 }
 
-let deqModalidad = 'todos';
 function setDeqModalidad(mod) {
   deqModalidad = mod;
   document.getElementById('deqModTodos').classList.toggle('active', mod === 'todos');
   document.getElementById('deqModPresencial').classList.toggle('active', mod === 'presencial');
   document.getElementById('deqModVirtual').classList.toggle('active', mod === 'virtual');
+  aplicarFiltrosTeams();
 }
 
-async function buscarDondeEntrenar() {
-  const resultsBox = document.getElementById('deqResults');
-  resultsBox.innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Buscando...</div>';
+function leerFiltrosTeams() {
+  const vals = sel => Array.from(document.querySelectorAll(sel + '.active')).map(c => c.dataset.v);
+  return {
+    provincia: document.getElementById('deqProvinciaSelect').value,
+    partido: document.getElementById('deqPartidoSelect').value,
+    lugar: document.getElementById('deqLugarSelect').value,
+    dias: vals('.deqDiaChip'),
+    horas: vals('.deqHoraChip'),
+    periodos: vals('.deqPeriodoChip'),
+    modalidad: deqModalidad
+  };
+}
 
-  const partido = document.getElementById('deqPartidoSelect').value;
-  const lugar = document.getElementById('deqLugarSelect').value;
-  const dias = Array.from(document.querySelectorAll('.deqDiaCb:checked')).map(cb => cb.value);
-  const horas = Array.from(document.querySelectorAll('.deqHoraCb:checked')).map(cb => cb.value);
-  const periodos = Array.from(document.querySelectorAll('.deqPeriodoCb:checked')).map(cb => cb.value);
+function hayFiltrosTeams(f) {
+  return !!(f.provincia || f.partido || f.lugar || f.dias.length || f.horas.length || f.periodos.length || f.modalidad !== 'todos');
+}
+
+function limpiarFiltrosTeams() {
+  document.getElementById('deqProvinciaSelect').value = '';
+  document.getElementById('deqPartidoSelect').innerHTML = '<option value="">Todos</option>';
+  document.getElementById('deqLugarSelect').innerHTML = '<option value="">Todos los lugares</option>';
+  document.querySelectorAll('#tfBody .deqDiaChip, #tfBody .deqHoraChip, #tfBody .deqPeriodoChip').forEach(c => c.classList.remove('active'));
+  setDeqModalidad('todos');
+}
+
+// Punto único para redibujar la lista de teams: respeta buscador + filtros
+async function aplicarFiltrosTeams() {
+  const f = leerFiltrosTeams();
+  const q = document.getElementById('teamSearch').value;
+  const activos = hayFiltrosTeams(f);
+  const n = (f.provincia ? 1 : 0) + (f.partido ? 1 : 0) + (f.lugar ? 1 : 0) + f.dias.length + f.horas.length + f.periodos.length + (f.modalidad !== 'todos' ? 1 : 0);
+  const countEl = document.getElementById('tfActiveCount');
+  countEl.textContent = n; countEl.style.display = n ? 'inline' : 'none';
+  document.getElementById('tfClearBtn').style.display = activos ? 'inline-block' : 'none';
+
+  if (!activos) { renderTeamsGrid(q); return; }
+
+  const grid = document.getElementById('teamsGrid');
+  const reqId = ++teamFiltersReqId;
+  grid.innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Buscando...</div>';
+
   let horarios = [];
-  if (horas.length && periodos.length) {
-    horas.forEach(h => periodos.forEach(p => horarios.push(`${h} ${p}`)));
-  } else if (horas.length) {
-    horas.forEach(h => PERIODOS_FIJOS.forEach(p => horarios.push(`${h} ${p}`)));
-  } else if (periodos.length) {
-    HORAS_FIJAS.forEach(h => periodos.forEach(p => horarios.push(`${h} ${p}`)));
-  }
+  if (f.horas.length && f.periodos.length) f.horas.forEach(h => f.periodos.forEach(p => horarios.push(`${h} ${p}`)));
+  else if (f.horas.length) f.horas.forEach(h => PERIODOS_FIJOS.forEach(p => horarios.push(`${h} ${p}`)));
+  else if (f.periodos.length) HORAS_FIJAS.forEach(h => f.periodos.forEach(p => horarios.push(`${h} ${p}`)));
 
   const params = { select: 'team,partido,lugar,dias,horarios' };
-  if (partido) params.partido = `eq.${partido}`;
-  if (lugar) params.lugar = `eq.${lugar}`;
-  if (dias.length) params.dias = `ov.{${dias.join(',')}}`;
-  if (horarios.length) params.horarios = `ov.{${horarios.join(',')}}`;
-  if (!lugar && deqModalidad === 'virtual') params.lugar = 'eq.Virtual';
-  if (!lugar && deqModalidad === 'presencial') params.lugar = 'neq.Virtual';
+  if (f.partido) params.partido = `eq.${f.partido}`;
+  else if (f.provincia) {
+    // Sin partido elegido: todos los partidos de la provincia
+    try {
+      const partidos = await sbFetch('partidos_indec', { select: 'partido', provincia: `eq.${f.provincia}` });
+      params.partido = `in.(${partidos.map(p => `"${p.partido.replace(/"/g, '')}"`).join(',')})`;
+    } catch (e) {}
+  }
+  if (f.lugar) params.lugar = `eq.${f.lugar}`;
+  if (f.dias.length) params.dias = `ov.{${f.dias.join(',')}}`;
+  if (horarios.length) params.horarios = `ov.{${horarios.map(h => `"${h}"`).join(',')}}`;
+  if (!f.lugar && f.modalidad === 'virtual') params.lugar = 'eq.Virtual';
+  if (!f.lugar && f.modalidad === 'presencial') params.lugar = 'neq.Virtual';
 
   try {
     const rows = await sbFetch('team_trainings', params);
-    if (!rows.length) {
-      resultsBox.innerHTML = '<p style="color:var(--muted);font-size:12px;text-align:center;padding:16px 0">Ningún team entrena con esos filtros</p>';
+    if (reqId !== teamFiltersReqId) return;
+    // Agrupar entrenamientos por team
+    const porTeam = {};
+    rows.forEach(r => { (porTeam[r.team] = porTeam[r.team] || []).push(r); });
+    const nq = normTxt(q).trim();
+    const teams = Object.keys(porTeam).filter(t => esTeamValido(t) && (!nq || normTxt(t).includes(nq))).sort();
+    if (!teams.length) {
+      grid.innerHTML = '<div class="empty"><p>Ningún team entrena con esos filtros</p></div>';
       return;
     }
-    resultsBox.innerHTML = rows.map(r => `
-      <div onclick="hideModal('dondeEntrenarModal');showTeam('${r.team.replace(/'/g,"\\'")}')" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;cursor:pointer">
-        <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:var(--blue)">${r.team}</div>
-        ${r.lugar==='Virtual'?`<div style="font-size:11px;color:var(--muted)"><i class="ti ti-video"></i> Virtual</div>`:r.lugar?`<div style="font-size:11px;color:var(--muted)"><i class="ti ti-map-pin"></i> ${r.lugar}${r.partido?' · '+r.partido:''}</div>`:(r.partido?`<div style="font-size:11px;color:var(--muted)"><i class="ti ti-map-pin"></i> ${r.partido}</div>`:'')}
-        ${(r.dias&&r.dias.length)?`<div style="font-size:11px;color:var(--muted)"><i class="ti ti-calendar"></i> ${r.dias.join(', ')}</div>`:''}
-        ${(r.horarios&&r.horarios.length)?`<div style="font-size:11px;color:var(--muted)"><i class="ti ti-clock"></i> ${r.horarios.join(', ')}</div>`:''}
-      </div>`).join('');
+    grid.innerHTML = teams.map(t => {
+      const trainings = porTeam[t].map(r => {
+        const donde = r.lugar === 'Virtual' ? '<i class="ti ti-video"></i> Virtual' : `<i class="ti ti-map-pin"></i> ${escHtml([r.lugar, r.partido].filter(Boolean).join(' · ') || 'Sin lugar')}`;
+        const cuando = [(r.dias || []).join(', '), (r.horarios || []).join(', ')].filter(Boolean).join(' · ');
+        return `<div>${donde}${cuando ? ` <span style="color:var(--muted2)">—</span> ${escHtml(cuando)}` : ''}</div>`;
+      }).join('');
+      const count = ALL_TEAMS_CACHE?.[t];
+      return `<div class="team-card" onclick="showTeam(decodeURIComponent('${encAttr(t)}'))">
+        <div class="team-card-name">${escHtml(t)}</div>
+        ${count ? `<div class="team-card-count"><span>${count}${count >= 100 ? '+' : ''}</span> integrantes</div>` : ''}
+        <div class="team-card-trainings">${trainings}</div>
+      </div>`;
+    }).join('');
   } catch (e) {
-    resultsBox.innerHTML = '<p style="color:var(--muted);font-size:12px;text-align:center;padding:16px 0">Error al buscar</p>';
+    if (reqId === teamFiltersReqId) grid.innerHTML = '<div class="empty"><p>Error al buscar</p></div>';
   }
 }
 
@@ -2276,6 +2603,8 @@ function clearRunner() {
   document.getElementById('runInstagram').style.display = 'none';
   document.getElementById('runFollowBox').style.display = 'none';
   document.getElementById('runMedallero').style.display = 'none';
+  cmpBase = null; cmpOtro = null;
+  document.getElementById('runCompareBox').innerHTML = '';
   document.getElementById('raceTitle').style.display = 'none';
   document.getElementById('raceTable').classList.remove('show');
   document.getElementById('raceBody').innerHTML = '';
@@ -2367,11 +2696,11 @@ function renderPostCard(p, likes, coms, nombresMap, avatarsMap, runnerKeysMap) {
   let avatarContent = avatarUrl ? `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : initials;
   if (esTeam) {
     avatarContent = '<i class="ti ti-users"></i>';
-    avatarClick = `onclick="showTeam(decodeURIComponent('${encodeURIComponent(p.publicado_como_nombre||'')}'))"`;
+    avatarClick = `onclick="showTeam(decodeURIComponent('${encAttr(p.publicado_como_nombre||'')}'))"`;
   } else if (esServicio) {
     avatarContent = '<i class="ti ti-stethoscope"></i>';
   } else if (runnerKey) {
-    avatarClick = `onclick="goToRunner(decodeURIComponent('${encodeURIComponent(runnerKey)}'),decodeURIComponent('${encodeURIComponent(p.nombre||'')}'))"`;
+    avatarClick = `onclick="goToRunner(decodeURIComponent('${encAttr(runnerKey)}'),decodeURIComponent('${encAttr(p.nombre||'')}'))"`;
   }
   const etiquetadosNombres = (p.etiquetados || []).map(id => nombresMap?.[id]).filter(Boolean);
   return `<div class="feed-card" id="post-${p.id}">
@@ -2527,7 +2856,7 @@ async function checkMiTeamParaEtiquetar() {
   if (!currentUser || !currentProfile?.runner_key) { box.style.display = 'none'; miTeamParaEtiquetar = null; return; }
   try {
     const rows = await sbFetch('corredores_team_canon', { select: 'team_canonico', runner_key: `eq.${currentProfile.runner_key}`, limit: 1 });
-    miTeamParaEtiquetar = rows[0]?.team_canonico || null;
+    miTeamParaEtiquetar = esTeamValido(rows[0]?.team_canonico) ? rows[0].team_canonico : null;
   } catch (e) {
     miTeamParaEtiquetar = null;
   }
@@ -2569,7 +2898,7 @@ async function checkPublicarComoOpciones() {
   if (miTeamComoDueno) opciones.push({ tipo: 'team', nombre: miTeamComoDueno, label: miTeamComoDueno });
   if (miServicioNombreParaPublicar) opciones.push({ tipo: 'servicio', nombre: miServicioNombreParaPublicar, label: miServicioNombreParaPublicar });
 
-  chipsBox.innerHTML = opciones.map(o => `<div class="chip ${o.tipo===publicarComoTipo?'active':''}" data-tipo="${o.tipo}" onclick="setPublicarComo('${o.tipo}', decodeURIComponent('${encodeURIComponent(o.nombre)}'))">${o.label}</div>`).join('');
+  chipsBox.innerHTML = opciones.map(o => `<div class="chip ${o.tipo===publicarComoTipo?'active':''}" data-tipo="${o.tipo}" onclick="setPublicarComo('${o.tipo}', decodeURIComponent('${encAttr(o.nombre)}'))">${o.label}</div>`).join('');
   box.style.display = 'block';
 }
 
@@ -2855,7 +3184,7 @@ async function verSeguidoresInscriptos(carreraId) {
         : `<div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,rgba(232,255,71,0.15),rgba(232,255,71,0.05));border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--accent);flex-shrink:0">${initials}</div>`;
       return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">
         ${avatarHtml}
-        <div style="flex:1;font-size:13px;font-weight:600;${u.runner_key?'cursor:pointer':''}" ${u.runner_key?`onclick="hideModal('seguidoresModal');goToRunner(decodeURIComponent('${encodeURIComponent(u.runner_key)}'),decodeURIComponent('${encodeURIComponent(u.nombre)}'))"`:''}>${u.nombre}</div>
+        <div style="flex:1;font-size:13px;font-weight:600;${u.runner_key?'cursor:pointer':''}" ${u.runner_key?`onclick="hideModal('seguidoresModal');goToRunner(decodeURIComponent('${encAttr(u.runner_key)}'),decodeURIComponent('${encAttr(u.nombre)}'))"`:''}>${u.nombre}</div>
       </div>`;
     }).join('');
   } catch (e) {
@@ -2885,7 +3214,7 @@ async function openSeguidoresModal(tipo) {
       const isMe = currentUser && u.id === currentUser.id;
       return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">
         ${avatarHtml}
-        <div style="flex:1;font-size:13px;font-weight:600;${u.runner_key?'cursor:pointer':''}" ${u.runner_key?`onclick="hideModal('seguidoresModal');goToRunner(decodeURIComponent('${encodeURIComponent(u.runner_key)}'),decodeURIComponent('${encodeURIComponent(u.nombre)}'))"`:''}>${u.nombre}</div>
+        <div style="flex:1;font-size:13px;font-weight:600;${u.runner_key?'cursor:pointer':''}" ${u.runner_key?`onclick="hideModal('seguidoresModal');goToRunner(decodeURIComponent('${encAttr(u.runner_key)}'),decodeURIComponent('${encAttr(u.nombre)}'))"`:''}>${u.nombre}</div>
         ${!isMe&&currentUser?`<button class="follow-btn ${isFollowing?'following':''}" onclick="toggleFollow('${u.id}',this)">${isFollowing?'Siguiendo':'Seguir'}</button>`:''}
       </div>`;
     }).join('');
@@ -3090,7 +3419,7 @@ async function renderProfile() {
     let team = null;
     try {
       const teamRows = await sbFetch('corredores_team_canon', { runner_key: `eq.${currentProfile.runner_key}`, select: 'team_canonico', limit: 1 });
-      team = teamRows[0]?.team_canonico || null;
+      team = esTeamValido(teamRows[0]?.team_canonico) ? teamRows[0].team_canonico : null;
     } catch (e) {}
     const seenArchivos = new Set();
     const filteredRows = rows.filter(r => {
@@ -3288,7 +3617,7 @@ function renderHistorialPerfil(distFilter) {
     box.innerHTML = `<p style="color:var(--muted);font-size:12px">Sin carreras de ${distFilter}K</p>`;
     return;
   }
-  box.innerHTML = `<table class="race-table show"><thead><tr><th>Carrera</th><th>Dist</th><th>Tiempo</th><th>Ritmo</th></tr></thead><tbody>${filtradas.map(rc=>`<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentProfile?.runner_key, decodeURIComponent('${encodeURIComponent(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}</td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}</td><td class="pace-val">${rc.pace}</td></tr>`).join('')}</tbody></table>`;
+  box.innerHTML = `<table class="race-table show"><thead><tr><th>Carrera</th><th>Dist</th><th>Tiempo</th><th>Ritmo</th></tr></thead><tbody>${filtradas.map(rc=>`<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentProfile?.runner_key, decodeURIComponent('${encAttr(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}</td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}</td><td class="pace-val">${rc.pace}</td></tr>`).join('')}</tbody></table>`;
 }
 
 function filtrarMedalleroPerfil(dist) {
@@ -3662,9 +3991,10 @@ async function compartirClasificacion() {
   const cols = [
     { label: 'GENERAL', value: `${r.pos_general}°`, sub: `de ${r.total_general}` },
     { label: r.sexo === 'F' ? 'DAMAS' : 'CABALLEROS', value: `${r.pos_sexo}°`, sub: `de ${r.total_sexo}` },
-    { label: `CAT. ${r.edad || '—'}`, value: `${r.pos_edad}°`, sub: `de ${r.total_edad}` },
   ];
-  const colW = (W - 120) / 3;
+  // Algunas carreras no traen categoría de edad: en ese caso solo 2 columnas
+  if (r.edad && r.pos_edad != null) cols.push({ label: `CAT. ${r.edad}`, value: `${r.pos_edad}°`, sub: `de ${r.total_edad}` });
+  const colW = (W - 120) / cols.length;
   ctx.textAlign = 'center';
   cols.forEach((c, i) => {
     const cx = 60 + colW * i + colW / 2;
@@ -3793,6 +4123,223 @@ document.addEventListener('touchmove', e => {
   }
 }, { passive: false });
 
+// ─── CARRERAS: TABS POR AÑO + RESULTADOS ─────────────────────────────────────
+// El año actual muestra las próximas (para anotarse) y las ya corridas; los
+// años anteriores, solo las carreras con resultados cargados.
+const ANIO_ACTUAL = new Date().getFullYear();
+let carrerasResultadosCache = null;
+let carrerasAnioSel = ANIO_ACTUAL;
+let carrerasSearchTimeout = null;
+
+// Para valores que van dentro de onclick="...('...')": encodeURIComponent no
+// escapa el apóstrofo, y un nombre como O'Connor rompía el handler.
+function encAttr(s) {
+  return encodeURIComponent(String(s ?? '')).replace(/'/g, '%27');
+}
+
+function escHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
+}
+
+function normTxt(s) {
+  return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+}
+
+// races_meta a veces trae el nombre del archivo como race_name ("15pn_2026_10")
+function nombreCarreraResultado(c) {
+  return (!c.race_name || /^[a-z0-9]+_20\d{2}_\d+(\.csv)?$/i.test(c.race_name)) ? archToLabel(c.archivo_fuente) : c.race_name;
+}
+
+async function initCarrerasScreen() {
+  if (!carrerasResultadosCache) {
+    renderCarrerasYearTabs();
+    try {
+      const { data, error } = await sbClient.rpc('get_carreras_resultados');
+      if (error) throw error;
+      carrerasResultadosCache = data || [];
+    } catch (e) {
+      document.getElementById('carrerasResultadosList').innerHTML = '<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0">Error al cargar resultados</p>';
+    }
+  }
+  renderCarrerasYearTabs();
+  renderCarrerasAnio();
+}
+
+function renderCarrerasYearTabs() {
+  const anios = new Set([ANIO_ACTUAL]);
+  (carrerasResultadosCache || []).forEach(c => { if (c.anio) anios.add(c.anio); });
+  document.getElementById('carrerasYearTabs').innerHTML = [...anios].sort((a, b) => b - a)
+    .map(a => `<div class="chip ${a === carrerasAnioSel ? 'active' : ''}" onclick="selectCarrerasAnio(${a})">${a}</div>`).join('');
+}
+
+function selectCarrerasAnio(anio) {
+  carrerasAnioSel = anio;
+  renderCarrerasYearTabs();
+  renderCarrerasAnio();
+}
+
+function renderCarrerasAnio() {
+  const q = document.getElementById('carrerasSearchInput').value;
+  const esActual = carrerasAnioSel === ANIO_ACTUAL;
+  document.getElementById('carrerasProximasBox').style.display = esActual ? 'block' : 'none';
+  if (esActual) { loadCarrerasSection(q); loadInscripciones(); }
+  renderCarrerasResultados(q);
+}
+
+function onCarrerasSearch(q) {
+  clearTimeout(carrerasSearchTimeout);
+  carrerasSearchTimeout = setTimeout(() => {
+    if (carrerasAnioSel === ANIO_ACTUAL) loadCarrerasSection(q);
+    renderCarrerasResultados(q);
+  }, 300);
+}
+
+function renderCarrerasResultados(q) {
+  const list = document.getElementById('carrerasResultadosList');
+  const title = document.getElementById('carrerasResultadosTitle');
+  title.textContent = carrerasAnioSel === ANIO_ACTUAL ? `Ya corridas en ${carrerasAnioSel}` : `Resultados ${carrerasAnioSel}`;
+  if (!carrerasResultadosCache) return;
+  const nq = normTxt(q).trim();
+  const carreras = carrerasResultadosCache
+    .filter(c => c.anio === carrerasAnioSel)
+    .filter(c => !nq || normTxt(nombreCarreraResultado(c)).includes(nq) || normTxt(c.archivo_fuente).includes(nq));
+  if (!carreras.length) {
+    list.innerHTML = `<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0">${nq ? 'Ninguna carrera coincide con la búsqueda' : 'Todavía no hay resultados cargados de este año'}</p>`;
+    return;
+  }
+  list.innerHTML = carreras.map(c => {
+    const { dist } = parseArchivo(c.archivo_fuente);
+    const fecha = c.fecha ? new Date(c.fecha + 'T00:00:00').toLocaleDateString('es-AR', { day:'numeric', month:'long' }) : '';
+    return `<div class="race-card" onclick="openRankingCarrera(decodeURIComponent('${encAttr(c.archivo_fuente)}'))">
+      <div class="race-card-name">${escHtml(nombreCarreraResultado(c))}</div>
+      <div class="race-meta" style="margin-bottom:0">
+        <div class="race-tag"><span>${escHtml(dist)}K</span></div>
+        ${fecha ? `<div class="race-tag">${fecha}</div>` : ''}
+        <div class="race-tag" style="margin-left:auto;border-color:var(--accent);color:var(--text)"><i class="ti ti-list-numbers"></i> Clasificación</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── CLASIFICACIÓN DE UNA CARRERA ────────────────────────────────────────────
+// Se puede abrir filtrada por team (desde la solapa Carreras de un team) o
+// elegir el team desde el selector del modal.
+let rankingActual = null;
+let rankingTimeout = null;
+let rankingReqId = 0;
+
+// "-", "–", números, "No tengo", etc. no son teams reales
+function esTeamValido(nombre) {
+  const n = String(nombre || '').trim();
+  return /[a-záéíóúñü]{2}/i.test(n) && !/^(no|no tengo|ninguno|particular|sin team|libre|independiente)$/i.test(n);
+}
+
+// meta: datos de la carrera (race_name, fecha) si ya los tiene quien llama
+function openRankingCarrera(archivo, team = null, meta = null) {
+  const c = meta || (carrerasResultadosCache || []).find(x => x.archivo_fuente === archivo) || { archivo_fuente: archivo };
+  const { dist } = parseArchivo(archivo);
+  const fecha = c.fecha ? new Date(c.fecha + 'T00:00:00').toLocaleDateString('es-AR', { day:'numeric', month:'long', year:'numeric' }) : '';
+  rankingActual = { archivo, dist, fecha, team };
+  document.getElementById('rkNombre').textContent = nombreCarreraResultado({ archivo_fuente: archivo, ...c });
+  setRankingSub(null);
+  document.getElementById('rkSearchInput').value = '';
+  const sel = document.getElementById('rkTeamSelect');
+  sel.style.display = 'none';
+  sel.innerHTML = team ? `<option value="${escHtml(team)}">${escHtml(team)}</option>` : '<option value="">Todos los teams</option>';
+  sel.value = team || '';
+  showModal('rankingCarreraModal');
+  loadRanking('');
+  loadRankingTeams(archivo, team);
+}
+
+async function loadRankingTeams(archivo, teamSel) {
+  try {
+    const { data, error } = await sbClient.rpc('get_teams_carrera', { p_archivo_fuente: archivo });
+    if (error || rankingActual?.archivo !== archivo) return;
+    const teams = (data || []).filter(t => esTeamValido(t.team));
+    if (!teams.length) return; // la carrera no trae teams
+    const sel = document.getElementById('rkTeamSelect');
+    sel.innerHTML = '<option value="">Todos los teams</option>' +
+      teams.map(t => `<option value="${escHtml(t.team)}">${escHtml(t.team)} (${t.corredores})</option>`).join('');
+    sel.value = teamSel || '';
+    sel.style.display = 'block';
+  } catch (e) {}
+}
+
+function onRankingTeamChange() {
+  rankingActual.team = document.getElementById('rkTeamSelect').value || null;
+  loadRanking(document.getElementById('rkSearchInput').value.trim());
+}
+
+function setRankingSub(total) {
+  const { dist, fecha } = rankingActual;
+  document.getElementById('rkSub').textContent = [dist + 'K', fecha, total ? `${Number(total).toLocaleString('es-AR')} corredores` : ''].filter(Boolean).join(' · ');
+}
+
+function onRankingSearch(q) {
+  clearTimeout(rankingTimeout);
+  rankingTimeout = setTimeout(() => loadRanking(q.trim()), 350);
+}
+
+async function loadRanking(q) {
+  if (!rankingActual) return;
+  const body = document.getElementById('rkBody');
+  const reqId = ++rankingReqId;
+  if (q && !/^\d+$/.test(q) && q.length < 2) return;
+  const team = rankingActual.team;
+  // Con team se muestran todos sus corredores; sin team, el top 20 (o 50 si se busca)
+  const limit = team ? 1000 : (q ? 50 : 20);
+  body.innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando...</div>';
+  try {
+    const { data, error } = await sbClient.rpc('get_ranking_carrera', { p_archivo_fuente: rankingActual.archivo, p_q: q || null, p_limit: limit, p_team: team });
+    if (reqId !== rankingReqId) return; // llegó una búsqueda más nueva
+    if (error) throw error;
+    if (!data?.length) {
+      const msg = q ? `Nadie con ese nombre o dorsal${team ? ' en este team' : ''}`
+        : team ? 'Nadie de este team tiene tiempo válido en esta carrera' : 'Esta carrera no tiene tiempos cargados';
+      body.innerHTML = `<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0">${msg}</p>`;
+      return;
+    }
+    const miKey = currentProfile?.runner_key;
+    const rows = data.map((r, i) => {
+      const pace = calcPace(r.time, parseFloat(rankingActual.dist));
+      const meta = [r.dorsal != null ? `#${r.dorsal}` : '', r.sex === 'F' ? `${r.pos_sexo}° damas` : r.sex === 'M' ? `${r.pos_sexo}° caballeros` : '', r.age_group || '', team ? '' : (esTeamValido(r.team) ? r.team : '')].filter(Boolean).map(escHtml).join(' · ');
+      const key = r.runner_key || r.runner || '';
+      // Con team: el número grande es el puesto dentro del team y se aclara el general
+      const posGrande = team && !q ? i + 1 : r.pos;
+      const metaFinal = team && !q ? `${r.pos}° general${meta ? ' · ' + meta : ''}` : meta;
+      return `<div class="rk-row ${miKey && r.runner_key === miKey ? 'me' : ''}" onclick="rankingIrACorredor(decodeURIComponent('${encAttr(key)}'),decodeURIComponent('${encAttr(r.runner || '')}'))">
+        <div class="rk-pos ${posGrande <= 3 ? 'podio' : ''}">${posGrande}°</div>
+        <div class="rk-info"><div class="rk-name">${escHtml(r.runner)}</div><div class="rk-meta">${metaFinal}</div></div>
+        <div class="rk-time"><div class="t">${escHtml(r.time)}</div>${pace ? `<div class="p">${pace.pace}/km</div>` : ''}</div>
+      </div>`;
+    }).join('');
+    const total = data[0].total;
+    setRankingSub(total);
+    const pie = team
+      ? `${data.length} corredor${data.length === 1 ? '' : 'es'} de ${escHtml(team)} · el número grande es el puesto dentro del team`
+      : q
+        ? `${data.length} resultado${data.length === 1 ? '' : 's'}${data.length === 50 ? ' (se muestran los primeros 50)' : ''}`
+        : `Primeros ${data.length} de ${Number(total).toLocaleString('es-AR')}. Buscá por nombre o dorsal para ver cualquier puesto.`;
+    body.innerHTML = rows + `<p style="font-size:10px;color:var(--muted);text-align:center;margin-top:12px">${pie}</p>`;
+  } catch (e) {
+    if (reqId === rankingReqId) body.innerHTML = '<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0">Error al cargar la clasificación</p>';
+  }
+}
+
+// Cerrar el modal dispara history.back(); esperamos ese popstate antes de navegar
+// para que no pise la pantalla del corredor.
+function rankingIrACorredor(key, name) {
+  const esTope = history.state?.tipo === 'modal' && history.state?.id === 'rankingCarreraModal';
+  if (esTope) {
+    window.addEventListener('popstate', () => setTimeout(() => goToRunner(key, name), 0), { once: true });
+    hideModal('rankingCarreraModal');
+  } else {
+    hideModal('rankingCarreraModal');
+    goToRunner(key, name);
+  }
+}
+
 // ─── INSCRIPCIONES ────────────────────────────────────────────────────────────
 let carrerasCache = [];
 
@@ -3850,7 +4397,7 @@ async function buscarCarreras(q) {
   list.innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Buscando...</div>';
   try {
     let url = `${SUPABASE_URL}/rest/v1/carreras?select=*,carreras_distancias(*)&order=fecha.asc`;
-    if (q) url += `&nombre=${encodeURIComponent(ilikeSafe(q))}`;
+    if (q) url += `&nombre=${encAttr(ilikeSafe(q))}`;
     const res = await fetch(url, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
     const carreras = await res.json();
     carrerasCache = carreras;
@@ -3935,7 +4482,7 @@ async function verClasificacion(archivoFuente, runnerKey, raceLabel, dist, year)
       <div class="stats-row" style="margin-bottom:4px">
         <div class="stat-pill"><div class="num">${r.pos_general}°</div><div class="lbl">General (de ${r.total_general})</div></div>
         <div class="stat-pill"><div class="num">${r.pos_sexo}°</div><div class="lbl">${r.sexo==='F'?'Damas':'Caballeros'} (de ${r.total_sexo})</div></div>
-        <div class="stat-pill"><div class="num">${r.pos_edad}°</div><div class="lbl">Cat. ${r.edad||'—'} (de ${r.total_edad})</div></div>
+        ${r.edad && r.pos_edad != null ? `<div class="stat-pill"><div class="num">${r.pos_edad}°</div><div class="lbl">Cat. ${r.edad} (de ${r.total_edad})</div></div>` : ''}
       </div>`;
 
     document.getElementById('clasificacionCompartirBox').style.display = 'block';
@@ -4017,7 +4564,7 @@ function renderInscripcionesHTML(sorted) {
     const fechaDate = new Date(i.carreras.fecha + 'T00:00:00');
     const daysLeft = Math.floor((fechaDate - new Date()) / 86400000);
     const fechaStr = fechaDate.toLocaleDateString('es-AR', {day:'numeric', month:'short', year:'numeric'});
-    const eventData = encodeURIComponent(JSON.stringify({
+    const eventData = encAttr(JSON.stringify({
       nombre: i.carreras.nombre, fecha: i.carreras.fecha, ubicacion: i.carreras.ubicacion || '', distancia: i.carreras_distancias.distancia
     }));
     return `<div style="background:var(--card);border:1px solid rgba(71,200,255,0.2);border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
@@ -4152,7 +4699,7 @@ initAuth();
 // ─── ANDROID BACK BUTTON (Capacitor) ─────────────────────────────────────────
 function handleBackButton() {
   // Si hay un modal abierto, cerrarlo
-  const modals = ['newPostModal', 'comentariosModal', 'linkModal', 'authModal', 'shareModal', 'medalleroModal', 'dondeEntrenarModal', 'notificacionesModal', 'avatarLightboxModal', 'seguidoresModal', 'servicioModal', 'carreraDetalleModal', 'visibilidadMedallasModal', 'clasificacionModal', 'forgotPasswordModal'];
+  const modals = ['rankingCarreraModal', 'newPostModal','comentariosModal', 'linkModal', 'authModal', 'shareModal', 'medalleroModal','notificacionesModal', 'avatarLightboxModal', 'seguidoresModal', 'servicioModal', 'carreraDetalleModal', 'visibilidadMedallasModal', 'clasificacionModal', 'forgotPasswordModal'];
   for (const id of modals) {
     const el = document.getElementById(id);
     if (el && !el.classList.contains('hidden')) {

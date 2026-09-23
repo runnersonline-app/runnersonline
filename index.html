@@ -448,9 +448,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 <div id="sc-td" class="screen">
   <div class="content" style="padding-top:0">
     <div style="display:flex;gap:10px;align-items:center;padding-top:10px;margin-bottom:10px"><button class="home-btn" onclick="goBack()"><i class="ti ti-arrow-left"></i> Volver</button><button class="home-btn" onclick="goTo('runners')"><i class="ti ti-home"></i> Inicio</button></div>
-    <div style="margin-bottom:10px">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--blue);letter-spacing:1px;line-height:1.1" id="tdName"></div>
-      <div style="font-size:10px;color:var(--muted);margin-top:2px" id="tdSub"></div>
+    <div style="margin-bottom:10px;display:flex;align-items:center;gap:12px">
+      <img id="tdLogo" alt="" style="display:none;width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1px solid var(--border);background:var(--bg)" onerror="this.style.display='none'">
+      <div style="min-width:0">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--blue);letter-spacing:1px;line-height:1.1" id="tdName"></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px" id="tdSub"></div>
+      </div>
     </div>
     <div class="stats-row" style="margin-bottom:14px" id="tdStats"></div>
     <div id="tdContact"></div>
@@ -904,28 +907,27 @@ const LOGO_URL = `${SUPABASE_URL}/storage/v1/object/public/branding/logo.png`;
 // Para agregar una medalla nueva: subí el PNG al bucket "medallas" en Supabase
 // Storage y agregá una línea acá con la clave "prefijo_distancia_año".
 const RACE_MEDALS_BY_YEAR = {
-  '10nbba_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/10nbba_10_2026.png?v=2`,
+  '10nbba_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/10nbba_10_2026.png?v=3`,
   '15adi_15_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/15adi_15_2025.png?v=2`,
   '15adi_15_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/15adi_15_2026.png?v=2`,
   '15nbba_15_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/15nbba_15_2025.png?v=2`,
-  '15nbba_15_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/15nbba_15_2026.png`,
   '15nbba_15_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/15nbba_15_2026.png?v=2`,
   '15nbros_15_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/15nbros_15_2025.png?v=2`,
-  '21comodoro_21_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/21comodoro_21_2025.png?v=2`,
-  '21laplata_21_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/21laplata_21_2026.png?v=2`,
+  '21nbcom_21_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/21comodoro_21_2025.png?v=2`,
+  '21nbplata_21_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/21laplata_21_2026.png?v=2`,
   '21nbsal_21_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/21nbsal_21_2025.png?v=2`,
   '21nbsal_21_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/21nbsal_21_2026.png?v=2`,
   '25nbba_25_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/25nbba_25_2025.png?v=2`,
   '25nbba_25_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/25nbba_25_2026.png?v=2`,
   '30nbba_30_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/30nbba_30_2025.png?v=2`,
-  '30nbba_30_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/30nbba_30_2026.png?v=2`,
+  '30nbba_30_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/30nbba_30_2026.png?v=3`,
   '42krosario_42_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/42krosario_42_2024.png?v=2`,
   '42krosario_42_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/42krosario_42_2025.png?v=2`,
   '42mdq_42_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/42mdq_42_2025.png?v=2`,
   '42mdq_42_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/42mdq_42_2026.png?v=2`,
   '42nbcor_42_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/42nbcor_42_2025.png?v=2`,
-  '9independencia_9_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/9independencia_9_2025.png?v=2`,
-  '9independencia_9_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/9independencia_9_2026.png?v=2`,
+  '9kindep_9_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/9independencia_9_2025.png?v=2`,
+  '9kindep_9_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/9independencia_9_2026.png?v=2`,
   'berlin_42_2022': `${SUPABASE_URL}/storage/v1/object/public/medallas/berlin_42_2022.png?v=2`,
   'berlin_42_2023': `${SUPABASE_URL}/storage/v1/object/public/medallas/berlin_42_2023.png?v=3`,
   'berlin_42_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/berlin_42_2024.png?v=2`,
@@ -938,8 +940,8 @@ const RACE_MEDALS_BY_YEAR = {
   'chicago_42_2023': `${SUPABASE_URL}/storage/v1/object/public/medallas/chicago_42_2023.png?v=2`,
   'chicago_42_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/chicago_42_2024.png?v=2`,
   'chicago_42_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/chicago_42_2025.png?v=2`,
-  'fiestasmayas_10_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/fiestasmayas_10_2025.png?v=2`,
-  'fiestasmayas_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/fiestasmayas_10_2026.png?v=3`,
+  'fma_10_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/fiestasmayas_10_2025.png?v=2`,
+  'fma_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/fiestasmayas_10_2026.png?v=3`,
   'lapampa_42_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/lapampa_42_2026.png?v=2`,
   'mba_42_2022': `${SUPABASE_URL}/storage/v1/object/public/medallas/mba_42_2022.png?v=2`,
   'mba_42_2023': `${SUPABASE_URL}/storage/v1/object/public/medallas/mba_42_2023.png?v=2`,
@@ -1866,6 +1868,18 @@ function teamLogoHtml(name) {
   return url ? `<img class="team-card-logo" src="${escHtml(url)}" alt="" loading="lazy" onerror="this.remove()">` : '';
 }
 
+// Logo en el encabezado de la pantalla del team. Si se llegó sin pasar por la
+// lista de Teams (ej. desde el perfil de un corredor), los logos se cargan acá.
+async function setTdLogo(name) {
+  const img = document.getElementById('tdLogo');
+  img.style.display = 'none';
+  img.removeAttribute('src');
+  if (!Object.keys(TEAM_LOGOS).length) await loadTeamLogos();
+  if (document.getElementById('tdName').textContent !== name) return; // ya se abrió otro team
+  const url = TEAM_LOGOS[name];
+  if (url) { img.src = url; img.style.display = 'block'; }
+}
+
 function renderTeamsGrid(q) {
   const f = q ? teamsListCache.filter(([n]) => n.toLowerCase().includes(q.toLowerCase())) : teamsListCache;
   if (!f.length) { document.getElementById('teamsGrid').innerHTML = '<div class="empty"><p>Sin resultados</p></div>'; return; }
@@ -1877,6 +1891,7 @@ function renderTeamsGrid(q) {
 async function showTeam(name) {
   prev = cur; cur = 'teams';
   document.getElementById('tdName').textContent = name;
+  setTdLogo(name);
   document.getElementById('tdSub').textContent = 'Cargando...';
   document.getElementById('tdStats').innerHTML = '';
   ['tdContact', 'tdAnnouncement', 'tdPosts'].forEach(id => { document.getElementById(id).innerHTML = ''; });
@@ -1928,7 +1943,8 @@ async function renderTeamAnnouncement(name) {
     trainings = await sbFetch('team_trainings', { select: 'id,partido,lugar,dias,horarios', team: `eq.${name}`, order: 'created_at.asc' });
   } catch (e) {}
 
-  const listHtml = trainings.length ? `
+  // El lugar ya se muestra en la ficha del team: esta lista queda solo para el dueño, que la usa para borrar
+  const listHtml = isOwner && trainings.length ? `
     <div style="margin-bottom:14px">
       <div style="display:flex;align-items:center;gap:6px;color:var(--blue);font-size:11px;font-weight:700;margin-bottom:8px"><i class="ti ti-map-pin"></i> ENTRENAMIENTOS</div>
       ${trainings.map(t => `
@@ -1940,7 +1956,7 @@ async function renderTeamAnnouncement(name) {
           </div>
           ${isOwner?`<button onclick="deleteTeamTraining(${t.id},'${name.replace(/'/g,"\\'")}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;flex-shrink:0"><i class="ti ti-trash"></i></button>`:''}
         </div>`).join('')}
-    </div>` : (isOwner ? '' : '<p style="color:var(--muted);font-size:12px;margin-bottom:14px">Este team todavía no cargó entrenamientos</p>');
+    </div>` : '';
 
   let ownerForm = '';
   if (isOwner) {

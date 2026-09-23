@@ -87,6 +87,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .team-card-name{font-weight:600;font-size:13px;margin-bottom:3px}
 .team-card-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)}
 .team-card-count span{color:var(--blue);font-weight:500}
+.team-card{display:flex;align-items:center;gap:12px}
+.team-card-body{flex:1;min-width:0}
+.team-card-logo{width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1px solid var(--border);background:var(--bg)}
 .back-btn{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:11px;cursor:pointer;margin-bottom:10px;padding-top:10px;background:none;border:none;font-family:'DM Sans',sans-serif;transition:color .15s}
 .back-btn:hover{color:var(--text)}
 .member-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer}
@@ -224,7 +227,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .td-info-val{font-size:13px;font-weight:600;margin-top:1px}
 .td-info-val.vacio{font-weight:400;color:var(--muted2);font-style:italic}
 .td-social{display:flex;gap:10px;margin-top:10px}
-.td-social a,.td-social span{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--border);border-radius:8px;padding:9px;font-size:12px;font-weight:600;text-decoration:none;color:var(--text)}
+.td-social > a,.td-social > span{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--border);border-radius:8px;padding:9px;font-size:12px;font-weight:600;text-decoration:none;color:var(--text)}
 .td-social i{font-size:18px}
 .td-social .off{color:var(--muted2);cursor:default;background:var(--bg)}
 .td-social .off i{color:var(--muted2) !important}
@@ -1826,7 +1829,10 @@ async function loadTeams() {
   if (ALL_TEAMS_CACHE) { aplicarFiltrosTeams(); return; }
   document.getElementById('teamsGrid').innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando teams...</div>';
   try {
-    const rows = await sbFetch('team_counts', { select: 'team,member_count', order: 'member_count.desc', limit: 5000 });
+    const [rows] = await Promise.all([
+      sbFetch('team_counts', { select: 'team,member_count', order: 'member_count.desc', limit: 5000 }),
+      loadTeamLogos()
+    ]);
     const counts = {};
     rows.forEach(r => { counts[r.team] = r.member_count; });
     ALL_TEAMS_CACHE = counts;
@@ -1844,11 +1850,27 @@ function filterTeams(q) {
   filterTeamsTimeout = setTimeout(aplicarFiltrosTeams, 250);
 }
 
+// Logos de los teams (foto de perfil de Instagram guardada en Storage > teams/logos)
+let TEAM_LOGOS = {};
+
+async function loadTeamLogos() {
+  try {
+    const rows = await sbFetch('team_contact', { select: 'team,logo_url', logo_url: 'not.is.null' });
+    TEAM_LOGOS = {};
+    rows.forEach(r => { TEAM_LOGOS[r.team] = r.logo_url; });
+  } catch (e) { /* sin logos la lista funciona igual */ }
+}
+
+function teamLogoHtml(name) {
+  const url = TEAM_LOGOS[name];
+  return url ? `<img class="team-card-logo" src="${escHtml(url)}" alt="" loading="lazy" onerror="this.remove()">` : '';
+}
+
 function renderTeamsGrid(q) {
   const f = q ? teamsListCache.filter(([n]) => n.toLowerCase().includes(q.toLowerCase())) : teamsListCache;
   if (!f.length) { document.getElementById('teamsGrid').innerHTML = '<div class="empty"><p>Sin resultados</p></div>'; return; }
   document.getElementById('teamsGrid').innerHTML = f.map(([name,count]) => {
-    return `<div class="team-card" onclick="showTeam(decodeURIComponent('${encAttr(name)}'))"><div class="team-card-name">${name}</div><div class="team-card-count"><span>${count}${count>=100?'+':''}</span> integrantes</div></div>`;
+    return `<div class="team-card" onclick="showTeam(decodeURIComponent('${encAttr(name)}'))"><div class="team-card-body"><div class="team-card-name">${escHtml(name)}</div><div class="team-card-count"><span>${count}${count>=100?'+':''}</span> integrantes</div></div>${teamLogoHtml(name)}</div>`;
   }).join('');
 }
 
@@ -2112,7 +2134,7 @@ async function renderTeamContact(name, isOwner) {
       </div>
       <div class="td-social">
         ${ig
-          ? `<a href="${instagramLink(ig)}" target="_blank" rel="noopener"><i class="ti ti-brand-instagram" style="color:#e1306c"></i> Instagram</a>`
+          ? `<a href="${instagramLink(ig)}" target="_blank" rel="noopener" style="min-width:0;flex:2.2"><i class="ti ti-brand-instagram" style="color:#e1306c"></i> <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@${escHtml(ig.trim().replace(/^@/, ''))}</span></a>`
           : `<span class="off" title="Instagram no cargado"><i class="ti ti-brand-instagram"></i> Instagram</span>`}
         ${wa
           ? `<a href="${whatsappLink(wa)}" target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp" style="color:#25d366"></i> WhatsApp</a>`
@@ -2484,9 +2506,12 @@ async function aplicarFiltrosTeams() {
       }).join('');
       const count = ALL_TEAMS_CACHE?.[t];
       return `<div class="team-card" onclick="showTeam(decodeURIComponent('${encAttr(t)}'))">
-        <div class="team-card-name">${escHtml(t)}</div>
-        ${count ? `<div class="team-card-count"><span>${count}${count >= 100 ? '+' : ''}</span> integrantes</div>` : ''}
-        <div class="team-card-trainings">${trainings}</div>
+        <div class="team-card-body">
+          <div class="team-card-name">${escHtml(t)}</div>
+          ${count ? `<div class="team-card-count"><span>${count}${count >= 100 ? '+' : ''}</span> integrantes</div>` : ''}
+          <div class="team-card-trainings">${trainings}</div>
+        </div>
+        ${teamLogoHtml(t)}
       </div>`;
     }).join('');
   } catch (e) {

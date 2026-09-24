@@ -169,6 +169,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 
 /* ── AUTH MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+#zapaDetalleModal{z-index:1010}
 .modal-overlay.center-modal{align-items:center}
 .modal-overlay.center-modal .modal-sheet{border-radius:16px;max-height:85vh;overflow-y:auto}
 .modal-overlay.hidden{display:none}
@@ -232,6 +233,56 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .td-social .off{color:var(--muted2);cursor:default;background:var(--bg)}
 .td-social .off i{color:var(--muted2) !important}
 
+/* ── ZAPAS ── */
+#zapasFiltersPanel.collapsed #zfBody{display:none}
+#zfBody{padding:0 14px 12px}
+.zapas-grid{display:flex;flex-direction:column;gap:8px}
+.zapa-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;gap:12px;align-items:center}
+.zapa-img{width:64px;height:64px;border-radius:8px;object-fit:contain;background:var(--bg);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--muted2);font-size:26px}
+.zapa-body{flex:1;min-width:0}
+.zapa-marca{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.zapa-modelo{font-weight:600;font-size:14px;margin:1px 0 6px}
+.zapa-tags{display:flex;flex-wrap:wrap;gap:4px}
+.zapa-tag{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1px 6px;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
+.zapa-tag.carbono{border-color:var(--text);color:var(--text);font-weight:500}
+.zapa-tag.carrera{border-color:var(--accent);color:var(--text)}
+.zapa-precio{font-family:'DM Mono',monospace;font-size:11px;color:var(--text);margin-top:6px}
+.zapa-precio span{color:var(--muted);font-size:9px}
+.zapa-precio a{color:var(--text);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600}
+.zapa-card{align-items:flex-start}
+.zapa-rating{font-size:11px;margin:0 0 6px;display:flex;align-items:center;gap:4px}
+.zapa-rating span{color:var(--muted);font-size:10px}
+.zapa-rating.vacio{color:var(--muted2);font-size:10px;font-style:italic}
+.zapa-uso{font-size:10px;color:var(--blue);margin:-2px 0 6px}
+#zdCard .zapa-card{flex-direction:column;align-items:stretch;border:none;padding:0;background:none;cursor:default}
+#zdCard .zapa-img{width:100%;height:210px;background:#fff;border-radius:10px;font-size:60px}
+#zdCard .zapa-modelo{font-size:24px}
+#zapasGrid .zapa-card,.mi-zapa{cursor:pointer}
+.wr-badge{display:inline-block;margin-left:5px;padding:1px 5px;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:9px;font-weight:800;letter-spacing:.5px;color:#3a2600;background:linear-gradient(135deg,#fff1a8 0%,#f5c542 45%,#c8961e 100%);box-shadow:0 0 6px rgba(245,197,66,.6);vertical-align:middle}
+.wr-badge.wr-grande{font-size:12px;padding:4px 12px;border-radius:6px}
+.rk-zapa{margin-left:5px;vertical-align:middle}
+.rk-zapa-img{width:40px!important;height:40px!important;border-radius:8px;flex-shrink:0;background:#fff;border:1px solid var(--border);object-fit:contain}
+.rk-barra{height:4px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden}
+.rk-barra div{height:100%;background:var(--accent)}
+.rk-zapas-top{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.rk-zapas-top .zt{display:flex;align-items:center;gap:4px;border:1px solid var(--border);border-radius:14px;padding:2px 8px 2px 2px;font-size:10px}
+.estrellas{display:inline-flex;gap:1px;color:#e3a008;font-size:13px}
+.estrellas .editable{cursor:pointer;font-size:17px;padding:0 1px}
+.zapa-acciones{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border)}
+.zapa-agregar{background:none;border:1.5px solid var(--accent);border-radius:14px;padding:4px 12px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:var(--text);cursor:pointer}
+.zapa-mia{font-size:10px;color:var(--text);font-weight:600}
+.zapa-tu{font-size:10px;color:var(--muted);display:inline-flex;align-items:center;gap:4px}
+.zapa-img-wrap{position:relative;flex-shrink:0;display:flex}
+.zapa-x{position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:50%;border:2px solid var(--card);background:#e5484d;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;box-shadow:0 1px 4px rgba(0,0,0,.3);z-index:1}
+#zdCard .zapa-img-wrap{display:block}
+.zapa-mini{width:22px;height:22px;border-radius:50%;object-fit:contain;background:#fff;border:1px solid var(--border);vertical-align:middle;margin-left:5px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+.zapa-mini.grande{width:36px;height:36px;margin-left:0;flex-shrink:0;font-size:18px}
+.zapa-add{display:inline-flex;align-items:center;gap:1px;border:1px dashed var(--border);border-radius:12px;padding:2px 6px;font-size:11px;color:var(--muted)}
+.mi-zapa{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.mi-zapa:last-child{border-bottom:none}
+.zp-item{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:6px;cursor:pointer}
+.zp-item:hover,.zp-item.on{background:var(--surface)}
+
 /* ── RUNNERS: comparar ── */
 .cmp-btn{display:inline-flex;align-items:center;gap:5px;background:none;border:1.5px solid var(--accent);border-radius:14px;padding:4px 12px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:var(--text);cursor:pointer;margin-top:10px}
 .cmp-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0 4px}
@@ -255,6 +306,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .year-tabs::-webkit-scrollbar{display:none}
 .year-tabs .chip{flex-shrink:0;font-size:12px;padding:6px 14px}
 .rk-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.sim-foto{width:36px;height:36px;border-radius:50%;flex-shrink:0;object-fit:cover;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted)}
 .rk-row:last-child{border-bottom:none}
 .rk-row:hover .rk-name{color:var(--accent)}
 .rk-row.me{background:rgba(195,209,0,0.08);border-radius:6px;padding-left:6px;padding-right:6px}
@@ -371,6 +423,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
       <div id="runFollowBox" style="display:none;margin:6px 0"></div>
       <div id="runBio" style="display:none;font-size:12px;color:var(--muted);line-height:1.4;margin:4px 0 8px;white-space:pre-wrap"></div>
       <div id="runInstagram" style="display:none;margin-bottom:8px"></div>
+      <div id="runResidencia" style="display:none;font-size:11px;color:var(--muted);margin-bottom:8px"></div>
       <div class="runner-tags" id="runTags"></div>
       <div class="stats-row" id="runStats"></div>
       <div id="runMedallero" style="display:none;margin-top:10px"></div>
@@ -380,6 +433,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
       <div class="icon"><i class="ti ti-run"></i></div>
       <p>Buscá un corredor</p>
     </div>
+    <div id="similaresBox" style="display:none;margin-top:14px"></div>
     <div class="sect-title" id="raceTitle" style="display:none">Historial</div>
     <table class="race-table" id="raceTable">
       <thead><tr><th>Carrera</th><th>Dist</th><th>Tiempo</th><th>Ritmo</th><th></th></tr></thead>
@@ -512,10 +566,47 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
   <div class="bottom-nav" id="nav3"></div>
 </div>
 
-<!-- SERVICIOS -->
+<!-- ZAPAS -->
+<div id="sc-zapas" class="screen">
+  <div class="header yellow" data-bg="ZAP">
+    <h1>Zapas</h1>
+    <p id="zapasSubtitle">Zapatillas de running</p>
+    <button class="global-home" onclick="goTo('runners')"><i class="ti ti-home"></i> Inicio</button>
+  </div>
+  <div class="search-area">
+    <div class="search-box">
+      <input type="text" id="zapasSearch" placeholder="Buscar modelo..." autocomplete="off" oninput="onZapasSearch()">
+    </div>
+  </div>
+  <div class="content">
+    <div class="tf-panel" id="zapasFiltersPanel">
+      <div class="tf-head" onclick="toggleZapasFilters()">
+        <span><i class="ti ti-adjustments-horizontal"></i> Filtros <span id="zfActiveCount" class="tf-count" style="display:none"></span></span>
+        <i class="ti ti-chevron-up" id="zfChevron"></i>
+      </div>
+      <div id="zfBody">
+        <div class="tf-lbl">Marca</div>
+        <div class="tf-chips" id="zfMarcas"></div>
+        <div class="tf-lbl">Uso</div>
+        <div class="tf-chips" id="zfUso"></div>
+        <div class="tf-lbl">Distancia</div>
+        <div class="tf-chips" id="zfDist"></div>
+        <div class="tf-lbl">Peso</div>
+        <div class="tf-chips" id="zfPeso"></div>
+        <div class="tf-lbl">Placa de carbono</div>
+        <div class="tf-chips" id="zfPlaca"></div>
+        <button id="zfClearBtn" onclick="limpiarFiltrosZapas()" style="display:none;background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;padding:6px 0 0;text-decoration:underline">Limpiar filtros</button>
+      </div>
+    </div>
+    <div class="zapas-grid" id="zapasGrid"><div class="loading"><i class="ti ti-refresh"></i>Cargando zapatillas...</div></div>
+  </div>
+  <div class="bottom-nav" id="nav7"></div>
+</div>
+
+<!-- STAFF (antes Servicios) -->
 <div id="sc-servicios" class="screen">
-  <div class="header yellow" data-bg="SVC">
-    <h1>Servicios</h1>
+  <div class="header yellow" data-bg="STAFF">
+    <h1>Staff</h1>
     <p>Profesionales del running</p>
   
     <button class="global-home" onclick="goTo('runners')"><i class="ti ti-home"></i> Inicio</button>
@@ -766,7 +857,30 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
   </div>
 </div>
 
+<!-- MODAL ELEGIR ZAPA DE UNA CARRERA -->
+<div class="modal-overlay hidden center-modal" id="zapaPickerModal">
+  <div class="modal-sheet" style="padding-bottom:24px;max-height:85vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:4px">
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px;line-height:1.1">¿Con qué zapa la corriste?</span>
+      <button onclick="hideModal('zapaPickerModal')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;flex-shrink:0"><i class="ti ti-x"></i></button>
+    </div>
+    <div id="zpCarrera" style="font-size:11px;color:var(--muted);margin-bottom:12px"></div>
+    <input type="text" id="zpSearch" placeholder="Buscar zapa..." autocomplete="off" oninput="renderZapaPicker()" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;margin-bottom:8px">
+    <div id="zpLista"></div>
+    <button id="zpQuitar" onclick="quitarZapaCarrera()" style="display:none;background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;text-decoration:underline;margin-top:10px">Quitar la zapa de esta carrera</button>
+  </div>
+</div>
+
 <!-- MODAL CLASIFICACIÓN DE UNA CARRERA (top 20 + búsqueda) -->
+<!-- MODAL PÁGINA DE UNA ZAPA -->
+<div class="modal-overlay hidden center-modal" id="zapaDetalleModal">
+  <div class="modal-sheet" style="padding-bottom:24px;max-height:85vh;overflow-y:auto">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:-6px"><button onclick="hideModal('zapaDetalleModal')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px"><i class="ti ti-x"></i></button></div>
+    <div id="zdCard"></div>
+    <div class="tf-lbl" style="margin-top:16px">Quiénes la usaron en carrera</div>
+    <div id="zdCorredores"></div>
+  </div>
+</div>
 <div class="modal-overlay hidden center-modal" id="rankingCarreraModal">
   <div class="modal-sheet" style="padding-bottom:24px;max-height:85vh;overflow-y:auto">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:4px">
@@ -777,6 +891,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
     <select id="rkTeamSelect" onchange="onRankingTeamChange()" style="display:none;width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;margin-bottom:8px">
       <option value="">Todos los teams</option>
     </select>
+    <div id="rkSexoBox" style="display:flex;gap:6px;margin-bottom:8px">
+      <div class="chip active" data-s="" onclick="setRankingSexo('')">Todos</div>
+      <div class="chip" data-s="F" onclick="setRankingSexo('F')">Damas</div>
+      <div class="chip" data-s="M" onclick="setRankingSexo('M')">Caballeros</div>
+      <div class="chip" data-s="zapas" onclick="setRankingSexo('zapas')"><i class="ti ti-shoe"></i> Zapas</div>
+    </div>
     <input type="text" id="rkSearchInput" placeholder="Buscar por nombre o dorsal..." autocomplete="off" oninput="onRankingSearch(this.value)" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;margin-bottom:10px">
     <div id="rkBody"></div>
   </div>
@@ -871,6 +991,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
     <div class="profile-name" id="pName">—</div>
     <div class="profile-sub" id="pSub">Iniciá sesión para ver tu perfil</div>
     <div id="pInstagramBox" style="display:none;margin-top:6px"></div>
+    <div id="pDatosBox" style="display:none;margin-top:6px"></div>
   </div>
   <div class="content" style="padding-top:14px" id="profileContent">
     <!-- Se rellena dinámicamente -->
@@ -1124,7 +1245,7 @@ async function guardarNuevaPassword() {
     if (error) throw error;
     hideModal('newPasswordModal');
     alert('¡Contraseña actualizada! Ya podés usarla para ingresar.');
-    goTo('feed');
+    goTo('runners');
   } catch (e) {
     msg.textContent = 'Error: ' + e.message;
     msg.style.display = 'block';
@@ -1144,9 +1265,9 @@ sbClient.auth.onAuthStateChange(async (event, session) => {
     await loadProfile();
     if (sessionStorage.getItem('justLoggedIn')) {
       sessionStorage.removeItem('justLoggedIn');
-      goTo('feed');
+      goTo('runners');
     } else {
-      goTo(sessionStorage.getItem('lastScreen') || 'feed');
+      goTo(sessionStorage.getItem('lastScreen') || 'runners');
     }
   }
   if (event === 'SIGNED_OUT') {
@@ -1165,6 +1286,7 @@ async function loadProfile() {
     showModal('linkModal');
   }
   if (cur === 'perfil') renderProfile();
+  if (document.getElementById('sc-runners')?.classList.contains('active')) renderSimilares();
 }
 
 async function signOut() {
@@ -1172,6 +1294,8 @@ async function signOut() {
   currentUser = null;
   currentProfile = null;
   renderProfile();
+  similaresCache = null;
+  renderSimilares();
 }
 
 // ─── VINCULAR ─────────────────────────────────────────────────────────────────
@@ -1409,17 +1533,19 @@ function getTimeAgo(dateStr) {
 }
 
 // ─── NAV ──────────────────────────────────────────────────────────────────────
+// Pista (feed) y Staff (ex Servicios) están ocultas por ahora: su código sigue, pero no
+// figuran en el menú y si se intenta entrar se redirige a Corredores.
+const SECCIONES_OCULTAS = ['feed', 'servicios'];
 const NAV = [
   {id:'runners',icon:'ti-run',label:'Corredores'},
   {id:'teams',icon:'ti-users',label:'Teams'},
-  {id:'feed',icon:'ti-layout-list',label:'Pista'},
   {id:'carreras',icon:'ti-flag',label:'Carreras'},
-  {id:'servicios',icon:'ti-stethoscope',label:'Servicios'},
+  {id:'zapas',icon:'ti-shoe',label:'Zapas'},
   {id:'perfil',icon:'ti-user-circle',label:'Yo'}
 ];
 
 function buildNav(active) {
-  ['nav0','nav1','nav2','nav3','nav4','nav5','nav6'].forEach(nid => {
+  ['nav0','nav1','nav2','nav3','nav4','nav5','nav6','nav7'].forEach(nid => {
     const el = document.getElementById(nid); if (!el) return;
     el.innerHTML = NAV.map(n => {
       const isAct = n.id === active;
@@ -1430,16 +1556,19 @@ function buildNav(active) {
 }
 
 function applyScreen(id) {
+  if (SECCIONES_OCULTAS.includes(id)) id = 'runners';
   prev = cur; cur = id;
   sessionStorage.setItem('lastScreen', id);
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('sc-'+id).classList.add('active');
   buildNav(id);
   if (id === 'teams') loadTeams();
+  if (id === 'runners') renderSimilares();
   if (id === 'feed') { loadFeed(); loadNotifBadge(); }
   if (id === 'perfil') renderProfile();
   if (id === 'carreras') initCarrerasScreen();
   if (id === 'servicios') initServiciosScreen();
+  if (id === 'zapas') initZapasScreen();
 }
 
 function goTo(id) {
@@ -1534,6 +1663,7 @@ async function selectR(key, name) {
 
 async function loadRunner(key) {
   document.getElementById('emptyR').style.display = 'none';
+  document.getElementById('similaresBox').style.display = 'none';
   document.getElementById('runNav').style.display = 'flex';
   document.getElementById('raceTitle').style.display = 'block';
   document.getElementById('runHdr').classList.remove('show');
@@ -1573,12 +1703,12 @@ async function loadRunner(key) {
     // Check if this runner has a profile with avatar/bio (match por runner_key)
     let runnerProfile = null;
     try {
-      const q1 = await sbClient.from('usuarios').select('id,avatar_url,bio,instagram').eq('runner_key', key).single();
+      const q1 = await sbClient.from('usuarios').select('id,avatar_url,bio,instagram,residencia_provincia,residencia_partido').eq('runner_key', key).single();
       runnerProfile = q1.data;
 
       // Fallback: si no matcheó por key (puede variar entre archivos), probar por nombre
       if (!runnerProfile?.avatar_url && !runnerProfile?.bio) {
-        const q2 = await sbClient.from('usuarios').select('id,avatar_url,bio,instagram').ilike('nombre', info.runner).limit(1).maybeSingle();
+        const q2 = await sbClient.from('usuarios').select('id,avatar_url,bio,instagram,residencia_provincia,residencia_partido').ilike('nombre', info.runner).limit(1).maybeSingle();
         if (q2.data) runnerProfile = q2.data;
       }
     } catch(e) {
@@ -1636,6 +1766,11 @@ async function loadRunner(key) {
       runInstagramEl.style.display = 'none';
     }
 
+    const runResEl = document.getElementById('runResidencia');
+    const residencia = textoResidencia(runnerProfile);
+    runResEl.innerHTML = residencia ? `<i class="ti ti-map-pin"></i> ${escHtml(residencia)}` : '';
+    runResEl.style.display = residencia ? 'block' : 'none';
+
     const runMedalleroEl = document.getElementById('runMedallero');
     currentRunnerRaces = racesParaMedallero;
     currentRunnerKey = key;
@@ -1661,6 +1796,8 @@ async function loadRunner(key) {
       `<div class="tag">Team ${team?`<span onclick="showTeam('${team.replace(/'/g,"\\'")}')" style="cursor:pointer;text-decoration:underline;color:var(--blue)">${team}</span>`:'<span>—</span>'}</div>${has42 ? '<div class="tag">✓ <span>Maratonista</span></div>' : ''}${has21 ? '<div class="tag">✓ <span>21K</span></div>' : ''}`;
     document.getElementById('runStats').innerHTML =
       `<div class="stat-pill"><div class="num">${races.length}</div><div class="lbl">Carreras</div></div><div class="stat-pill"><div class="num">${races.filter(x=>x.dist==='42').length}</div><div class="lbl">Maratones</div></div><div class="stat-pill"><div class="num">${races.filter(x=>x.dist==='21').length}</div><div class="lbl">Media Maratón</div></div>`;
+    // Zapatillas con las que este corredor marcó cada carrera (si tiene cuenta)
+    currentRunnerZapas = await cargarZapasDeCarreras(runnerProfile?.id);
     if (!races.length) {
       document.getElementById('raceBody').innerHTML = '<tr><td colspan="5" style="color:var(--muted);font-size:11px;padding:12px">Sin tiempos registrados</td></tr>';
     } else {
@@ -1815,7 +1952,7 @@ function renderRaceHistoryTable(racesList) {
   document.getElementById('raceBody').innerHTML = racesList.map(rc => {
     const isBest = rc.pm === minP && rc.pm < 999;
     const pct = maxP===minP ? 70 : Math.round(20+70*(1-(rc.pm-minP)/(maxP-minP)));
-    return `<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentRunnerKey, decodeURIComponent('${encAttr(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}<br><span style="color:var(--muted);font-size:9px;font-family:'DM Mono',monospace">${rc.year}</span></td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}</td><td class="pace-val">${rc.pace}${isBest&&rc.pace!=='—'?'<span class="best-tag">PR</span>':''}</td><td><div class="bar-wrap"><div class="bar" style="width:${rc.pm<999?pct:0}%"></div></div></td></tr>`;
+    return `<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentRunnerKey, decodeURIComponent('${encAttr(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}${zapaCarreraIcono(currentRunnerZapas[rc.archivo_fuente])}<br><span style="color:var(--muted);font-size:9px;font-family:'DM Mono',monospace">${rc.year}</span></td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}${badgeRecord(rc.archivo_fuente, currentRunnerKey)}</td><td class="pace-val">${rc.pace}${isBest&&rc.pace!=='—'?'<span class="best-tag">PR</span>':''}</td><td><div class="bar-wrap"><div class="bar" style="width:${rc.pm<999?pct:0}%"></div></div></td></tr>`;
   }).join('');
 }
 
@@ -1828,17 +1965,23 @@ function toggleF(el) {
 // ─── TEAMS ────────────────────────────────────────────────────────────────────
 async function loadTeams() {
   initTeamFilters();
+  // Volviendo de la ficha de un team se deja la lista como estaba; si no, nuevo sorteo
+  const volver = volviendoDeTeam; volviendoDeTeam = false;
+  if (ALL_TEAMS_CACHE && volver && teamsPag) return;
+  teamsAleatorios = null;
   if (ALL_TEAMS_CACHE) { aplicarFiltrosTeams(); return; }
   document.getElementById('teamsGrid').innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando teams...</div>';
   try {
     const [rows] = await Promise.all([
-      sbFetch('team_counts', { select: 'team,member_count', order: 'member_count.desc', limit: 5000 }),
+      sbFetchAll('team_counts', { select: 'team,member_count', order: 'member_count.desc,team.asc' }),
       loadTeamLogos()
     ]);
     const counts = {};
     rows.forEach(r => { counts[r.team] = r.member_count; });
     ALL_TEAMS_CACHE = counts;
-    teamsListCache = Object.entries(counts).filter(([n]) => esTeamValido(n)).sort((a,b) => b[1]-a[1]);
+    // Solo se listan los teams con foto de Instagram (si los logos no cargaron, se muestran todos)
+    const hayLogos = Object.keys(TEAM_LOGOS).length > 0;
+    teamsListCache = Object.entries(counts).filter(([n]) => esTeamValido(n) && (!hayLogos || TEAM_LOGOS[n])).sort((a,b) => b[1]-a[1]);
     document.getElementById('teamsSubtitle').textContent = `Buenos Aires · ${teamsListCache.length} teams`;
     aplicarFiltrosTeams();
   } catch(e) {
@@ -1880,15 +2023,61 @@ async function setTdLogo(name) {
   if (url) { img.src = url; img.style.display = 'block'; }
 }
 
-function renderTeamsGrid(q) {
-  const f = q ? teamsListCache.filter(([n]) => n.toLowerCase().includes(q.toLowerCase())) : teamsListCache;
-  if (!f.length) { document.getElementById('teamsGrid').innerHTML = '<div class="empty"><p>Sin resultados</p></div>'; return; }
-  document.getElementById('teamsGrid').innerHTML = f.map(([name,count]) => {
-    return `<div class="team-card" onclick="showTeam(decodeURIComponent('${encAttr(name)}'))"><div class="team-card-body"><div class="team-card-name">${escHtml(name)}</div><div class="team-card-count"><span>${count}${count>=100?'+':''}</span> integrantes</div></div>${teamLogoHtml(name)}</div>`;
-  }).join('');
+// La lista arranca con 20 teams al azar y suma de a 20 al bajar. El orden al
+// azar se sortea una vez por visita, así no cambia mientras scrolleás.
+const TEAMS_PASO = 20;
+let teamsAleatorios = null;
+let teamsPag = null; // { items, html, mostrados }
+let teamsObserver = null;
+
+function mezclar(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
 }
 
+function paginarTeams(items, html) {
+  const grid = document.getElementById('teamsGrid');
+  teamsPag = { items, html, mostrados: 0 };
+  grid.innerHTML = '<div id="teamsLista"></div><div id="teamsPie" style="font-size:10px;color:var(--muted);text-align:center;padding:12px 0;min-height:14px"></div>';
+  mostrarMasTeams();
+  if (teamsObserver) teamsObserver.disconnect();
+  if ('IntersectionObserver' in window) {
+    teamsObserver = new IntersectionObserver(ents => { if (ents.some(e => e.isIntersecting)) mostrarMasTeams(); }, { rootMargin: '0px 0px 300px 0px' });
+    teamsObserver.observe(document.getElementById('teamsPie'));
+  }
+}
+
+function mostrarMasTeams() {
+  const lista = document.getElementById('teamsLista');
+  if (!teamsPag || !lista) return;
+  const nuevos = teamsPag.items.slice(teamsPag.mostrados, teamsPag.mostrados + TEAMS_PASO);
+  if (!nuevos.length) return;
+  lista.insertAdjacentHTML('beforeend', nuevos.map(teamsPag.html).join(''));
+  teamsPag.mostrados += nuevos.length;
+  const pie = document.getElementById('teamsPie');
+  const total = teamsPag.items.length;
+  pie.textContent = teamsPag.mostrados < total ? `${teamsPag.mostrados} de ${total} teams · bajá para ver más` : `${total} team${total === 1 ? '' : 's'}`;
+  // Si el final sigue a la vista, volver a observar dispara otra tanda
+  if (teamsObserver) { teamsObserver.unobserve(pie); teamsObserver.observe(pie); }
+}
+
+function teamCardSimpleHtml([name, count]) {
+  return `<div class="team-card" onclick="showTeam(decodeURIComponent('${encAttr(name)}'))"><div class="team-card-body"><div class="team-card-name">${escHtml(name)}</div><div class="team-card-count"><span>${count}${count>=100?'+':''}</span> integrantes</div></div>${teamLogoHtml(name)}</div>`;
+}
+
+function renderTeamsGrid(q) {
+  const nq = normTxt(q || '').trim();
+  if (!teamsAleatorios) teamsAleatorios = mezclar(teamsListCache);
+  // Al buscar se ordena por cantidad de integrantes; sin búsqueda, al azar
+  const f = nq ? teamsListCache.filter(([n]) => normTxt(n).includes(nq)) : teamsAleatorios;
+  if (!f.length) { document.getElementById('teamsGrid').innerHTML = '<div class="empty"><p>Sin resultados</p></div>'; return; }
+  paginarTeams(f, teamCardSimpleHtml);
+}
+
+let volviendoDeTeam = false;
 async function showTeam(name) {
+  volviendoDeTeam = document.getElementById('sc-teams').classList.contains('active');
   prev = cur; cur = 'teams';
   document.getElementById('tdName').textContent = name;
   setTdLogo(name);
@@ -1903,7 +2092,7 @@ async function showTeam(name) {
   const isOwner = currentUser && currentProfile?.owned_team === name && currentProfile?.owned_team_status === 'confirmed';
   renderTeamContact(name, isOwner);
   try {
-    const rows = await sbFetchAll('corredores_team_canon', { team_canonico: `eq.${name}`, select: 'runner,runner_key,time,archivo_fuente' });
+    const rows = await sbFetchAll('corredores_team_canon', { team_canonico: `eq.${name}`, select: 'runner,runner_key,time,archivo_fuente', order: 'id.asc' });
     const members = {};
     rows.forEach(r => {
       const key = r.runner_key || r.runner;
@@ -2281,7 +2470,7 @@ async function saveServicio() {
     const { error } = await sbClient.from('servicios').upsert(payload, { onConflict: 'user_id' });
     if (error) throw error;
     hideModal('servicioModal');
-    alert('¡Listo! Tu servicio ya está publicado en la sección Servicios.');
+    alert('¡Listo! Tu servicio ya está publicado en la sección Staff.');
     if (cur === 'perfil') renderProfile();
   } catch (e) {
     alert('Error al guardar: ' + e.message);
@@ -2509,12 +2698,13 @@ async function aplicarFiltrosTeams() {
     const porTeam = {};
     rows.forEach(r => { (porTeam[r.team] = porTeam[r.team] || []).push(r); });
     const nq = normTxt(q).trim();
-    const teams = Object.keys(porTeam).filter(t => esTeamValido(t) && (!nq || normTxt(t).includes(nq))).sort();
+    const hayLogos = Object.keys(TEAM_LOGOS).length > 0;
+    const teams = Object.keys(porTeam).filter(t => esTeamValido(t) && (!hayLogos || TEAM_LOGOS[t]) && (!nq || normTxt(t).includes(nq))).sort();
     if (!teams.length) {
       grid.innerHTML = '<div class="empty"><p>Ningún team entrena con esos filtros</p></div>';
       return;
     }
-    grid.innerHTML = teams.map(t => {
+    paginarTeams(teams, t => {
       const trainings = porTeam[t].map(r => {
         const donde = r.lugar === 'Virtual' ? '<i class="ti ti-video"></i> Virtual' : `<i class="ti ti-map-pin"></i> ${escHtml([r.lugar, r.partido].filter(Boolean).join(' · ') || 'Sin lugar')}`;
         const cuando = [(r.dias || []).join(', '), (r.horarios || []).join(', ')].filter(Boolean).join(' · ');
@@ -2529,7 +2719,7 @@ async function aplicarFiltrosTeams() {
         </div>
         ${teamLogoHtml(t)}
       </div>`;
-    }).join('');
+    });
   } catch (e) {
     if (reqId === teamFiltersReqId) grid.innerHTML = '<div class="empty"><p>Error al buscar</p></div>';
   }
@@ -2631,6 +2821,82 @@ async function deleteTeamPost(id, name) {
   }
 }
 
+// ─── CORREDORES DE TU NIVEL ──────────────────────────────────────────────────
+// Con el perfil vinculado, la pantalla Corredores arranca con corredores que
+// corrieron alguna de tus últimas 3 carreras a un ritmo parecido al tuyo
+// (de 30 s/km más rápido a 5 s/km más lento). Se traen hasta 200 una vez por
+// sesión y se muestran de a 20 a medida que se baja.
+const SIM_PASO = 20;
+let similaresCache = null; // { key, rows }
+let similaresMostrados = 0;
+let similaresObserver = null;
+
+function segAHms(s) {
+  s = Math.round(Number(s));
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60;
+  return `${h ? h + ':' : ''}${String(m).padStart(h ? 2 : 1, '0')}:${String(x).padStart(2, '0')}`;
+}
+
+async function renderSimilares() {
+  const box = document.getElementById('similaresBox');
+  const empty = document.getElementById('emptyR');
+  const key = currentProfile?.runner_key;
+  const hayCorredorAbierto = () => document.getElementById('runHdr').classList.contains('show');
+  if (hayCorredorAbierto()) { box.style.display = 'none'; return; }
+  if (!currentUser || !key) { box.style.display = 'none'; empty.style.display = ''; return; }
+  if (!similaresCache || similaresCache.key !== key) {
+    empty.style.display = 'none';
+    box.style.display = 'block';
+    box.innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando corredores...</div>';
+    try {
+      const { data, error } = await sbClient.rpc('get_corredores_similares', { p_runner_key: key, p_limit: 200 });
+      if (error) throw error;
+      similaresCache = { key, rows: data || [] };
+    } catch (e) {
+      similaresCache = null;
+      box.style.display = 'none'; empty.style.display = '';
+      return;
+    }
+  }
+  if (hayCorredorAbierto()) { box.style.display = 'none'; return; } // abrió uno mientras cargaba
+  if (!similaresCache.rows.length) { box.style.display = 'none'; empty.style.display = ''; return; }
+  empty.style.display = 'none';
+  box.style.display = 'block';
+  box.innerHTML = '<div id="similaresLista"></div><div id="similaresPie" style="height:1px"></div>';
+  similaresMostrados = 0;
+  mostrarMasSimilares();
+  if (similaresObserver) similaresObserver.disconnect();
+  if ('IntersectionObserver' in window) {
+    similaresObserver = new IntersectionObserver(ents => { if (ents.some(e => e.isIntersecting)) mostrarMasSimilares(); }, { rootMargin: '0px 0px 300px 0px' });
+    similaresObserver.observe(document.getElementById('similaresPie'));
+  }
+}
+
+function mostrarMasSimilares() {
+  const lista = document.getElementById('similaresLista');
+  if (!lista || !similaresCache) return;
+  const nuevos = similaresCache.rows.slice(similaresMostrados, similaresMostrados + SIM_PASO);
+  if (!nuevos.length) return;
+  lista.insertAdjacentHTML('beforeend', nuevos.map(similarFilaHtml).join(''));
+  similaresMostrados += nuevos.length;
+  const pie = document.getElementById('similaresPie');
+  if (similaresObserver && pie) { similaresObserver.unobserve(pie); similaresObserver.observe(pie); }
+}
+
+function similarFilaHtml(r) {
+  const iniciales = (r.runner || '?').replace(/,/g, ' ').split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  const foto = r.avatar_url
+    ? `<img class="sim-foto" src="${escHtml(r.avatar_url)}" alt="" loading="lazy">`
+    : `<div class="sim-foto">${escHtml(iniciales)}</div>`;
+  const team = esTeamValido(r.team) ? r.team : '';
+  const marca = r.mejor_seg ? `<div class="t">${segAHms(r.mejor_seg)}</div><div class="p">Mejor ${r.mejor_dist}K</div>` : '';
+  return `<div class="rk-row" onclick="goToRunner(decodeURIComponent('${encAttr(r.runner_key)}'),decodeURIComponent('${encAttr(r.runner || '')}'))">
+    ${foto}
+    <div class="rk-info"><div class="rk-name">${escHtml(r.runner)}</div>${team ? `<div class="rk-meta">${escHtml(team)}</div>` : ''}</div>
+    <div class="rk-time">${marca}</div>
+  </div>`;
+}
+
 async function goToRunner(key, name) {
   goTo('runners');
   searchIn.value = name;
@@ -2643,6 +2909,7 @@ function clearRunner() {
   document.getElementById('runHdr').classList.remove('show');
   document.getElementById('runBio').style.display = 'none';
   document.getElementById('runInstagram').style.display = 'none';
+  document.getElementById('runResidencia').style.display = 'none';
   document.getElementById('runFollowBox').style.display = 'none';
   document.getElementById('runMedallero').style.display = 'none';
   cmpBase = null; cmpOtro = null;
@@ -2651,6 +2918,7 @@ function clearRunner() {
   document.getElementById('raceTable').classList.remove('show');
   document.getElementById('raceBody').innerHTML = '';
   document.getElementById('emptyR').style.display = '';
+  renderSimilares();
 }
 
 // ─── COUNTDOWN ────────────────────────────────────────────────────────────────
@@ -3021,7 +3289,7 @@ async function openNotificacionesModal() {
 function abrirNotificacion(id, postId) {
   hideModal('notificacionesModal');
   if (postId) {
-    goTo('feed');
+    goTo('runners');
     switchFeedTab('todo');
     setTimeout(() => {
       const el = document.getElementById('post-' + postId);
@@ -3352,7 +3620,7 @@ async function renderMiServicioSection() {
 
   if (!servicio) {
     return `<div class="profile-section" style="text-align:center;border:1px dashed var(--border);background:transparent">
-      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">¿Sos nutricionista, kinesiólogo, preparador físico u otro profesional? Publicá tu servicio en la sección Servicios.</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">¿Sos nutricionista, kinesiólogo, preparador físico u otro profesional? Publicá tu servicio en la sección Staff.</p>
       <button onclick="openServicioModal()" style="background:var(--accent);color:#000;border:none;border-radius:6px;padding:9px 18px;font-size:12px;font-weight:700;cursor:pointer"><i class="ti ti-stethoscope"></i> Publicar mi servicio</button>
     </div>`;
   }
@@ -3387,6 +3655,7 @@ async function renderMiServicioSection() {
 }
 
 function renderInstagramBox() {
+  renderDatosBox();
   const box = document.getElementById('pInstagramBox');
   if (!currentUser) { box.style.display = 'none'; return; }
   box.style.display = 'block';
@@ -3403,6 +3672,85 @@ function renderInstagramBox() {
       <input type="text" id="igInput" value="" placeholder="@usuario" style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--text);outline:none;width:140px">
       <button onclick="saveInstagram()" style="background:var(--accent);color:#000;border:none;border-radius:6px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;margin-left:4px">Guardar</button>
     </div>`;
+}
+
+// ─── AÑO DE NACIMIENTO Y RESIDENCIA ─────────────────────────────────────────
+// El año se ve solo en tu perfil; la residencia también en tu ficha pública.
+function textoResidencia(p) {
+  if (!p) return '';
+  const { residencia_partido: part, residencia_provincia: prov } = p;
+  if (part && prov && part !== prov) return `${part}, ${prov}`;
+  return part || prov || '';
+}
+
+function renderDatosBox() {
+  const box = document.getElementById('pDatosBox');
+  if (!currentUser || !currentProfile) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  const anio = currentProfile.anio_nacimiento;
+  const res = textoResidencia(currentProfile);
+  const partes = [anio ? `<i class="ti ti-cake"></i> ${anio}` : '', res ? `<i class="ti ti-map-pin"></i> ${escHtml(res)}` : ''].filter(Boolean);
+  box.innerHTML = partes.length
+    ? `<span style="font-size:11px;color:var(--muted)">${partes.join(' &nbsp;·&nbsp; ')}</span>
+       <button onclick="abrirEditarDatos()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;margin-left:6px"><i class="ti ti-pencil"></i></button>`
+    : `<button onclick="abrirEditarDatos()" style="background:none;border:1px dashed var(--border);border-radius:6px;padding:5px 10px;font-size:11px;color:var(--muted);cursor:pointer"><i class="ti ti-map-pin"></i> Agregar año de nacimiento y residencia</button>`;
+}
+
+async function abrirEditarDatos() {
+  const box = document.getElementById('pDatosBox');
+  const est = 'background:var(--card);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text);outline:none;width:180px';
+  const tope = new Date().getFullYear() - 6;
+  box.innerHTML = `<div style="display:flex;flex-direction:column;gap:6px;align-items:center;margin-top:4px">
+    <input type="number" id="datAnio" inputmode="numeric" min="1920" max="${tope}" placeholder="Año de nacimiento" value="${currentProfile.anio_nacimiento || ''}" style="${est}">
+    <select id="datProv" onchange="cargarPartidosDatos()" style="${est}"><option value="">Provincia</option></select>
+    <select id="datPart" style="${est}"><option value="">Partido / barrio</option></select>
+    <div><button onclick="guardarDatos()" style="background:var(--accent);color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer">Guardar</button>
+    <button onclick="renderDatosBox()" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:11px;color:var(--muted);cursor:pointer;margin-left:4px">Cancelar</button></div>
+  </div>`;
+  try {
+    const provs = await sbFetchAll('partidos_indec', { select: 'provincia', order: 'provincia.asc' });
+    const sel = document.getElementById('datProv');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Provincia</option>' + [...new Set(provs.map(p => p.provincia))].map(p => `<option value="${escHtml(p)}">${escHtml(p)}</option>`).join('');
+    sel.value = currentProfile.residencia_provincia || '';
+    await cargarPartidosDatos(currentProfile.residencia_partido);
+  } catch (e) {}
+}
+
+async function cargarPartidosDatos(elegido) {
+  const prov = document.getElementById('datProv')?.value;
+  const sel = document.getElementById('datPart');
+  if (!sel) return;
+  if (!prov) { sel.innerHTML = '<option value="">Partido / barrio</option>'; return; }
+  sel.innerHTML = '<option value="">Cargando...</option>';
+  try {
+    const partidos = await sbFetchAll('partidos_indec', { select: 'partido', provincia: `eq.${prov}`, order: 'partido.asc' });
+    sel.innerHTML = '<option value="">Partido / barrio</option>' + partidos.map(p => `<option value="${escHtml(p.partido)}">${escHtml(p.partido)}</option>`).join('');
+    if (typeof elegido === 'string') sel.value = elegido;
+  } catch (e) {
+    sel.innerHTML = '<option value="">Error al cargar</option>';
+  }
+}
+
+async function guardarDatos() {
+  if (!currentUser) return;
+  const anioTxt = document.getElementById('datAnio').value.trim();
+  const anio = anioTxt ? parseInt(anioTxt, 10) : null;
+  const tope = new Date().getFullYear() - 6;
+  if (anio !== null && (isNaN(anio) || anio < 1920 || anio > tope)) { alert(`El año de nacimiento tiene que estar entre 1920 y ${tope}`); return; }
+  const cambios = {
+    anio_nacimiento: anio,
+    residencia_provincia: document.getElementById('datProv').value || null,
+    residencia_partido: document.getElementById('datPart').value || null
+  };
+  try {
+    const { error } = await sbClient.from('usuarios').update(cambios).eq('id', currentUser.id);
+    if (error) throw error;
+    Object.assign(currentProfile, cambios);
+    renderDatosBox();
+  } catch (e) {
+    alert('Error al guardar: ' + e.message);
+  }
 }
 
 function toggleEditInstagram() {
@@ -3548,6 +3896,13 @@ async function renderProfile() {
       </div>
       <div class="profile-section">
         <div class="profile-section-title" style="display:flex;justify-content:space-between;align-items:center">
+          <span>Mis zapas</span>
+          <button onclick="goTo('zapas')" style="background:none;border:1px solid var(--accent);border-radius:4px;padding:3px 10px;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--accent);cursor:pointer">+ Agregar</button>
+        </div>
+        <div id="misZapasBox"><div class="loading" style="padding:8px 0"><i class="ti ti-refresh"></i>Cargando...</div></div>
+      </div>
+      <div class="profile-section">
+        <div class="profile-section-title" style="display:flex;justify-content:space-between;align-items:center">
           <span>Badges</span>
           ${badges.some(b=>b.earned)?`<button onclick="openShareModal('badges')" style="background:none;border:1px solid var(--accent);border-radius:4px;padding:4px 10px;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--accent);cursor:pointer"><i class="ti ti-share"></i> Compartir</button>`:''}
         </div>
@@ -3569,8 +3924,14 @@ async function renderProfile() {
     myRacesForShare = races;
     myBadgesForShare = badges.filter(b => b.earned);
     myStatsForShare = { total, maratones, medias, bestPace, team, totalKm };
-    renderMedalleroStack('');
-    renderHistorialPerfil('');
+    // Se respeta la distancia que tenías elegida (ej. al volver de agregar una zapa)
+    if (!document.querySelector(`#medalleroFiltroBox .chip[data-dist="${perfilDist}"]`)) perfilDist = '';
+    document.querySelectorAll('#medalleroFiltroBox .chip').forEach(c => c.classList.toggle('active', c.dataset.dist === perfilDist));
+    renderMedalleroStack(perfilDist);
+    await Promise.all([asegurarCatalogoZapas(), cargarMisZapas()]);
+    miCarreraZapas = await cargarZapasDeCarreras(currentUser.id);
+    renderMisZapasPerfil();
+    renderHistorialPerfil(perfilDist);
     loadInscripciones();
   } catch(e) {
     content.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:16px 0">Error al cargar perfil</div>';
@@ -3659,10 +4020,17 @@ function renderHistorialPerfil(distFilter) {
     box.innerHTML = `<p style="color:var(--muted);font-size:12px">Sin carreras de ${distFilter}K</p>`;
     return;
   }
-  box.innerHTML = `<table class="race-table show"><thead><tr><th>Carrera</th><th>Dist</th><th>Tiempo</th><th>Ritmo</th></tr></thead><tbody>${filtradas.map(rc=>`<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentProfile?.runner_key, decodeURIComponent('${encAttr(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}</td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}</td><td class="pace-val">${rc.pace}</td></tr>`).join('')}</tbody></table>`;
+  // En tu propio perfil, la columna de la zapa permite elegir con cuál corriste cada carrera
+  box.innerHTML = `<table class="race-table show"><thead><tr><th>Carrera</th><th>Dist</th><th>Tiempo</th><th>Ritmo</th><th style="width:44px;text-align:center">Zapa</th></tr></thead><tbody>${filtradas.map(rc=>{
+    const zid = miCarreraZapas[rc.archivo_fuente];
+    const celdaZapa = `<td style="text-align:center" onclick="event.stopPropagation();openZapaPicker(decodeURIComponent('${encAttr(rc.archivo_fuente)}'), decodeURIComponent('${encAttr(rc.label + ' ' + rc.year)}'))">${zid ? zapaCarreraIcono(zid, true) : '<span class="zapa-add" title="¿Con qué zapa la corriste?"><i class="ti ti-shoe"></i>+</span>'}</td>`;
+    return `<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentProfile?.runner_key, decodeURIComponent('${encAttr(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}</td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}${badgeRecord(rc.archivo_fuente, currentProfile?.runner_key)}</td><td class="pace-val">${rc.pace}</td>${celdaZapa}</tr>`;
+  }).join('')}</tbody></table>`;
 }
 
+let perfilDist = ''; // distancia elegida en el medallero/historial del perfil
 function filtrarMedalleroPerfil(dist) {
+  perfilDist = dist;
   document.querySelectorAll('#medalleroFiltroBox .chip').forEach(c => c.classList.toggle('active', c.dataset.dist === dist));
   renderMedalleroStack(dist);
   renderHistorialPerfil(dist);
@@ -4165,6 +4533,396 @@ document.addEventListener('touchmove', e => {
   }
 }, { passive: false });
 
+// ─── ZAPAS ───────────────────────────────────────────────────────────────────
+// Catálogo chico: se carga entero una vez y se filtra en el navegador.
+// Dentro de un mismo filtro las opciones suman (O); entre filtros se combinan (Y).
+let zapasCache = null;
+let ZAPAS_BY_ID = {};
+let zapasRating = {};        // zapatilla_id -> { promedio, votos }
+let misZapas = {};           // zapatilla_id -> estrellas (null si todavía no puntuó)
+let miCarreraZapas = {};     // archivo_fuente -> zapatilla_id (tu perfil)
+let currentRunnerZapas = {}; // archivo_fuente -> zapatilla_id (corredor que estás viendo)
+let zapasSearchTimeout = null;
+let zapasFiltrosInit = false;
+const ZF = {
+  marca: { box: 'zfMarcas', opciones: [] },
+  uso:   { box: 'zfUso',    opciones: [['entrenamiento', 'Entrenamiento'], ['carrera', 'Carrera']] },
+  dist:  { box: 'zfDist',   opciones: [['5', '5K'], ['10', '10K'], ['21', '21K'], ['42', '42K']] },
+  peso:  { box: 'zfPeso',   opciones: [['liviana', 'Hasta 200 g'], ['media', '200 a 250 g'], ['pesada', 'Más de 250 g']] },
+  placa: { box: 'zfPlaca',  opciones: [['si', 'Con placa'], ['no', 'Sin placa']] }
+};
+
+async function asegurarCatalogoZapas() {
+  if (zapasCache) return zapasCache;
+  zapasCache = await sbFetch('zapatillas', { select: '*', order: 'marca.asc,modelo.asc' });
+  ZAPAS_BY_ID = {};
+  zapasCache.forEach(z => { ZAPAS_BY_ID[z.id] = z; });
+  return zapasCache;
+}
+
+async function cargarZapasRating() {
+  try {
+    const [rows, uso] = await Promise.all([
+      sbFetch('zapatillas_rating', { select: 'zapatilla_id,promedio,votos' }),
+      sbFetch('zapatillas_uso', { select: 'zapatilla_id,carreras,corredores' }).catch(() => [])
+    ]);
+    zapasRating = {};
+    rows.forEach(r => { zapasRating[r.zapatilla_id] = r; });
+    zapasUso = {};
+    uso.forEach(u => { zapasUso[u.zapatilla_id] = u; });
+  } catch (e) {}
+}
+
+// Cuántas carreras se corrieron con cada zapa (lo cargan los corredores en su historial)
+let zapasUso = {};
+
+async function cargarMisZapas() {
+  misZapas = {};
+  if (!currentUser) return;
+  try {
+    const rows = await sbFetch('usuario_zapatillas', { select: 'zapatilla_id,estrellas', user_id: `eq.${currentUser.id}` });
+    rows.forEach(r => { misZapas[r.zapatilla_id] = r.estrellas; });
+  } catch (e) {}
+}
+
+// archivo_fuente -> zapatilla_id de un usuario (vacío si no tiene cuenta)
+async function cargarZapasDeCarreras(userId) {
+  if (!userId) return {};
+  try {
+    await asegurarCatalogoZapas();
+    const rows = await sbFetch('carrera_zapatilla_vigente', { select: 'archivo_fuente,zapatilla_id', user_id: `eq.${userId}` });
+    const map = {};
+    rows.forEach(r => { map[r.archivo_fuente] = r.zapatilla_id; });
+    return map;
+  } catch (e) { return {}; }
+}
+
+function zapaIconoUrl(z) { return z ? (z.icono_url || z.imagen_url || '') : ''; }
+
+// Ícono chico de la zapa en la tarjeta/fila de una carrera
+function zapaCarreraIcono(zapaId, grande) {
+  const z = ZAPAS_BY_ID[zapaId];
+  if (!z) return '';
+  const url = zapaIconoUrl(z);
+  const t = escHtml(z.marca + ' ' + z.modelo);
+  return url
+    ? `<img class="zapa-mini${grande ? ' grande' : ''}" src="${escHtml(url)}" alt="${t}" title="${t}" loading="lazy">`
+    : `<span class="zapa-mini${grande ? ' grande' : ''}" title="${t}"><i class="ti ti-shoe"></i></span>`;
+}
+
+// Estrellas: editables (tu puntaje) o de solo lectura (promedio)
+function estrellasHtml(valor, editableId) {
+  let h = '';
+  for (let i = 1; i <= 5; i++) {
+    const llena = valor != null && i <= Math.round(valor);
+    h += editableId
+      ? `<i class="ti ${llena ? 'ti-star-filled' : 'ti-star'} estrella editable" onclick="event.stopPropagation();puntuarZapa(${editableId},${i})" title="${i} estrella${i > 1 ? 's' : ''}"></i>`
+      : `<i class="ti ${llena ? 'ti-star-filled' : 'ti-star'} estrella"></i>`;
+  }
+  return `<span class="estrellas">${h}</span>`;
+}
+
+async function initZapasScreen() {
+  const grid = document.getElementById('zapasGrid');
+  try {
+    await Promise.all([asegurarCatalogoZapas(), cargarZapasRating(), cargarMisZapas()]);
+  } catch (e) {
+    grid.innerHTML = '<div class="empty"><p>Error al cargar zapatillas</p></div>';
+    return;
+  }
+  if (!zapasFiltrosInit) {
+    ZF.marca.opciones = [...new Set(zapasCache.map(z => z.marca))].sort().map(m => [m, m]);
+    Object.entries(ZF).forEach(([k, f]) => {
+      document.getElementById(f.box).innerHTML = f.opciones
+        .map(([v, l]) => `<div class="chip" data-f="${k}" data-v="${escHtml(v)}" onclick="this.classList.toggle('active');renderZapas()">${escHtml(l)}</div>`).join('');
+    });
+    try { if (localStorage.getItem('zapasFiltersCollapsed') === '1') toggleZapasFilters(true); } catch (e) {}
+    zapasFiltrosInit = true;
+  }
+  document.getElementById('zapasSubtitle').textContent = `${zapasCache.length} zapatillas de running`;
+  renderZapas();
+}
+
+function toggleZapasFilters(forceCollapse) {
+  const panel = document.getElementById('zapasFiltersPanel');
+  const collapsed = forceCollapse === true ? true : !panel.classList.contains('collapsed');
+  panel.classList.toggle('collapsed', collapsed);
+  document.getElementById('zfChevron').className = 'ti ' + (collapsed ? 'ti-chevron-down' : 'ti-chevron-up');
+  try { localStorage.setItem('zapasFiltersCollapsed', collapsed ? '1' : '0'); } catch (e) {}
+}
+
+function onZapasSearch() {
+  clearTimeout(zapasSearchTimeout);
+  zapasSearchTimeout = setTimeout(renderZapas, 200);
+}
+
+function limpiarFiltrosZapas() {
+  document.querySelectorAll('#zfBody .chip.active').forEach(c => c.classList.remove('active'));
+  renderZapas();
+}
+
+function pesoRango(g) {
+  if (g == null) return null;
+  return g <= 200 ? 'liviana' : g <= 250 ? 'media' : 'pesada';
+}
+
+function fechaCorta(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+function renderZapas() {
+  if (!zapasCache) return;
+  const sel = {};
+  Object.keys(ZF).forEach(k => {
+    sel[k] = Array.from(document.querySelectorAll(`#zfBody .chip.active[data-f="${k}"]`)).map(c => c.dataset.v);
+  });
+  const nq = normTxt(document.getElementById('zapasSearch').value).trim();
+  const n = Object.values(sel).reduce((a, v) => a + v.length, 0);
+  const countEl = document.getElementById('zfActiveCount');
+  countEl.textContent = n; countEl.style.display = n ? 'inline' : 'none';
+  document.getElementById('zfClearBtn').style.display = n ? 'inline-block' : 'none';
+
+  const lista = zapasCache.filter(z =>
+    (!nq || normTxt(z.marca + ' ' + z.modelo).includes(nq)) &&
+    (!sel.marca.length || sel.marca.includes(z.marca)) &&
+    (!sel.uso.length || sel.uso.some(u => (z.uso || []).includes(u))) &&
+    (!sel.dist.length || sel.dist.some(d => (z.distancias || []).includes(parseInt(d, 10)))) &&
+    (!sel.peso.length || sel.peso.includes(pesoRango(z.peso_g))) &&
+    (!sel.placa.length || sel.placa.includes(z.placa_carbono ? 'si' : 'no'))
+  );
+
+  const grid = document.getElementById('zapasGrid');
+  if (!zapasCache.length) { grid.innerHTML = '<div class="empty"><p>Todavía no hay zapatillas cargadas</p></div>'; return; }
+  if (!lista.length) { grid.innerHTML = '<div class="empty"><p>Ninguna zapatilla con esos filtros</p></div>'; return; }
+  grid.innerHTML = lista.map(zapaCardHtml).join('');
+}
+
+function zapaCardHtml(z) {
+  const tags = [
+    ...(z.uso || []).map(u => `<span class="zapa-tag ${u === 'carrera' ? 'carrera' : ''}">${u === 'carrera' ? 'Carrera' : 'Entrenamiento'}</span>`),
+    (z.distancias || []).length ? `<span class="zapa-tag">${[...z.distancias].sort((a, b) => a - b).map(d => d + 'K').join(' · ')}</span>` : '',
+    z.peso_g ? `<span class="zapa-tag">${z.peso_g} g</span>` : '',
+    z.drop_mm != null ? `<span class="zapa-tag">drop ${z.drop_mm} mm</span>` : '',
+    z.placa_carbono ? '<span class="zapa-tag carbono">Placa de carbono</span>' : ''
+  ].join('');
+  const url = zapaIconoUrl(z);
+  const img = url
+    ? `<img class="zapa-img" src="${escHtml(url)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;zapa-img&quot;><i class=&quot;ti ti-shoe&quot;></i></div>'">`
+    : '<div class="zapa-img"><i class="ti ti-shoe"></i></div>';
+  const r = zapasRating[z.id];
+  const rating = r && r.votos
+    ? `<div class="zapa-rating">${estrellasHtml(r.promedio)} <b>${Number(r.promedio).toLocaleString('es-AR')}</b> <span>(${r.votos})</span></div>`
+    : '<div class="zapa-rating vacio">Sin puntajes todavía</div>';
+  const u = zapasUso[z.id];
+  const uso = u && u.carreras
+    ? `<div class="zapa-uso"><i class="ti ti-flag"></i> Usada en ${u.carreras} carrera${u.carreras === 1 ? '' : 's'} por ${u.corredores} corredor${u.corredores === 1 ? '' : 'es'}</div>`
+    : '';
+  const precio = z.precio_ars
+    ? `<div class="zapa-precio">$ ${Number(z.precio_ars).toLocaleString('es-AR')}${z.precio_fecha ? ` <span>al ${fechaCorta(z.precio_fecha)}</span>` : ''}${z.url ? ` · <a href="${escHtml(z.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Ver en la web <i class="ti ti-external-link"></i></a>` : ''}</div>`
+    : (z.url ? `<div class="zapa-precio"><a href="${escHtml(z.url)}" target="_blank" rel="noopener">Ver en la web <i class="ti ti-external-link"></i></a></div>` : '');
+  let acciones = '';
+  if (currentUser) {
+    const mia = z.id in misZapas;
+    acciones = mia
+      ? `<div class="zapa-acciones"><span class="zapa-mia"><i class="ti ti-check"></i> En mis zapas</span><span class="zapa-tu">Tu puntaje: ${estrellasHtml(misZapas[z.id], z.id)}</span></div>`
+      : `<div class="zapa-acciones"><button class="zapa-agregar" onclick="event.stopPropagation();toggleMiZapa(${z.id})"><i class="ti ti-plus"></i> Agregar a mis zapas</button></div>`;
+  }
+  const quitar = currentUser && z.id in misZapas ? botonQuitarZapa(z.id) : '';
+  return `<div class="zapa-card" id="zapa-${z.id}" onclick="openZapaDetalle(${z.id})"><div class="zapa-img-wrap">${img}${quitar}</div><div class="zapa-body">
+    <div class="zapa-marca">${escHtml(z.marca)}</div>
+    <div class="zapa-modelo">${escHtml(z.modelo)}</div>
+    ${rating}${uso}
+    <div class="zapa-tags">${tags}</div>${precio}${acciones}
+  </div></div>`;
+}
+
+// ✕ sobre la foto de la zapa para sacarla de tu perfil
+function botonQuitarZapa(id) {
+  return `<button class="zapa-x" onclick="event.stopPropagation();toggleMiZapa(${id})" title="Quitar de mis zapas" aria-label="Quitar de mis zapas"><i class="ti ti-x"></i></button>`;
+}
+
+// Agregar/quitar una zapa de tu perfil
+async function toggleMiZapa(id) {
+  if (!currentUser) { showModal('authModal'); return; }
+  try {
+    if (id in misZapas) {
+      if (!confirm('¿Quitar esta zapa de tu perfil? También se borra tu puntaje y deja de figurar en las carreras donde la cargaste.')) return;
+      const { error } = await sbClient.from('usuario_zapatillas').delete().eq('user_id', currentUser.id).eq('zapatilla_id', id);
+      if (error) throw error;
+      // Sacarla también de las carreras donde la habías cargado
+      const { error: errCarreras } = await sbClient.from('carrera_zapatilla').delete().eq('user_id', currentUser.id).eq('zapatilla_id', id);
+      if (errCarreras) console.warn('No se pudieron limpiar las carreras de la zapa', errCarreras);
+      delete misZapas[id];
+      Object.keys(miCarreraZapas).forEach(a => {
+        if (Number(miCarreraZapas[a]) === Number(id)) { delete miCarreraZapas[a]; delete zapasCarreraCache[a]; }
+      });
+      if (document.getElementById('historialPerfilBox')) renderHistorialPerfil(perfilDist);
+      await cargarZapasRating();
+    } else {
+      const { error } = await sbClient.from('usuario_zapatillas').insert({ user_id: currentUser.id, zapatilla_id: id });
+      if (error) throw error;
+      misZapas[id] = null;
+    }
+    refrescarVistasZapas(id);
+  } catch (e) {
+    alert('No se pudo guardar: ' + (e.message || e));
+  }
+}
+
+// Puntaje de 1 a 5 (solo para zapas que tenés en tu perfil)
+async function puntuarZapa(id, estrellas) {
+  if (!currentUser || !(id in misZapas)) return;
+  try {
+    const { error } = await sbClient.from('usuario_zapatillas')
+      .update({ estrellas, updated_at: new Date().toISOString() })
+      .eq('user_id', currentUser.id).eq('zapatilla_id', id);
+    if (error) throw error;
+    misZapas[id] = estrellas;
+    await cargarZapasRating();
+    refrescarVistasZapas(id);
+  } catch (e) {
+    alert('No se pudo guardar el puntaje: ' + (e.message || e));
+  }
+}
+
+// ─── PÁGINA DE UNA ZAPA ──────────────────────────────────────────────────────
+let zapaDetalleId = null;
+
+async function openZapaDetalle(id) {
+  zapaDetalleId = Number(id);
+  document.getElementById('zdCard').innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando...</div>';
+  document.getElementById('zdCorredores').innerHTML = '';
+  showModal('zapaDetalleModal');
+  try { await Promise.all([asegurarCatalogoZapas(), cargarZapasRating(), cargarMisZapas()]); } catch (e) {}
+  renderZapaDetalle();
+  cargarCorredoresDeZapa(zapaDetalleId);
+}
+
+function renderZapaDetalle() {
+  const z = ZAPAS_BY_ID[zapaDetalleId];
+  const box = document.getElementById('zdCard');
+  if (!z) { box.innerHTML = '<p style="color:var(--muted);font-size:12px">No se encontró la zapa</p>'; return; }
+  // Misma tarjeta que en la lista, sin el click que abre esta página
+  box.innerHTML = zapaCardHtml(z).replace(`id="zapa-${z.id}" onclick="openZapaDetalle(${z.id})"`, `id="zdet-${z.id}"`);
+}
+
+async function cargarCorredoresDeZapa(id) {
+  const box = document.getElementById('zdCorredores');
+  try {
+    const rows = await sbFetch('carrera_zapatilla_runner', { select: 'runner_key,archivo_fuente,nombre', zapatilla_id: `eq.${id}`, limit: 100 });
+    if (zapaDetalleId !== id) return;
+    if (!rows.length) { box.innerHTML = '<p style="color:var(--muted);font-size:12px">Todavía nadie cargó esta zapa en una carrera.</p>'; return; }
+    box.innerHTML = rows.map(r => `<div class="rk-row" onclick="modalIrACorredor('zapaDetalleModal', decodeURIComponent('${encAttr(r.runner_key)}'), decodeURIComponent('${encAttr(r.nombre || '')}'))">
+      <div class="rk-info"><div class="rk-name">${escHtml(r.nombre || r.runner_key)}</div><div class="rk-meta">${escHtml(archToLabel(r.archivo_fuente))}</div></div>
+      <i class="ti ti-chevron-right" style="color:var(--muted)"></i>
+    </div>`).join('');
+  } catch (e) {
+    box.innerHTML = '<p style="color:var(--muted);font-size:12px">No se pudo cargar</p>';
+  }
+}
+
+// Cerrar un modal dispara history.back(); se espera ese popstate antes de ir al corredor
+function modalIrACorredor(modalId, key, name) {
+  const esTope = history.state?.tipo === 'modal' && history.state?.id === modalId;
+  if (esTope) {
+    window.addEventListener('popstate', () => setTimeout(() => goToRunner(key, name), 0), { once: true });
+    hideModal(modalId);
+  } else {
+    hideModal(modalId);
+    goToRunner(key, name);
+  }
+}
+
+function refrescarVistasZapas(id) {
+  const card = document.getElementById('zapa-' + id);
+  if (card && ZAPAS_BY_ID[id]) card.outerHTML = zapaCardHtml(ZAPAS_BY_ID[id]);
+  if (Number(id) === zapaDetalleId && !document.getElementById('zapaDetalleModal').classList.contains('hidden')) renderZapaDetalle();
+  renderMisZapasPerfil();
+}
+
+// Sección "Mis zapas" del perfil
+function renderMisZapasPerfil() {
+  const box = document.getElementById('misZapasBox');
+  if (!box) return;
+  const ids = Object.keys(misZapas).map(Number).filter(id => ZAPAS_BY_ID[id]);
+  if (!ids.length) {
+    box.innerHTML = `<p style="color:var(--muted);font-size:12px">Todavía no agregaste zapatillas. Buscalas en <a href="#" onclick="goTo('zapas');return false" style="color:var(--text)">Zapas</a> y puntualas.</p>`;
+    return;
+  }
+  box.innerHTML = ids.map(id => {
+    const z = ZAPAS_BY_ID[id];
+    const usos = Object.values(miCarreraZapas).filter(v => v === id).length;
+    return `<div class="mi-zapa" onclick="openZapaDetalle(${id})"><div class="zapa-img-wrap">${zapaCarreraIcono(id, true)}${botonQuitarZapa(id)}</div>
+      <div style="flex:1;min-width:0"><div class="zapa-marca">${escHtml(z.marca)}</div><div style="font-size:13px;font-weight:600">${escHtml(z.modelo)}</div>
+      <div style="font-size:10px;color:var(--muted)">${usos ? `Usada en ${usos} carrera${usos > 1 ? 's' : ''}` : 'Sin carreras asignadas'}</div></div>
+      <div>${estrellasHtml(misZapas[id], id)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── ZAPA DE CADA CARRERA (tu perfil) ────────────────────────────────────────
+let zapaPickerArchivo = null;
+
+async function openZapaPicker(archivo, nombreCarrera) {
+  if (!currentUser) return;
+  zapaPickerArchivo = archivo;
+  await asegurarCatalogoZapas();
+  document.getElementById('zpCarrera').textContent = nombreCarrera;
+  document.getElementById('zpSearch').value = '';
+  document.getElementById('zpQuitar').style.display = miCarreraZapas[archivo] ? 'inline-block' : 'none';
+  renderZapaPicker();
+  showModal('zapaPickerModal');
+}
+
+function renderZapaPicker() {
+  const nq = normTxt(document.getElementById('zpSearch').value).trim();
+  const actual = miCarreraZapas[zapaPickerArchivo];
+  const fila = z => `<div class="zp-item ${z.id === actual ? 'on' : ''}" onclick="elegirZapaCarrera(${z.id})">${zapaCarreraIcono(z.id, true)}<div style="flex:1;min-width:0"><div class="zapa-marca">${escHtml(z.marca)}</div><div style="font-size:13px;font-weight:600">${escHtml(z.modelo)}</div></div>${z.id === actual ? '<i class="ti ti-check" style="color:var(--text)"></i>' : ''}</div>`;
+  const coincide = z => !nq || normTxt(z.marca + ' ' + z.modelo).includes(nq);
+  const mias = Object.keys(misZapas).map(Number).map(id => ZAPAS_BY_ID[id]).filter(z => z && coincide(z));
+  const resto = zapasCache.filter(z => !(z.id in misZapas) && coincide(z));
+  document.getElementById('zpLista').innerHTML =
+    (mias.length ? `<div class="tf-lbl">Mis zapas</div>${mias.map(fila).join('')}` : '') +
+    (resto.length ? `<div class="tf-lbl">${mias.length ? 'Otras' : 'Todas las zapas'}</div>${resto.map(fila).join('')}` : '') ||
+    '<p style="color:var(--muted);font-size:12px;text-align:center;padding:16px 0">Ninguna zapa con ese nombre</p>';
+}
+
+async function elegirZapaCarrera(zapaId) {
+  try {
+    const { error } = await sbClient.from('carrera_zapatilla')
+      .upsert({ user_id: currentUser.id, archivo_fuente: zapaPickerArchivo, zapatilla_id: zapaId }, { onConflict: 'user_id,archivo_fuente' });
+    if (error) throw error;
+    miCarreraZapas[zapaPickerArchivo] = zapaId;
+    delete zapasCarreraCache[zapaPickerArchivo];
+    // Si corriste con ella, queda también en tus zapas (para poder puntuarla)
+    if (!(zapaId in misZapas)) {
+      await sbClient.from('usuario_zapatillas').insert({ user_id: currentUser.id, zapatilla_id: zapaId });
+      misZapas[zapaId] = null;
+    }
+    hideModal('zapaPickerModal');
+    renderHistorialPerfil(document.querySelector('#medalleroFiltroBox .chip.active')?.dataset.dist || '');
+    renderMisZapasPerfil();
+  } catch (e) {
+    alert('No se pudo guardar: ' + (e.message || e));
+  }
+}
+
+async function quitarZapaCarrera() {
+  try {
+    const { error } = await sbClient.from('carrera_zapatilla').delete().eq('user_id', currentUser.id).eq('archivo_fuente', zapaPickerArchivo);
+    if (error) throw error;
+    delete miCarreraZapas[zapaPickerArchivo];
+    delete zapasCarreraCache[zapaPickerArchivo];
+    hideModal('zapaPickerModal');
+    renderHistorialPerfil(document.querySelector('#medalleroFiltroBox .chip.active')?.dataset.dist || '');
+    renderMisZapasPerfil();
+  } catch (e) {
+    alert('No se pudo quitar: ' + (e.message || e));
+  }
+}
+
 // ─── CARRERAS: TABS POR AÑO + RESULTADOS ─────────────────────────────────────
 // El año actual muestra las próximas (para anotarse) y las ya corridas; los
 // años anteriores, solo las carreras con resultados cargados.
@@ -4281,7 +5039,9 @@ function openRankingCarrera(archivo, team = null, meta = null) {
   const c = meta || (carrerasResultadosCache || []).find(x => x.archivo_fuente === archivo) || { archivo_fuente: archivo };
   const { dist } = parseArchivo(archivo);
   const fecha = c.fecha ? new Date(c.fecha + 'T00:00:00').toLocaleDateString('es-AR', { day:'numeric', month:'long', year:'numeric' }) : '';
-  rankingActual = { archivo, dist, fecha, team };
+  rankingActual = { archivo, dist, fecha, team, sexo: null, vista: 'lista' };
+  document.getElementById('rkSearchInput').style.display = '';
+  document.querySelectorAll('#rkSexoBox .chip').forEach(c => c.classList.toggle('active', c.dataset.s === ''));
   document.getElementById('rkNombre').textContent = nombreCarreraResultado({ archivo_fuente: archivo, ...c });
   setRankingSub(null);
   document.getElementById('rkSearchInput').value = '';
@@ -4323,50 +5083,176 @@ function onRankingSearch(q) {
   rankingTimeout = setTimeout(() => loadRanking(q.trim()), 350);
 }
 
+// La clasificación se pide a la base de a 100 y se muestra de a 20 a medida
+// que se baja (cada consulta de una carrera grande tarda ~2 s).
+const RK_LOTE = 100, RK_PASO = 20;
+let rk = null; // estado de la lista actual: { reqId, q, datos, mostrados, fin, cargando, zapas }
+let rkObserver = null;
+
+function setRankingSexo(s) {
+  document.querySelectorAll('#rkSexoBox .chip').forEach(c => c.classList.toggle('active', c.dataset.s === (s || '')));
+  rankingActual.vista = s === 'zapas' ? 'zapas' : 'lista';
+  document.getElementById('rkSearchInput').style.display = s === 'zapas' ? 'none' : '';
+  if (s === 'zapas') { renderRankingZapas(); return; }
+  rankingActual.sexo = s || null;
+  loadRanking(document.getElementById('rkSearchInput').value.trim());
+}
+
 async function loadRanking(q) {
   if (!rankingActual) return;
+  if (rankingActual.vista === 'zapas') { renderRankingZapas(); return; }
   const body = document.getElementById('rkBody');
   const reqId = ++rankingReqId;
   if (q && !/^\d+$/.test(q) && q.length < 2) return;
-  const team = rankingActual.team;
-  // Con team se muestran todos sus corredores; sin team, el top 20 (o 50 si se busca)
-  const limit = team ? 1000 : (q ? 50 : 20);
+  rk = { reqId, q, datos: [], mostrados: 0, fin: false, cargando: false, zapas: { porKey: {}, top: [] } };
   body.innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando...</div>';
   try {
-    const { data, error } = await sbClient.rpc('get_ranking_carrera', { p_archivo_fuente: rankingActual.archivo, p_q: q || null, p_limit: limit, p_team: team });
+    const [, zapas] = await Promise.all([rkTraerLote(), zapasDeLaCarrera(rankingActual.archivo)]);
     if (reqId !== rankingReqId) return; // llegó una búsqueda más nueva
-    if (error) throw error;
-    if (!data?.length) {
-      const msg = q ? `Nadie con ese nombre o dorsal${team ? ' en este team' : ''}`
-        : team ? 'Nadie de este team tiene tiempo válido en esta carrera' : 'Esta carrera no tiene tiempos cargados';
+    rk.zapas = zapas;
+    const { team, sexo } = rankingActual;
+    if (!rk.datos.length) {
+      const quien = [team ? 'de este team' : '', sexo === 'F' ? '(damas)' : sexo === 'M' ? '(caballeros)' : ''].filter(Boolean).join(' ');
+      const msg = q ? `Nadie con ese nombre o dorsal${quien ? ' ' + quien : ''}`
+        : (team || sexo) ? `Nadie ${quien} tiene tiempo válido en esta carrera` : 'Esta carrera no tiene tiempos cargados';
       body.innerHTML = `<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0">${msg}</p>`;
       return;
     }
-    const miKey = currentProfile?.runner_key;
-    const rows = data.map((r, i) => {
-      const pace = calcPace(r.time, parseFloat(rankingActual.dist));
-      const meta = [r.dorsal != null ? `#${r.dorsal}` : '', r.sex === 'F' ? `${r.pos_sexo}° damas` : r.sex === 'M' ? `${r.pos_sexo}° caballeros` : '', r.age_group || '', team ? '' : (esTeamValido(r.team) ? r.team : '')].filter(Boolean).map(escHtml).join(' · ');
-      const key = r.runner_key || r.runner || '';
-      // Con team: el número grande es el puesto dentro del team y se aclara el general
-      const posGrande = team && !q ? i + 1 : r.pos;
-      const metaFinal = team && !q ? `${r.pos}° general${meta ? ' · ' + meta : ''}` : meta;
-      return `<div class="rk-row ${miKey && r.runner_key === miKey ? 'me' : ''}" onclick="rankingIrACorredor(decodeURIComponent('${encAttr(key)}'),decodeURIComponent('${encAttr(r.runner || '')}'))">
-        <div class="rk-pos ${posGrande <= 3 ? 'podio' : ''}">${posGrande}°</div>
-        <div class="rk-info"><div class="rk-name">${escHtml(r.runner)}</div><div class="rk-meta">${metaFinal}</div></div>
-        <div class="rk-time"><div class="t">${escHtml(r.time)}</div>${pace ? `<div class="p">${pace.pace}/km</div>` : ''}</div>
-      </div>`;
-    }).join('');
-    const total = data[0].total;
-    setRankingSub(total);
-    const pie = team
-      ? `${data.length} corredor${data.length === 1 ? '' : 'es'} de ${escHtml(team)} · el número grande es el puesto dentro del team`
-      : q
-        ? `${data.length} resultado${data.length === 1 ? '' : 's'}${data.length === 50 ? ' (se muestran los primeros 50)' : ''}`
-        : `Primeros ${data.length} de ${Number(total).toLocaleString('es-AR')}. Buscá por nombre o dorsal para ver cualquier puesto.`;
-    body.innerHTML = rows + `<p style="font-size:10px;color:var(--muted);text-align:center;margin-top:12px">${pie}</p>`;
+    setRankingSub(rk.datos[0].total);
+    body.innerHTML = '<div id="rkLista"></div><div id="rkPie" style="font-size:10px;color:var(--muted);text-align:center;margin-top:12px;min-height:14px"></div>';
+    rkMostrarMas();
+    rkObservar();
   } catch (e) {
     if (reqId === rankingReqId) body.innerHTML = '<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0">Error al cargar la clasificación</p>';
   }
+}
+
+// Trabaja sobre el estado con el que se pidió: si mientras tanto se abrió otra
+// lista (otro filtro o búsqueda), el resultado viejo no se mezcla con la nueva.
+async function rkTraerLote(estado = rk) {
+  const { archivo, team, sexo } = rankingActual;
+  const { data, error } = await sbClient.rpc('get_ranking_carrera', {
+    p_archivo_fuente: archivo, p_q: estado.q || null, p_limit: RK_LOTE, p_team: team, p_offset: estado.datos.length, p_sexo: sexo || null
+  });
+  if (error) throw error;
+  estado.datos = estado.datos.concat(data || []);
+  if (!data || data.length < RK_LOTE) estado.fin = true;
+}
+
+async function rkMostrarMas() {
+  if (!rk || rk.cargando) return;
+  const reqId = rk.reqId;
+  if (rk.mostrados >= rk.datos.length) {
+    if (rk.fin) return;
+    rk.cargando = true;
+    document.getElementById('rkPie').innerHTML = '<i class="ti ti-refresh"></i> Cargando más...';
+    try { await rkTraerLote(); } catch (e) { rk.fin = true; }
+    if (!rk || rk.reqId !== reqId) return;
+    rk.cargando = false;
+  }
+  const nuevos = rk.datos.slice(rk.mostrados, rk.mostrados + RK_PASO);
+  document.getElementById('rkLista').insertAdjacentHTML('beforeend', nuevos.map(rkFilaHtml).join(''));
+  rk.mostrados += nuevos.length;
+  rkActualizarPie();
+  // Si el final sigue a la vista (lista corta), volver a observar dispara otra tanda
+  const pie = document.getElementById('rkPie');
+  if (rkObserver && pie) { rkObserver.unobserve(pie); rkObserver.observe(pie); }
+}
+
+function rkFilaHtml(r) {
+  const { team, sexo, dist, archivo } = rankingActual;
+  const q = rk.q;
+  const pace = calcPace(r.time, parseFloat(dist));
+  // Con team o sexo elegido: el número grande es el puesto dentro de ese grupo
+  const posGrande = q ? r.pos : team ? r.pos_filtro : sexo ? r.pos_sexo : r.pos;
+  const general = posGrande !== r.pos ? `${r.pos}° general` : '';
+  const sexoTxt = sexo && !team && !q ? '' : r.sex === 'F' ? `${r.pos_sexo}° damas` : r.sex === 'M' ? `${r.pos_sexo}° caballeros` : '';
+  const meta = [general, r.dorsal != null ? `#${r.dorsal}` : '', sexoTxt, r.age_group || '', team ? '' : (esTeamValido(r.team) ? r.team : '')].filter(Boolean).map(escHtml).join(' · ');
+  const key = r.runner_key || r.runner || '';
+  const miKey = currentProfile?.runner_key;
+  const zapa = rk.zapas.porKey[r.runner_key];
+  return `<div class="rk-row ${miKey && r.runner_key === miKey ? 'me' : ''}" onclick="rankingIrACorredor(decodeURIComponent('${encAttr(key)}'),decodeURIComponent('${encAttr(r.runner || '')}'))">
+    <div class="rk-pos ${posGrande <= 3 ? 'podio' : ''}">${posGrande}°</div>
+    <div class="rk-info"><div class="rk-name">${escHtml(r.runner)}</div><div class="rk-meta">${meta}</div></div>
+    ${zapa ? zapaCarreraIcono(zapa).replace('class="zapa-mini', 'class="zapa-mini rk-zapa-img') : ''}
+    <div class="rk-time"><div class="t">${escHtml(r.time)}${badgeRecord(archivo, r.runner_key)}</div>${pace ? `<div class="p">${pace.pace}/km</div>` : ''}</div>
+  </div>`;
+}
+
+function rkActualizarPie() {
+  const pie = document.getElementById('rkPie');
+  if (!pie || !rk.datos.length) return;
+  const n = Number(rk.datos[0].total_filtro).toLocaleString('es-AR');
+  const grupo = [rankingActual.team ? `de ${escHtml(rankingActual.team)}` : '', rankingActual.sexo === 'F' ? '(damas)' : rankingActual.sexo === 'M' ? '(caballeros)' : ''].filter(Boolean).join(' ');
+  const quedan = rk.mostrados < rk.datos.length || !rk.fin;
+  pie.innerHTML = `${rk.mostrados.toLocaleString('es-AR')} de ${n} corredor${n === '1' ? '' : 'es'}${grupo ? ' ' + grupo : ''}${quedan ? ' · bajá para ver más' : ''}`;
+}
+
+// Carga automática al llegar al final de la lista (el modal es el que scrollea)
+function rkObservar() {
+  if (rkObserver) rkObserver.disconnect();
+  const pie = document.getElementById('rkPie');
+  if (!pie || !('IntersectionObserver' in window)) return;
+  rkObserver = new IntersectionObserver(ents => {
+    if (ents.some(e => e.isIntersecting)) rkMostrarMas();
+  }, { root: document.querySelector('#rankingCarreraModal .modal-sheet'), rootMargin: '0px 0px 200px 0px' });
+  rkObserver.observe(pie);
+}
+
+// ─── MARCAS DE RÉCORD ────────────────────────────────────────────────────────
+// "archivo|runner_key" → sigla. Se muestra como insignia dorada junto al tiempo.
+const MARCAS_RECORD = {
+  'mmba_2026_21.csv|ATOMSA KEJELCHA YOMIF': 'WR'
+};
+function badgeRecord(archivo, runnerKey) {
+  const m = MARCAS_RECORD[`${archivo}|${runnerKey}`];
+  return m ? `<span class="wr-badge" title="Récord mundial">${m}</span>` : '';
+}
+
+// Zapas que los corredores cargaron para esta carrera: ícono por corredor en la
+// clasificación y, arriba, las más usadas.
+const zapasCarreraCache = {};
+async function zapasDeLaCarrera(archivo) {
+  if (zapasCarreraCache[archivo]) return zapasCarreraCache[archivo];
+  const res = { porKey: {}, top: [], total: 0 };
+  try {
+    const [rows] = await Promise.all([
+      sbFetch('carrera_zapatilla_runner', { select: 'runner_key,zapatilla_id', archivo_fuente: `eq.${archivo}` }),
+      asegurarCatalogoZapas()
+    ]);
+    const cuenta = {};
+    rows.forEach(r => { res.porKey[r.runner_key] = r.zapatilla_id; cuenta[r.zapatilla_id] = (cuenta[r.zapatilla_id] || 0) + 1; });
+    res.top = Object.entries(cuenta).filter(([id]) => ZAPAS_BY_ID[id]).sort((a, b) => b[1] - a[1]);
+    res.total = res.top.reduce((s, [, n]) => s + n, 0);
+  } catch (e) {}
+  zapasCarreraCache[archivo] = res;
+  return res;
+}
+
+// Solapa "Zapas" de la clasificación: ranking de las zapas que cargaron los corredores
+async function renderRankingZapas() {
+  const body = document.getElementById('rkBody');
+  const reqId = ++rankingReqId;
+  if (rkObserver) rkObserver.disconnect();
+  body.innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando...</div>';
+  const zc = await zapasDeLaCarrera(rankingActual.archivo);
+  if (reqId !== rankingReqId) return;
+  if (!zc.top.length) {
+    body.innerHTML = '<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0">Todavía nadie cargó con qué zapa corrió esta carrera.<br>Podés cargar la tuya desde tu historial en <b>Yo</b>.</p>';
+    return;
+  }
+  const max = zc.top[0][1];
+  body.innerHTML = zc.top.map(([id, n], i) => {
+    const z = ZAPAS_BY_ID[id];
+    const pct = Math.round(100 * n / zc.total);
+    return `<div class="rk-row" onclick="openZapaDetalle(${Number(id)})">
+      <div class="rk-pos ${i < 3 ? 'podio' : ''}">${i + 1}°</div>
+      ${zapaCarreraIcono(id).replace('class="zapa-mini', 'class="zapa-mini rk-zapa-img')}
+      <div class="rk-info"><div class="zapa-marca">${escHtml(z.marca)}</div><div class="rk-name">${escHtml(z.modelo)}</div>
+        <div class="rk-barra"><div style="width:${Math.round(100 * n / max)}%"></div></div></div>
+      <div class="rk-time"><div class="t">${n}</div><div class="p">${pct}%</div></div>
+    </div>`;
+  }).join('') + `<p style="font-size:10px;color:var(--muted);text-align:center;margin-top:12px">${zc.total === 1 ? '1 corredor cargó' : zc.total + ' corredores cargaron'} su zapa en esta carrera</p>`;
 }
 
 // Cerrar el modal dispara history.back(); esperamos ese popstate antes de navegar
@@ -4521,6 +5407,7 @@ async function verClasificacion(archivoFuente, runnerKey, raceLabel, dist, year)
 
     document.getElementById('clasificacionBody').innerHTML = `
       <div style="text-align:center;margin-bottom:10px"><img src="${medalUrl}" style="width:90px;height:90px;border-radius:50%;object-fit:contain;background:transparent" onerror="this.style.display='none'"></div>
+      ${MARCAS_RECORD[`${archivoFuente}|${runnerKey}`] ? `<div style="text-align:center;margin-bottom:12px"><span class="wr-badge wr-grande">${MARCAS_RECORD[`${archivoFuente}|${runnerKey}`]} · Récord mundial</span></div>` : ''}
       <div class="stats-row" style="margin-bottom:4px">
         <div class="stat-pill"><div class="num">${r.pos_general}°</div><div class="lbl">General (de ${r.total_general})</div></div>
         <div class="stat-pill"><div class="num">${r.pos_sexo}°</div><div class="lbl">${r.sexo==='F'?'Damas':'Caballeros'} (de ${r.total_sexo})</div></div>
@@ -4741,7 +5628,7 @@ initAuth();
 // ─── ANDROID BACK BUTTON (Capacitor) ─────────────────────────────────────────
 function handleBackButton() {
   // Si hay un modal abierto, cerrarlo
-  const modals = ['rankingCarreraModal', 'newPostModal','comentariosModal', 'linkModal', 'authModal', 'shareModal', 'medalleroModal','notificacionesModal', 'avatarLightboxModal', 'seguidoresModal', 'servicioModal', 'carreraDetalleModal', 'visibilidadMedallasModal', 'clasificacionModal', 'forgotPasswordModal'];
+  const modals = ['zapaDetalleModal', 'zapaPickerModal', 'rankingCarreraModal', 'newPostModal','comentariosModal', 'linkModal', 'authModal', 'shareModal', 'medalleroModal','notificacionesModal', 'avatarLightboxModal', 'seguidoresModal', 'servicioModal', 'carreraDetalleModal', 'visibilidadMedallasModal', 'clasificacionModal', 'forgotPasswordModal'];
   for (const id of modals) {
     const el = document.getElementById(id);
     if (el && !el.classList.contains('hidden')) {

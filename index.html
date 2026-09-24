@@ -170,6 +170,20 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 /* ── AUTH MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
 #zapaDetalleModal{z-index:1010}
+#codigoModal{z-index:1020}
+.claim-btn{width:100%;margin:4px 0 14px;padding:11px;border:1.5px dashed var(--accent);border-radius:8px;background:transparent;color:var(--accent);font-size:13px;font-weight:700;cursor:pointer}
+.claim-pend{margin:4px 0 14px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text);cursor:pointer;line-height:1.5}
+.claim-pend span{color:var(--accent);text-decoration:underline;margin-left:4px}
+.sol-count{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:#e5484d;color:#fff;font-size:10px;text-align:center;margin-left:6px}
+.sol-item{border-top:1px solid var(--border);padding:10px 0}
+.sol-tipo{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.sol-obj{font-size:14px;font-weight:700;margin:2px 0}
+.sol-meta{font-size:11px;color:var(--muted)}
+.sol-codigo{font-size:12px;margin:6px 0}
+.sol-acciones{display:flex;gap:8px}
+.sol-acciones button{flex:1;padding:8px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer}
+.sol-ok{background:var(--accent);color:#000;border:none}
+.sol-no{background:transparent;color:var(--muted);border:1px solid var(--border)}
 .modal-overlay.center-modal{align-items:center}
 .modal-overlay.center-modal .modal-sheet{border-radius:16px;max-height:85vh;overflow-y:auto}
 .modal-overlay.hidden{display:none}
@@ -387,6 +401,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
     </div>
     <button class="btn-confirm" id="btnConfirmLink" disabled onclick="confirmLink()">Vincular mi perfil</button>
     <button class="btn-skip-link" onclick="skipLink()">Lo hago después</button>
+    <button class="btn-skip-link" style="color:var(--accent)" onclick="document.getElementById('coachBox').style.display='block';this.style.display='none'"><i class="ti ti-clipboard-list"></i> No corro / soy coach o entrenador</button>
+    <div id="coachBox" style="display:none;margin-top:8px">
+      <input type="text" id="coachNombre" placeholder="Tu nombre y apellido" autocomplete="name" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:11px 14px;font-size:13px;color:var(--text);outline:none;margin-bottom:8px;box-sizing:border-box">
+      <button class="btn-confirm" onclick="confirmCoach()">Crear mi perfil</button>
+    </div>
     <button class="btn-skip-link" style="color:var(--accent)" onclick="hideModal('linkModal');openServicioModal()"><i class="ti ti-stethoscope"></i> ¿Sos un profesional de servicios (nutricionista, kinesiólogo, etc.)?</button>
   </div>
 </div>
@@ -511,6 +530,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
     </div>
     <div class="stats-row" style="margin-bottom:14px" id="tdStats"></div>
     <div id="tdContact"></div>
+    <div id="tdClaim"></div>
     <div id="tdAnnouncement"></div>
     <div id="tdPosts"></div>
     <div class="sect-title">Integrantes</div>
@@ -872,6 +892,20 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 </div>
 
 <!-- MODAL CLASIFICACIÓN DE UNA CARRERA (top 20 + búsqueda) -->
+<!-- MODAL CÓDIGO DE VERIFICACIÓN (dueño de team / atleta protegido) -->
+<div class="modal-overlay hidden center-modal" id="codigoModal">
+  <div class="modal-sheet" style="padding-bottom:24px;text-align:center">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span id="codTitulo" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px">Verificación</span>
+      <button onclick="hideModal('codigoModal')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px"><i class="ti ti-x"></i></button>
+    </div>
+    <div id="codCodigo" style="font-family:'DM Mono',monospace;font-size:34px;font-weight:700;letter-spacing:3px;margin:10px 0 12px"></div>
+    <p id="codTexto" style="font-size:12px;color:var(--muted);line-height:1.55;margin:0 0 16px;text-align:left"></p>
+    <button id="codCopiar" class="btn-confirm" onclick="copiarCodigo()"><i class="ti ti-copy"></i> Copiar código</button>
+    <a id="codAbrirIg" target="_blank" rel="noopener" style="display:none;margin-top:10px;font-size:12px;color:var(--accent)"><i class="ti ti-brand-instagram"></i> Abrir el Instagram de Runners Online</a>
+  </div>
+</div>
+
 <!-- MODAL PÁGINA DE UNA ZAPA -->
 <div class="modal-overlay hidden center-modal" id="zapaDetalleModal">
   <div class="modal-sheet" style="padding-bottom:24px;max-height:85vh;overflow-y:auto">
@@ -1278,6 +1312,7 @@ sbClient.auth.onAuthStateChange(async (event, session) => {
 });
 
 async function loadProfile() {
+  esAdminCache = null;
   if (!currentUser) return;
   const { data } = await sbClient.from('usuarios').select('*').eq('id', currentUser.id).single();
   if (data) {
@@ -1293,6 +1328,7 @@ async function signOut() {
   await sbClient.auth.signOut();
   currentUser = null;
   currentProfile = null;
+  esAdminCache = null;
   renderProfile();
   similaresCache = null;
   renderSimilares();
@@ -1354,39 +1390,62 @@ function selectForLink(key, name, team) {
   document.getElementById('btnConfirmLink').disabled = false;
 }
 
+// La vinculación la resuelve la base (vincular_corredor): si el corredor está
+// entre los primeros de alguna carrera grande, queda pendiente de verificación.
 async function confirmLink() {
   if (!selectedRunnerKey || !currentUser) return;
   const btn = document.getElementById('btnConfirmLink');
   btn.textContent = 'Vinculando...'; btn.disabled = true;
   try {
-    // Try update first, then insert
-    const { data: existing } = await sbClient.from('usuarios').select('id').eq('id', currentUser.id).single();
-    let error;
-    if (existing) {
-      const { error: updErr } = await sbClient.from('usuarios').update({
-        nombre: selectedRunnerName,
-        runner_key: selectedRunnerKey
-      }).eq('id', currentUser.id);
-      error = updErr;
-    } else {
-      const { error: insErr } = await sbClient.from('usuarios').insert({
-        id: currentUser.id,
-        email: currentUser.email,
-        nombre: selectedRunnerName,
-        runner_key: selectedRunnerKey
-      });
-      error = insErr;
-    }
+    const { data, error } = await sbClient.rpc('vincular_corredor', { p_runner_key: selectedRunnerKey, p_nombre: selectedRunnerName });
     if (error) throw error;
-    currentProfile = { id: currentUser.id, email: currentUser.email, nombre: selectedRunnerName, runner_key: selectedRunnerKey };
-    hideModal('linkModal');
-    if (cur === 'perfil') renderProfile();
-    triggerJoinTeamAutofollow();
+    await recargarPerfilTrasVincular();
+    if (data?.estado === 'pendiente') {
+      mostrarCodigo('atleta', selectedRunnerName, data.codigo);
+    } else {
+      triggerJoinTeamAutofollow();
+    }
   } catch(e) {
     alert('Error al vincular: ' + e.message);
-    btn.textContent = 'Vincular mi perfil';
-    btn.disabled = false;
   }
+  btn.textContent = 'Vincular mi perfil';
+  btn.disabled = false;
+}
+
+// Perfil sin carreras: coach, entrenador o alguien que todavía no corrió
+async function confirmCoach() {
+  const nombre = document.getElementById('coachNombre').value.trim();
+  if (nombre.length < 3) { alert('Escribí tu nombre y apellido'); return; }
+  try {
+    const { error } = await sbClient.rpc('vincular_corredor', { p_runner_key: null, p_nombre: nombre });
+    if (error) throw error;
+    await recargarPerfilTrasVincular();
+  } catch (e) {
+    alert('No se pudo crear el perfil: ' + e.message);
+  }
+}
+
+// Saca el historial de carreras de tu perfil (la cuenta, las zapas y lo demás quedan)
+async function desvincularCorredor() {
+  if (!currentUser || !currentProfile?.runner_key) return;
+  if (!confirm('¿Desvincular tu nombre de corredor? Tu historial deja de verse en tu perfil hasta que te vuelvas a vincular. Si sos uno de los primeros de alguna carrera, para volver a vincularte vas a tener que verificarte de nuevo.')) return;
+  try {
+    const { error } = await sbClient.from('usuarios').update({ runner_key: null }).eq('id', currentUser.id);
+    if (error) throw error;
+    currentProfile.runner_key = null;
+    miCarreraZapas = {};
+    similaresCache = null;
+    renderProfile();
+  } catch (e) {
+    alert('No se pudo desvincular: ' + e.message);
+  }
+}
+
+async function recargarPerfilTrasVincular() {
+  const { data } = await sbClient.from('usuarios').select('*').eq('id', currentUser.id).single();
+  if (data) currentProfile = data;
+  hideModal('linkModal');
+  if (cur === 'perfil') renderProfile();
 }
 
 async function triggerJoinTeamAutofollow() {
@@ -2091,6 +2150,7 @@ async function showTeam(name) {
   // La ficha (coach, lugar, redes) no depende de los integrantes: se muestra ya
   const isOwner = currentUser && currentProfile?.owned_team === name && currentProfile?.owned_team_status === 'confirmed';
   renderTeamContact(name, isOwner);
+  renderTeamClaim(name, isOwner);
   try {
     const rows = await sbFetchAll('corredores_team_canon', { team_canonico: `eq.${name}`, select: 'runner,runner_key,time,archivo_fuente', order: 'id.asc' });
     const members = {};
@@ -2722,6 +2782,128 @@ async function aplicarFiltrosTeams() {
     });
   } catch (e) {
     if (reqId === teamFiltersReqId) grid.innerHTML = '<div class="empty"><p>Error al buscar</p></div>';
+  }
+}
+
+// ─── SOLICITUDES: DUEÑO DE TEAM Y ATLETAS VERIFICADOS ────────────────────────
+// Un coach pide administrar su team, o un atleta del top 50 de alguna carrera
+// grande pide vincularse. En ambos casos recibe un código que manda por mensaje
+// directo a Runners Online, y el admin aprueba desde su perfil.
+const IG_RUNNERS_ONLINE = 'runnersonline.app'; // usuario de Instagram de Runners Online (sin @)
+const MAIL_RUNNERS_ONLINE = 'runnersonline.admin@gmail.com';
+let esAdminCache = null;
+
+async function esAdmin() {
+  if (!currentUser) return false;
+  if (esAdminCache !== null) return esAdminCache;
+  try { const { data } = await sbClient.rpc('es_admin'); esAdminCache = !!data; } catch (e) { esAdminCache = false; }
+  return esAdminCache;
+}
+
+async function misSolicitudesPendientes() {
+  if (!currentUser) return [];
+  try {
+    const { data } = await sbClient.from('solicitudes').select('id,tipo,objetivo,objetivo_nombre,codigo,estado,created_at')
+      .eq('user_id', currentUser.id).eq('estado', 'pendiente').order('created_at', { ascending: false });
+    return data || [];
+  } catch (e) { return []; }
+}
+
+// Botón "Soy el dueño de este team" (o el pedido pendiente) en la página del team
+async function renderTeamClaim(name, isOwner) {
+  const box = document.getElementById('tdClaim');
+  box.innerHTML = '';
+  if (isOwner) return;
+  if (!currentUser) {
+    box.innerHTML = `<button onclick="showModal('authModal')" class="claim-btn"><i class="ti ti-shield-check"></i> Soy el dueño de este team</button>`;
+    return;
+  }
+  const pend = (await misSolicitudesPendientes()).find(s => s.tipo === 'team' && s.objetivo === name);
+  if (document.getElementById('tdName').textContent !== name) return; // ya se abrió otro team
+  box.innerHTML = pend
+    ? `<div class="claim-pend" onclick="mostrarCodigo('team', decodeURIComponent('${encAttr(name)}'), '${escHtml(pend.codigo)}')">
+         <i class="ti ti-clock"></i> Pedido para administrar este team pendiente · código <b>${escHtml(pend.codigo)}</b> <span>Ver cómo verificar</span></div>`
+    : `<button onclick="solicitarTeam(decodeURIComponent('${encAttr(name)}'))" class="claim-btn"><i class="ti ti-shield-check"></i> Soy el dueño de este team</button>`;
+}
+
+async function solicitarTeam(name) {
+  if (!currentUser) { showModal('authModal'); return; }
+  if (!currentProfile) { alert('Primero completá tu perfil: si no corrés, elegí "No corro / soy coach".'); showModal('linkModal'); return; }
+  try {
+    const { data, error } = await sbClient.rpc('solicitar_team', { p_team: name });
+    if (error) throw error;
+    mostrarCodigo('team', name, data[0].codigo);
+    renderTeamClaim(name, false);
+  } catch (e) {
+    alert('No se pudo enviar el pedido: ' + e.message);
+  }
+}
+
+// Ventana con el código y cómo mandarlo
+function mostrarCodigo(tipo, nombre, codigo) {
+  const destinoIg = IG_RUNNERS_ONLINE ? `<b>@${escHtml(IG_RUNNERS_ONLINE)}</b>` : 'la cuenta de Instagram de <b>Runners Online</b>';
+  document.getElementById('codTitulo').textContent = tipo === 'team' ? 'Verificá que sos del team' : 'Verificá que sos vos';
+  document.getElementById('codCodigo').textContent = codigo;
+  document.getElementById('codTexto').innerHTML = tipo === 'team'
+    ? `Mandá este código por mensaje directo <b>desde el Instagram oficial de ${escHtml(nombre)}</b> a ${destinoIg}. Cuando lo confirmemos, vas a poder editar la página del team: head coach, horarios, lugares, WhatsApp y anuncios.`
+    : `<b>${escHtml(nombre)}</b> está entre los primeros de alguna carrera, así que para cuidar la identidad de los atletas confirmamos que seas vos. Mandá este código por mensaje directo desde tu Instagram a ${destinoIg}, o por mail a <b>${MAIL_RUNNERS_ONLINE}</b> desde tu casilla. Cuando lo confirmemos, se vincula tu historial.`;
+  const abrir = document.getElementById('codAbrirIg');
+  abrir.style.display = IG_RUNNERS_ONLINE ? '' : 'none';
+  if (IG_RUNNERS_ONLINE) abrir.href = 'https://ig.me/m/' + IG_RUNNERS_ONLINE;
+  showModal('codigoModal');
+}
+
+async function copiarCodigo() {
+  const btn = document.getElementById('codCopiar');
+  const c = document.getElementById('codCodigo').textContent;
+  try { await navigator.clipboard.writeText(c); btn.textContent = '¡Copiado!'; }
+  catch (e) { btn.textContent = c; }
+  setTimeout(() => { btn.innerHTML = '<i class="ti ti-copy"></i> Copiar código'; }, 1500);
+}
+
+// Arriba del perfil: pedidos propios pendientes y, para el admin, la bandeja de solicitudes
+async function renderBloqueSolicitudes() {
+  const content = document.getElementById('profileContent');
+  if (!currentUser || !content) return;
+  const [propias, admin] = await Promise.all([misSolicitudesPendientes(), esAdmin()]);
+  document.getElementById('bloqueSolicitudes')?.remove();
+  let html = propias.map(s => `<div class="claim-pend" onclick="mostrarCodigo('${s.tipo}', decodeURIComponent('${encAttr(s.objetivo_nombre || s.objetivo)}'), '${escHtml(s.codigo)}')">
+      <i class="ti ti-clock"></i> ${s.tipo === 'team' ? `Pedido para administrar <b>${escHtml(s.objetivo)}</b>` : `Verificación de identidad como <b>${escHtml(s.objetivo_nombre || '')}</b>`} pendiente · código <b>${escHtml(s.codigo)}</b> <span>Ver cómo verificar</span></div>`).join('');
+  if (admin) html += `<div class="profile-section" id="adminSolicitudes"><div class="profile-section-title">Solicitudes <span id="adminSolCount" class="sol-count"></span></div><div id="adminSolLista"><div class="loading" style="padding:8px 0"><i class="ti ti-refresh"></i>Cargando...</div></div></div>`;
+  if (!html) return;
+  content.insertAdjacentHTML('afterbegin', `<div id="bloqueSolicitudes">${html}</div>`);
+  if (admin) cargarSolicitudesAdmin();
+}
+
+async function cargarSolicitudesAdmin() {
+  const lista = document.getElementById('adminSolLista');
+  if (!lista) return;
+  try {
+    const { data, error } = await sbClient.from('solicitudes').select('*').eq('estado', 'pendiente').order('created_at');
+    if (error) throw error;
+    const cont = document.getElementById('adminSolCount');
+    cont.textContent = data.length || '';
+    cont.style.display = data.length ? '' : 'none';
+    lista.innerHTML = data.length ? data.map(s => `<div class="sol-item">
+        <div class="sol-tipo">${s.tipo === 'team' ? '<i class="ti ti-users"></i> Administrar team' : '<i class="ti ti-shield-check"></i> Atleta protegido'}</div>
+        <div class="sol-obj">${escHtml(s.tipo === 'team' ? s.objetivo : (s.objetivo_nombre || s.objetivo))}</div>
+        <div class="sol-meta">${escHtml(s.nombre_usuario || '')} · ${escHtml(s.email || '')} · ${fechaCorta(s.created_at)}</div>
+        <div class="sol-codigo">Código <b>${escHtml(s.codigo)}</b>. Aprobala solo si te llegó este código ${s.tipo === 'team' ? 'desde el Instagram oficial del team' : 'desde el Instagram o el mail de la persona'}.</div>
+        <div class="sol-acciones"><button class="sol-ok" onclick="resolverSolicitud(${s.id}, true)">Aprobar</button><button class="sol-no" onclick="resolverSolicitud(${s.id}, false)">Rechazar</button></div>
+      </div>`).join('') : '<p style="color:var(--muted);font-size:12px;margin:0">No hay solicitudes pendientes.</p>';
+  } catch (e) {
+    lista.innerHTML = '<p style="color:var(--muted);font-size:12px;margin:0">No se pudieron cargar las solicitudes.</p>';
+  }
+}
+
+async function resolverSolicitud(id, aprobar) {
+  if (!confirm(aprobar ? '¿Aprobar esta solicitud?' : '¿Rechazar esta solicitud?')) return;
+  try {
+    const { error } = await sbClient.rpc('resolver_solicitud', { p_id: id, p_aprobar: aprobar });
+    if (error) throw error;
+    cargarSolicitudesAdmin();
+  } catch (e) {
+    alert('No se pudo: ' + e.message);
   }
 }
 
@@ -3788,6 +3970,7 @@ async function renderProfile() {
     renderInstagramBox();
     const servicioHtml = await renderMiServicioSection();
     content.innerHTML = `<div style="text-align:center;padding:20px 0"><p style="color:var(--muted);font-size:12px;margin-bottom:16px">Vincula tu nombre de corredor para ver tu historial</p><button onclick="showModal('linkModal')" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:12px 24px;font-size:13px;font-weight:700;cursor:pointer">Vincular corredor</button></div>` + servicioHtml;
+    renderBloqueSolicitudes();
     return;
   }
   const initials = currentProfile.nombre.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
@@ -3801,8 +3984,20 @@ async function renderProfile() {
     if (label) label.style.display = 'flex';
   }
   document.getElementById('pName').textContent = currentProfile.nombre;
-  document.getElementById('pSub').textContent = currentUser.email;
+  document.getElementById('pSub').textContent = currentUser.email + (currentProfile.owned_team && currentProfile.owned_team_status === 'confirmed' ? ' · Admin de ' + currentProfile.owned_team : '');
   renderInstagramBox();
+  // Perfil sin carreras vinculadas: coach que no corre o atleta esperando verificación
+  if (!currentProfile.runner_key) {
+    const servicioHtml = await renderMiServicioSection();
+    content.innerHTML = `<div class="profile-section" style="text-align:center">
+        <p style="color:var(--muted);font-size:12px;margin:0 0 12px">Tu perfil no tiene carreras vinculadas.</p>
+        <button onclick="showModal('linkModal')" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:11px 22px;font-size:13px;font-weight:700;cursor:pointer">Buscar mi nombre de corredor</button>
+        <p style="color:var(--muted);font-size:11px;margin:12px 0 0">¿Sos coach? Entrá a tu team en <a href="#" onclick="goTo('teams');return false" style="color:var(--text)">Teams</a> y tocá <b>"Soy el dueño de este team"</b>.</p>
+      </div>` + servicioHtml +
+      `<button onclick="signOut()" style="width:100%;background:none;border:1px solid var(--border);border-radius:8px;padding:11px;font-size:12px;color:var(--muted);cursor:pointer;margin-top:4px;margin-bottom:20px">Cerrar sesión</button>`;
+    renderBloqueSolicitudes();
+    return;
+  }
   content.innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando tu historial...</div>';
   try {
     const rows = await sbFetch('corredores', { runner_key: `eq.${currentProfile.runner_key}`, select: 'runner,runner_key,sex,team,archivo_fuente,time', limit: 200 });
@@ -3920,6 +4115,7 @@ async function renderProfile() {
         <p style="font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:6px">¿Sos dueño de un team, atleta profesional u organizador? Escribinos.</p>
         <a href="mailto:runnersonline.admin@gmail.com" style="font-size:12px;color:var(--accent);font-weight:600;text-decoration:none"><i class="ti ti-mail"></i> runnersonline.admin@gmail.com</a>
       </div>
+      <button onclick="desvincularCorredor()" style="width:100%;background:none;border:1px dashed var(--border);border-radius:8px;padding:11px;font-size:12px;color:var(--muted);cursor:pointer;margin-top:4px"><i class="ti ti-unlink"></i> Desvincular mi nombre de corredor</button>
       <button onclick="signOut()" style="width:100%;background:none;border:1px solid var(--border);border-radius:8px;padding:11px;font-size:12px;color:var(--muted);cursor:pointer;margin-top:4px;margin-bottom:20px">Cerrar sesión</button>`;
     myRacesForShare = races;
     myBadgesForShare = badges.filter(b => b.earned);
@@ -3933,6 +4129,7 @@ async function renderProfile() {
     renderMisZapasPerfil();
     renderHistorialPerfil(perfilDist);
     loadInscripciones();
+    renderBloqueSolicitudes();
   } catch(e) {
     content.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:16px 0">Error al cargar perfil</div>';
   }
@@ -5628,7 +5825,7 @@ initAuth();
 // ─── ANDROID BACK BUTTON (Capacitor) ─────────────────────────────────────────
 function handleBackButton() {
   // Si hay un modal abierto, cerrarlo
-  const modals = ['zapaDetalleModal', 'zapaPickerModal', 'rankingCarreraModal', 'newPostModal','comentariosModal', 'linkModal', 'authModal', 'shareModal', 'medalleroModal','notificacionesModal', 'avatarLightboxModal', 'seguidoresModal', 'servicioModal', 'carreraDetalleModal', 'visibilidadMedallasModal', 'clasificacionModal', 'forgotPasswordModal'];
+  const modals = ['codigoModal', 'zapaDetalleModal', 'zapaPickerModal', 'rankingCarreraModal', 'newPostModal','comentariosModal', 'linkModal', 'authModal', 'shareModal', 'medalleroModal','notificacionesModal', 'avatarLightboxModal', 'seguidoresModal', 'servicioModal', 'carreraDetalleModal', 'visibilidadMedallasModal', 'clasificacionModal', 'forgotPasswordModal'];
   for (const id of modals) {
     const el = document.getElementById(id);
     if (el && !el.classList.contains('hidden')) {

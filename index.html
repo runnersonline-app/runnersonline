@@ -287,7 +287,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .zapa-mia{font-size:10px;color:var(--text);font-weight:600}
 .zapa-tu{font-size:10px;color:var(--muted);display:inline-flex;align-items:center;gap:4px}
 .zapa-img-wrap{position:relative;flex-shrink:0;display:flex}
-.zapa-x{position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:50%;border:2px solid var(--card);background:#e5484d;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;box-shadow:0 1px 4px rgba(0,0,0,.3);z-index:1}
+.zapa-x{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;opacity:.85;z-index:1}
+.zapa-x:hover{opacity:1;color:var(--text)}
 #zdCard .zapa-img-wrap{display:block}
 .zapa-mini{width:22px;height:22px;border-radius:50%;object-fit:contain;background:#fff;border:1px solid var(--border);vertical-align:middle;margin-left:5px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
 .zapa-mini.grande{width:36px;height:36px;margin-left:0;flex-shrink:0;font-size:18px}
@@ -892,6 +893,22 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 </div>
 
 <!-- MODAL CLASIFICACIÓN DE UNA CARRERA (top 20 + búsqueda) -->
+<!-- MODAL RECORTE DE FOTO DE PERFIL -->
+<div class="modal-overlay hidden center-modal" id="avatarCropModal">
+  <div class="modal-sheet" style="padding-bottom:24px;text-align:center">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px;margin-bottom:4px">Acomodá tu foto</div>
+    <p style="font-size:11px;color:var(--muted);margin:0 0 14px">Arrastrala y agrandala hasta que tu cara quede en el círculo</p>
+    <canvas id="recorteCanvas" width="560" height="560" style="width:280px;height:280px;border-radius:50%;touch-action:none;cursor:grab;border:2px solid var(--accent);display:block;margin:0 auto 14px;background:var(--bg)"></canvas>
+    <div style="display:flex;align-items:center;gap:10px;max-width:280px;margin:0 auto 16px">
+      <i class="ti ti-zoom-out" style="color:var(--muted)"></i>
+      <input type="range" id="recorteZoom" min="1" max="4" step="0.01" value="1" oninput="zoomRecorte(this.value)" style="flex:1;accent-color:var(--accent)">
+      <i class="ti ti-zoom-in" style="color:var(--muted)"></i>
+    </div>
+    <button class="btn-confirm" onclick="guardarRecorte()">Guardar foto</button>
+    <button class="btn-skip-link" onclick="cancelarRecorte()">Cancelar</button>
+  </div>
+</div>
+
 <!-- MODAL CÓDIGO DE VERIFICACIÓN (dueño de team / atleta protegido) -->
 <div class="modal-overlay hidden center-modal" id="codigoModal">
   <div class="modal-sheet" style="padding-bottom:24px;text-align:center">
@@ -1430,9 +1447,11 @@ async function desvincularCorredor() {
   if (!currentUser || !currentProfile?.runner_key) return;
   if (!confirm('¿Desvincular tu nombre de corredor? Tu historial deja de verse en tu perfil hasta que te vuelvas a vincular. Si sos uno de los primeros de alguna carrera, para volver a vincularte vas a tener que verificarte de nuevo.')) return;
   try {
-    const { error } = await sbClient.from('usuarios').update({ runner_key: null }).eq('id', currentUser.id);
+    // Se borra también el nombre: era el del corredor, no el de la cuenta
+    const { error } = await sbClient.from('usuarios').update({ runner_key: null, nombre: null }).eq('id', currentUser.id);
     if (error) throw error;
     currentProfile.runner_key = null;
+    currentProfile.nombre = null;
     miCarreraZapas = {};
     similaresCache = null;
     renderProfile();
@@ -2089,6 +2108,15 @@ let teamsAleatorios = null;
 let teamsPag = null; // { items, html, mostrados }
 let teamsObserver = null;
 
+// Teams que siempre aparecen en la primera tanda (en un lugar al azar dentro de ella)
+const TEAMS_FIJOS = ['Migueles Team'];
+function fijarEnPrimeraTanda(lista, nombres) {
+  const fijos = lista.filter(([n]) => nombres.includes(n));
+  const resto = lista.filter(([n]) => !nombres.includes(n));
+  fijos.forEach(t => resto.splice(Math.floor(Math.random() * Math.min(TEAMS_PASO, resto.length + 1)), 0, t));
+  return resto;
+}
+
 function mezclar(arr) {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
@@ -2127,7 +2155,7 @@ function teamCardSimpleHtml([name, count]) {
 
 function renderTeamsGrid(q) {
   const nq = normTxt(q || '').trim();
-  if (!teamsAleatorios) teamsAleatorios = mezclar(teamsListCache);
+  if (!teamsAleatorios) teamsAleatorios = fijarEnPrimeraTanda(mezclar(teamsListCache), TEAMS_FIJOS);
   // Al buscar se ordena por cantidad de integrantes; sin búsqueda, al azar
   const f = nq ? teamsListCache.filter(([n]) => normTxt(n).includes(nq)) : teamsAleatorios;
   if (!f.length) { document.getElementById('teamsGrid').innerHTML = '<div class="empty"><p>Sin resultados</p></div>'; return; }
@@ -2457,7 +2485,7 @@ async function openServicioModal() {
   document.getElementById('svcDescripcionInput').value = miServicio?.descripcion || '';
   document.getElementById('svcWhatsappInput').value = miServicio?.whatsapp || '';
   document.getElementById('svcInstagramInput').value = miServicio?.instagram || '';
-  document.getElementById('svcMailInput').value = miServicio?.mail || currentUser.email || '';
+  document.getElementById('svcMailInput').value = miServicio?.mail || '';
   document.getElementById('svcWebInput').value = miServicio?.web || '';
 
   if (miServicio?.provincia) {
@@ -3294,7 +3322,7 @@ async function loadFeed() {
   siguiendoIds = [];
 
   if (currentUser) {
-    const initials = currentProfile ? currentProfile.nombre.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase() : '?';
+    const initials = currentProfile ? (currentProfile.nombre || '?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase() : '?';
     const puedePublicar = await tieneCarrerasCorridas();
     if (puedePublicar) {
       newPostArea.innerHTML = `<div onclick="resetPostModal();checkMiTeamParaEtiquetar();checkPublicarComoOpciones();showModal('newPostModal')" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:12px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,rgba(232,255,71,0.15),rgba(232,255,71,0.05));border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--accent);flex-shrink:0">${initials}</div><span style="color:var(--muted);font-size:13px">Compartí tu entrenamiento...</span></div>`;
@@ -3415,7 +3443,7 @@ async function toggleEtiquetarBox() {
     box.innerHTML = rows.map(u => `
       <label style="display:flex;align-items:center;gap:8px;padding:6px 4px;cursor:pointer">
         <input type="checkbox" class="etiquetadoCb" value="${u.id}" ${etiquetadosSeleccionados.includes(u.id)?'checked':''} onchange="onEtiquetadoChange()" style="width:14px;height:14px;accent-color:var(--accent)">
-        <span style="font-size:12px">${u.nombre}</span>
+        <span style="font-size:12px">${escHtml(u.nombre || 'Usuario')}</span>
       </label>`).join('') || '<p style="color:var(--muted);font-size:11px;padding:6px">Sin resultados</p>';
     updateEtiquetarBtnText();
   } catch (e) {
@@ -3589,7 +3617,7 @@ async function publicarPost() {
     const team_etiquetado = (document.getElementById('etiquetarTeamCb').checked && miTeamParaEtiquetar) ? miTeamParaEtiquetar : null;
     const yaEtiquetadosAntes = isEditing ? (feedPostsCache[editingPostId]?.etiquetados || []) : [];
     const nuevosEtiquetados = etiquetadosSeleccionados.filter(id => !yaEtiquetadosAntes.includes(id));
-    const nombrePublicacion = publicarComoTipo === 'usuario' ? (currentProfile?.nombre || currentUser.email) : publicarComoNombre;
+    const nombrePublicacion = publicarComoTipo === 'usuario' ? (currentProfile?.nombre || 'Corredor') : publicarComoNombre;
 
     let savedPostId = editingPostId;
     if (isEditing) {
@@ -3676,7 +3704,7 @@ async function verSeguidoresInscriptos(carreraId) {
         : `<div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,rgba(232,255,71,0.15),rgba(232,255,71,0.05));border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--accent);flex-shrink:0">${initials}</div>`;
       return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">
         ${avatarHtml}
-        <div style="flex:1;font-size:13px;font-weight:600;${u.runner_key?'cursor:pointer':''}" ${u.runner_key?`onclick="hideModal('seguidoresModal');goToRunner(decodeURIComponent('${encAttr(u.runner_key)}'),decodeURIComponent('${encAttr(u.nombre)}'))"`:''}>${u.nombre}</div>
+        <div style="flex:1;font-size:13px;font-weight:600;${u.runner_key?'cursor:pointer':''}" ${u.runner_key?`onclick="hideModal('seguidoresModal');goToRunner(decodeURIComponent('${encAttr(u.runner_key)}'),decodeURIComponent('${encAttr(u.nombre)}'))"`:''}>${escHtml(u.nombre || 'Usuario')}</div>
       </div>`;
     }).join('');
   } catch (e) {
@@ -3706,7 +3734,7 @@ async function openSeguidoresModal(tipo) {
       const isMe = currentUser && u.id === currentUser.id;
       return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">
         ${avatarHtml}
-        <div style="flex:1;font-size:13px;font-weight:600;${u.runner_key?'cursor:pointer':''}" ${u.runner_key?`onclick="hideModal('seguidoresModal');goToRunner(decodeURIComponent('${encAttr(u.runner_key)}'),decodeURIComponent('${encAttr(u.nombre)}'))"`:''}>${u.nombre}</div>
+        <div style="flex:1;font-size:13px;font-weight:600;${u.runner_key?'cursor:pointer':''}" ${u.runner_key?`onclick="hideModal('seguidoresModal');goToRunner(decodeURIComponent('${encAttr(u.runner_key)}'),decodeURIComponent('${encAttr(u.nombre)}'))"`:''}>${escHtml(u.nombre || 'Usuario')}</div>
         ${!isMe&&currentUser?`<button class="follow-btn ${isFollowing?'following':''}" onclick="toggleFollow('${u.id}',this)">${isFollowing?'Siguiendo':'Seguir'}</button>`:''}
       </div>`;
     }).join('');
@@ -3762,7 +3790,7 @@ async function enviarComentario() {
   await sbClient.from('comentarios').insert({
     post_id: currentPostId,
     user_id: currentUser.id,
-    nombre: currentProfile?.nombre || currentUser.email,
+    nombre: currentProfile?.nombre || 'Corredor',
     contenido
   });
   document.getElementById('nuevoComentario').value = '';
@@ -3964,8 +3992,8 @@ async function renderProfile() {
     return;
   }
   if (!currentProfile) {
-    document.getElementById('pAvatar').textContent = (currentUser.email||'?')[0].toUpperCase();
-    document.getElementById('pName').textContent = currentUser.email;
+    document.getElementById('pAvatar').textContent = '?';
+    document.getElementById('pName').textContent = 'Tu perfil';
     document.getElementById('pSub').textContent = 'Perfil no vinculado';
     renderInstagramBox();
     const servicioHtml = await renderMiServicioSection();
@@ -3973,7 +4001,7 @@ async function renderProfile() {
     renderBloqueSolicitudes();
     return;
   }
-  const initials = currentProfile.nombre.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  const initials = (currentProfile.nombre || '?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
   if (currentProfile.avatar_url) {
     updateAvatarUI(currentProfile.avatar_url);
   } else {
@@ -3983,8 +4011,8 @@ async function renderProfile() {
     const label = document.getElementById('avatarLabel');
     if (label) label.style.display = 'flex';
   }
-  document.getElementById('pName').textContent = currentProfile.nombre;
-  document.getElementById('pSub').textContent = currentUser.email + (currentProfile.owned_team && currentProfile.owned_team_status === 'confirmed' ? ' · Admin de ' + currentProfile.owned_team : '');
+  document.getElementById('pName').textContent = currentProfile.nombre || 'Tu perfil';
+  document.getElementById('pSub').textContent = currentProfile.owned_team && currentProfile.owned_team_status === 'confirmed' ? 'Admin de ' + currentProfile.owned_team : (currentProfile.runner_key ? 'Corredor' : 'Sin carreras vinculadas');
   renderInstagramBox();
   // Perfil sin carreras vinculadas: coach que no corre o atleta esperando verificación
   if (!currentProfile.runner_key) {
@@ -4625,21 +4653,104 @@ async function compartirClasificacion() {
   setDownloadFromCanvas(canvas, link, document.getElementById('clasifImg'), 'clasificacion.png');
 }
 
+// ─── FOTO DE PERFIL ──────────────────────────────────────────────────────────
+// Al elegir una foto se abre un recorte circular: la persona la arrastra y la
+// agranda hasta que la cara quede centrada. Se guarda un cuadrado de 512 px
+// (las fotos de celular vienen de 2-3 MB y muchas veces giradas).
+const RECORTE_VISTA = 280; // tamaño del círculo en pantalla (px)
+let recorte = null; // { img, zoom, cx, cy }
+
 async function uploadAvatar(input) {
   const file = input.files[0];
+  input.value = ''; // permite volver a elegir la misma foto
   if (!file || !currentUser) return;
+  let img;
+  try {
+    img = await createImageBitmap(file, { imageOrientation: 'from-image' });
+  } catch (e) {
+    // Formato que el navegador no puede leer (ej. HEIC): se sube tal cual
+    return subirAvatar(file, file.name.split('.').pop(), file.type);
+  }
+  recorte = { img, zoom: 1, cx: img.width / 2, cy: img.height / 2 };
+  document.getElementById('recorteZoom').value = 1;
+  dibujarRecorte();
+  showModal('avatarCropModal');
+}
+
+function ladoRecorte() { return Math.min(recorte.img.width, recorte.img.height) / recorte.zoom; }
+
+function limitarRecorte() {
+  const l = ladoRecorte(), { img } = recorte;
+  recorte.cx = Math.min(img.width - l / 2, Math.max(l / 2, recorte.cx));
+  recorte.cy = Math.min(img.height - l / 2, Math.max(l / 2, recorte.cy));
+}
+
+function pintarRecorte(canvas) {
+  const l = ladoRecorte();
+  const g = canvas.getContext('2d');
+  g.imageSmoothingQuality = 'high';
+  g.drawImage(recorte.img, recorte.cx - l / 2, recorte.cy - l / 2, l, l, 0, 0, canvas.width, canvas.height);
+}
+
+function dibujarRecorte() {
+  if (!recorte) return;
+  limitarRecorte();
+  pintarRecorte(document.getElementById('recorteCanvas'));
+}
+
+function zoomRecorte(v) {
+  if (!recorte) return;
+  recorte.zoom = Number(v);
+  dibujarRecorte();
+}
+
+// Arrastrar con el dedo o el mouse
+(function () {
+  let previo = null;
+  document.addEventListener('pointerdown', e => {
+    if (e.target.id !== 'recorteCanvas' || !recorte) return;
+    previo = { x: e.clientX, y: e.clientY };
+    e.target.setPointerCapture(e.pointerId);
+  });
+  document.addEventListener('pointermove', e => {
+    if (!previo || !recorte) return;
+    const escala = ladoRecorte() / RECORTE_VISTA;
+    recorte.cx -= (e.clientX - previo.x) * escala;
+    recorte.cy -= (e.clientY - previo.y) * escala;
+    previo = { x: e.clientX, y: e.clientY };
+    dibujarRecorte();
+  });
+  document.addEventListener('pointerup', () => { previo = null; });
+  document.addEventListener('pointercancel', () => { previo = null; });
+})();
+
+async function guardarRecorte() {
+  if (!recorte) return;
+  const c = document.createElement('canvas');
+  c.width = c.height = 512;
+  pintarRecorte(c);
+  const blob = await new Promise(ok => c.toBlob(ok, 'image/jpeg', 0.88));
+  cancelarRecorte();
+  if (blob) await subirAvatar(blob, 'jpg', 'image/jpeg');
+}
+
+function cancelarRecorte() {
+  recorte?.img?.close?.();
+  recorte = null;
+  hideModal('avatarCropModal');
+}
+
+async function subirAvatar(archivo, ext, tipo) {
   const label = document.getElementById('avatarLabel');
   label.innerHTML = '<i class="ti ti-refresh" style="font-size:12px;color:#000;animation:spin 1s linear infinite"></i>';
-
   try {
-    const ext = file.name.split('.').pop();
     const path = `${currentUser.id}/avatar.${ext}`;
 
     // Remove old avatar first
     await sbClient.storage.from('avatars').remove([path]);
 
     // Upload new
-    const { error: upErr } = await sbClient.storage.from('avatars').upload(path, file, { upsert: true });
+    const { error: upErr } = await sbClient.storage.from('avatars').upload(path, archivo, { upsert: true, contentType: tipo });
     if (upErr) throw upErr;
 
     const { data } = sbClient.storage.from('avatars').getPublicUrl(path);
@@ -4827,6 +4938,7 @@ async function initZapasScreen() {
     grid.innerHTML = '<div class="empty"><p>Error al cargar zapatillas</p></div>';
     return;
   }
+  sortearOrdenZapas(); // nuevo orden en cada visita
   if (!zapasFiltrosInit) {
     ZF.marca.opciones = [...new Set(zapasCache.map(z => z.marca))].sort().map(m => [m, m]);
     Object.entries(ZF).forEach(([k, f]) => {
@@ -4869,6 +4981,19 @@ function fechaCorta(iso) {
   return `${d}/${m}/${y}`;
 }
 
+// Orden al azar en cada visita, con más chances de salir arriba para los
+// modelos destacados (sorteo ponderado: clave = azar^(1/peso), mayor primero).
+const ZAPAS_DESTACADAS = /adios pro 4|boston 13|alphafly|vaporfly|pegasus/i;
+const PESO_DESTACADA = 8;
+let zapasOrden = {};
+function sortearOrdenZapas() {
+  zapasOrden = {};
+  (zapasCache || []).forEach(z => {
+    const peso = ZAPAS_DESTACADAS.test(z.modelo) ? PESO_DESTACADA : 1;
+    zapasOrden[z.id] = Math.pow(Math.random(), 1 / peso);
+  });
+}
+
 function renderZapas() {
   if (!zapasCache) return;
   const sel = {};
@@ -4888,7 +5013,7 @@ function renderZapas() {
     (!sel.dist.length || sel.dist.some(d => (z.distancias || []).includes(parseInt(d, 10)))) &&
     (!sel.peso.length || sel.peso.includes(pesoRango(z.peso_g))) &&
     (!sel.placa.length || sel.placa.includes(z.placa_carbono ? 'si' : 'no'))
-  );
+  ).sort((a, b) => (zapasOrden[b.id] || 0) - (zapasOrden[a.id] || 0));
 
   const grid = document.getElementById('zapasGrid');
   if (!zapasCache.length) { grid.innerHTML = '<div class="empty"><p>Todavía no hay zapatillas cargadas</p></div>'; return; }
@@ -5825,7 +5950,7 @@ initAuth();
 // ─── ANDROID BACK BUTTON (Capacitor) ─────────────────────────────────────────
 function handleBackButton() {
   // Si hay un modal abierto, cerrarlo
-  const modals = ['codigoModal', 'zapaDetalleModal', 'zapaPickerModal', 'rankingCarreraModal', 'newPostModal','comentariosModal', 'linkModal', 'authModal', 'shareModal', 'medalleroModal','notificacionesModal', 'avatarLightboxModal', 'seguidoresModal', 'servicioModal', 'carreraDetalleModal', 'visibilidadMedallasModal', 'clasificacionModal', 'forgotPasswordModal'];
+  const modals = ['avatarCropModal', 'codigoModal', 'zapaDetalleModal', 'zapaPickerModal', 'rankingCarreraModal', 'newPostModal','comentariosModal', 'linkModal', 'authModal', 'shareModal', 'medalleroModal','notificacionesModal', 'avatarLightboxModal', 'seguidoresModal', 'servicioModal', 'carreraDetalleModal', 'visibilidadMedallasModal', 'clasificacionModal', 'forgotPasswordModal'];
   for (const id of modals) {
     const el = document.getElementById(id);
     if (el && !el.classList.contains('hidden')) {

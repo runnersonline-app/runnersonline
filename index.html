@@ -90,6 +90,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .team-card{display:flex;align-items:center;gap:12px}
 .team-card-body{flex:1;min-width:0}
 .team-card-logo{width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1px solid var(--border);background:var(--bg)}
+.team-sin-logo{display:flex;align-items:center;justify-content:center;color:var(--muted2);font-size:18px}
 .back-btn{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:11px;cursor:pointer;margin-bottom:10px;padding-top:10px;background:none;border:none;font-family:'DM Sans',sans-serif;transition:color .15s}
 .back-btn:hover{color:var(--text)}
 .member-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer}
@@ -456,7 +457,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
     <div id="similaresBox" style="display:none;margin-top:14px"></div>
     <div class="sect-title" id="raceTitle" style="display:none">Historial</div>
     <table class="race-table" id="raceTable">
-      <thead><tr><th>Carrera</th><th>Dist</th><th>Tiempo</th><th>Ritmo</th><th></th></tr></thead>
+      <thead><tr><th>Carrera</th><th>Dist</th><th>Tiempo</th><th>Ritmo</th><th style="width:44px;text-align:center">Zapa</th></tr></thead>
       <tbody id="raceBody"></tbody>
     </table>
   </div>
@@ -467,7 +468,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 <div id="sc-teams" class="screen">
   <div class="header yellow" data-bg="TEAM">
     <h1>Running Teams</h1>
-    <p id="teamsSubtitle">Buenos Aires</p>
+    <p id="teamsSubtitle">Running teams</p>
   
     <button class="global-home" onclick="goTo('runners')"><i class="ti ti-home"></i> Inicio</button>
   </div>
@@ -1150,7 +1151,8 @@ let currentRunnerRaces = [];
 let currentRunnerKey = null;
 let currentProfile = null;
 let ALL_TEAMS_CACHE = null;
-let teamsListCache = [];
+let teamsListCache = [];   // teams con foto: la lista inicial
+let teamsTodosCache = [];  // todos los teams: para buscar y filtrar
 const activeF = new Set();
 let cur = 'runners', prev = null;
 
@@ -1361,19 +1363,14 @@ linkInput.addEventListener('input', function() {
   selectedRunnerKey = null;
   document.getElementById('btnConfirmLink').disabled = true;
   document.getElementById('selectedRunnerBox').classList.remove('show');
-  if (q.length < 2) { linkAc.classList.remove('show'); return; }
+  if (q.length < 3) { linkAc.classList.remove('show'); return; }
   clearTimeout(linkTimeout);
   linkTimeout = setTimeout(() => searchForLink(q), 350);
 });
 
 async function searchForLink(q) {
   try {
-    const rows = await sbFetch('corredores', {
-      runner: ilikeSafe(q),
-      select: 'runner,runner_key,sex,team',
-      order: 'runner.asc',
-      limit: 300
-    });
+    const rows = await buscarUnicos(q, 6);
     const seen = new Set();
     const unique = rows.filter(r => {
       const k = r.runner_key || r.runner;
@@ -1496,6 +1493,13 @@ function hideModal(id) {
 // ─── SUPABASE FETCH ───────────────────────────────────────────────────────────
 // Arma un valor de filtro ilike a prueba de caracteres especiales de PostgREST
 // (comas, puntos, parentesis) que aparecen en nombres tipo "Apellido, Nombre".
+// Búsqueda rápida de corredores por nombre (una fila por corredor)
+async function buscarUnicos(q, limit) {
+  const { data, error } = await sbClient.rpc('buscar_corredores', { p_q: q, p_limit: limit });
+  if (error) throw error;
+  return data || [];
+}
+
 function ilikeSafe(q) {
   // Postgrest usa , . : ( ) como caracteres reservados en los filtros.
   // En vez de intentar escaparlos (rompe el comodín *), los sacamos
@@ -1665,8 +1669,8 @@ let searchTimeout = null;
 
 searchIn.addEventListener('input', function() {
   const q = this.value.trim();
-  // Un dorsal puede tener 1 dígito; para nombres seguimos pidiendo 2 letras
-  if (q.length < (/^\d+$/.test(q) ? 1 : 2)) { acEl.classList.remove('show'); return; }
+  // Un dorsal puede tener 1 dígito; para nombres hacen falta 3 letras
+  if (q.length < (/^\d+$/.test(q) ? 1 : 3)) { acEl.classList.remove('show'); return; }
   clearTimeout(searchTimeout);
   acEl.innerHTML = '<div class="no-res">Buscando...</div>';
   acEl.classList.add('show');
@@ -1700,36 +1704,34 @@ async function searchByDorsal(q) {
   acEl.classList.add('show');
 }
 
+// La base busca sobre una lista de corredores únicos (buscar_corredores):
+// todas las palabras en cualquier orden, primero los que empiezan con lo
+// escrito y los que tienen más carreras.
+let searchReqId = 0;
 async function searchRunners(q) {
+  const reqId = ++searchReqId;
   try {
     if (/^\d+$/.test(q)) { await searchByDorsal(q); return; }
-    const params = { runner: ilikeSafe(q), select: 'runner,runner_key,sex,team,archivo_fuente,time', order: 'runner.asc', limit: 500 };
-    if (activeF.has('sexM')) params.sex = 'eq.M';
-    if (activeF.has('sexF')) params.sex = 'eq.F';
-    let rows = await sbFetch('corredores', params);
-    const grouped = {};
-    rows.forEach(r => {
-      const key = r.runner_key || r.runner;
-      if (!grouped[key]) grouped[key] = { name: r.runner, key, sex: r.sex, team: r.team, archivos: new Set(), has42: false, has21: false };
-      const dist = (r.archivo_fuente||'').replace('.csv','').split('_').pop();
-      grouped[key].archivos.add(r.archivo_fuente);
-      if (dist === '42') grouped[key].has42 = true;
-      if (dist === '21') grouped[key].has21 = true;
+    const { data, error } = await sbClient.rpc('buscar_corredores', {
+      p_q: q,
+      p_sexo: activeF.has('sexM') ? 'M' : activeF.has('sexF') ? 'F' : null,
+      p_42: activeF.has('has42'),
+      p_21: activeF.has('has21'),
+      p_min_carreras: activeF.has('r2') ? 2 : 1,
+      p_limit: 7
     });
-    let list = Object.values(grouped);
-    if (activeF.has('has42')) list = list.filter(r => r.has42);
-    if (activeF.has('has21')) list = list.filter(r => r.has21);
-    if (activeF.has('r2')) list = list.filter(r => r.archivos.size >= 2);
-    list = list.slice(0, 7);
-    if (!list.length) { acEl.innerHTML = '<div class="no-res">Sin resultados</div>'; return; }
-    acEl.innerHTML = list.map(r => {
-      const safeKey = encAttr(r.key||'');
-      const safeName = encAttr(r.name||'');
-      return `<div class="ac-item" onclick="selectR(decodeURIComponent('${safeKey}'),decodeURIComponent('${safeName}'))"><span>${r.name}</span><span class="ac-meta">${r.team||''}</span></div>`;
+    if (reqId !== searchReqId) return; // llegó una búsqueda más nueva
+    if (error) throw error;
+    if (!data?.length) { acEl.innerHTML = '<div class="no-res">Sin resultados</div>'; return; }
+    acEl.innerHTML = data.map(r => {
+      const safeKey = encAttr(r.runner_key || r.runner || '');
+      const safeName = encAttr(r.runner || '');
+      const meta = [esTeamValido(r.team) ? r.team : '', `${r.carreras} carrera${r.carreras === 1 ? '' : 's'}`].filter(Boolean).join(' · ');
+      return `<div class="ac-item" onclick="selectR(decodeURIComponent('${safeKey}'),decodeURIComponent('${safeName}'))"><span>${escHtml(r.runner)}</span><span class="ac-meta">${escHtml(meta)}</span></div>`;
     }).join('');
     acEl.classList.add('show');
   } catch(e) {
-    acEl.innerHTML = '<div class="no-res">Error de conexion</div>';
+    if (reqId === searchReqId) acEl.innerHTML = '<div class="no-res">Error de conexión, probá de nuevo</div>';
   }
 }
 
@@ -1941,12 +1943,12 @@ function onCmpSearch(q) {
   const ac = document.getElementById('cmpAc');
   q = q.trim();
   clearTimeout(cmpSearchTimeout);
-  if (q.length < 2) { ac.classList.remove('show'); return; }
+  if (q.length < 3) { ac.classList.remove('show'); return; }
   ac.innerHTML = '<div class="no-res">Buscando...</div>';
   ac.classList.add('show');
   cmpSearchTimeout = setTimeout(async () => {
     try {
-      const rows = await sbFetch('corredores', { runner: ilikeSafe(q), select: 'runner,runner_key,team', order: 'runner.asc', limit: 300 });
+      const rows = await buscarUnicos(q, 8);
       const seen = new Set([cmpBase.key]);
       const unicos = rows.filter(r => { const k = r.runner_key || r.runner; if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 7);
       ac.innerHTML = unicos.length
@@ -2026,11 +2028,10 @@ function renderRaceHistoryTable(racesList) {
   }
   const paces = racesList.map(x=>x.pm).filter(p=>p<999);
   const minP = paces.length ? Math.min(...paces) : 0;
-  const maxP = paces.length ? Math.max(...paces) : 0;
   document.getElementById('raceBody').innerHTML = racesList.map(rc => {
     const isBest = rc.pm === minP && rc.pm < 999;
-    const pct = maxP===minP ? 70 : Math.round(20+70*(1-(rc.pm-minP)/(maxP-minP)));
-    return `<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentRunnerKey, decodeURIComponent('${encAttr(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}${zapaCarreraIcono(currentRunnerZapas[rc.archivo_fuente])}<br><span style="color:var(--muted);font-size:9px;font-family:'DM Mono',monospace">${rc.year}</span></td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}${badgeRecord(rc.archivo_fuente, currentRunnerKey)}</td><td class="pace-val">${rc.pace}${isBest&&rc.pace!=='—'?'<span class="best-tag">PR</span>':''}</td><td><div class="bar-wrap"><div class="bar" style="width:${rc.pm<999?pct:0}%"></div></div></td></tr>`;
+    // (la barra de ritmo se sacó: en su lugar va la zapa, igual que en "Mi perfil")
+    return `<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentRunnerKey, decodeURIComponent('${encAttr(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}<br><span style="color:var(--muted);font-size:9px;font-family:'DM Mono',monospace">${rc.year}</span></td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}${badgeRecord(rc.archivo_fuente, currentRunnerKey)}</td><td class="pace-val">${rc.pace}${isBest&&rc.pace!=='—'?'<span class="best-tag">PR</span>':''}</td><td style="text-align:center">${zapaCarreraIcono(currentRunnerZapas[rc.archivo_fuente], true)}</td></tr>`;
   }).join('');
 }
 
@@ -2057,10 +2058,11 @@ async function loadTeams() {
     const counts = {};
     rows.forEach(r => { counts[r.team] = r.member_count; });
     ALL_TEAMS_CACHE = counts;
-    // Solo se listan los teams con foto de Instagram (si los logos no cargaron, se muestran todos)
+    // La lista inicial muestra los teams con foto de Instagram; al buscar o filtrar aparecen todos
     const hayLogos = Object.keys(TEAM_LOGOS).length > 0;
-    teamsListCache = Object.entries(counts).filter(([n]) => esTeamValido(n) && (!hayLogos || TEAM_LOGOS[n])).sort((a,b) => b[1]-a[1]);
-    document.getElementById('teamsSubtitle').textContent = `Buenos Aires · ${teamsListCache.length} teams`;
+    teamsTodosCache = Object.entries(counts).filter(([n]) => esTeamValido(n)).sort((a,b) => b[1]-a[1]);
+    teamsListCache = teamsTodosCache.filter(([n]) => !hayLogos || TEAM_LOGOS[n]);
+    document.getElementById('teamsSubtitle').textContent = `${teamsTodosCache.length.toLocaleString('es-AR')} running teams`;
     aplicarFiltrosTeams();
   } catch(e) {
     document.getElementById('teamsGrid').innerHTML = '<div class="loading">Error al cargar teams</div>';
@@ -2086,7 +2088,9 @@ async function loadTeamLogos() {
 
 function teamLogoHtml(name) {
   const url = TEAM_LOGOS[name];
-  return url ? `<img class="team-card-logo" src="${escHtml(url)}" alt="" loading="lazy" onerror="this.remove()">` : '';
+  return url
+    ? `<img class="team-card-logo" src="${escHtml(url)}" alt="" loading="lazy" onerror="this.remove()">`
+    : '<div class="team-card-logo team-sin-logo"><i class="ti ti-users"></i></div>';
 }
 
 // Logo en el encabezado de la pantalla del team. Si se llegó sin pasar por la
@@ -2157,7 +2161,8 @@ function renderTeamsGrid(q) {
   const nq = normTxt(q || '').trim();
   if (!teamsAleatorios) teamsAleatorios = fijarEnPrimeraTanda(mezclar(teamsListCache), TEAMS_FIJOS);
   // Al buscar se ordena por cantidad de integrantes; sin búsqueda, al azar
-  const f = nq ? teamsListCache.filter(([n]) => normTxt(n).includes(nq)) : teamsAleatorios;
+  // Al buscar aparecen todos los teams (con foto o sin foto), los más grandes primero
+  const f = nq ? teamsTodosCache.filter(([n]) => normTxt(n).includes(nq)) : teamsAleatorios;
   if (!f.length) { document.getElementById('teamsGrid').innerHTML = '<div class="empty"><p>Sin resultados</p></div>'; return; }
   paginarTeams(f, teamCardSimpleHtml);
 }
@@ -2786,8 +2791,8 @@ async function aplicarFiltrosTeams() {
     const porTeam = {};
     rows.forEach(r => { (porTeam[r.team] = porTeam[r.team] || []).push(r); });
     const nq = normTxt(q).trim();
-    const hayLogos = Object.keys(TEAM_LOGOS).length > 0;
-    const teams = Object.keys(porTeam).filter(t => esTeamValido(t) && (!hayLogos || TEAM_LOGOS[t]) && (!nq || normTxt(t).includes(nq))).sort();
+    // Con filtros aparecen todos los teams que entrenan ahí, tengan foto o no
+    const teams = Object.keys(porTeam).filter(t => esTeamValido(t) && (!nq || normTxt(t).includes(nq))).sort();
     if (!teams.length) {
       grid.innerHTML = '<div class="empty"><p>Ningún team entrena con esos filtros</p></div>';
       return;

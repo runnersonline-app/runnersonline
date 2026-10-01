@@ -10,7 +10,7 @@
 html{overscroll-behavior:none;overflow:hidden}
 body{overscroll-behavior:none;overflow:hidden}
 :root{--bg:#f5f5f3;--surface:#ffffff;--card:#ffffff;--border:#e2e2df;--accent:#c3d100;--text:#1a1a1a;--muted:#767672;--muted2:#c7c7c2;--blue:#0090c4;--orange:#c47f1f}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;height:100vh;overflow:hidden;display:flex;flex-direction:column;max-width:420px;margin:0 auto}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column;max-width:420px;margin:0 auto}
 .screen{display:none;flex-direction:column;height:100%;overflow:hidden}
 .screen.active{display:flex}
 .screen .bottom-nav{order:0}
@@ -50,7 +50,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .filters{padding:6px 16px 8px;display:flex;gap:5px;flex-wrap:wrap;flex-shrink:0}
 .chip{background:var(--surface);border:1.5px solid var(--border);border-radius:4px;padding:4px 10px;font-size:10px;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;transition:all .15s;user-select:none}
 .chip.active{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
-.content{flex:1;overflow-y:auto;overscroll-behavior-y:contain;padding:0 16px 16px}
+.content{flex:1;overflow-y:auto;overscroll-behavior-y:contain;padding:0 16px calc(40px + env(safe-area-inset-bottom))}
 .content::-webkit-scrollbar{width:3px}
 .content::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .empty{padding:50px 0;text-align:center;color:var(--muted)}
@@ -100,6 +100,20 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .member-pace{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue)}
 .races-list{display:flex;flex-direction:column;gap:8px;padding-top:10px}
 .race-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:13px 14px;cursor:pointer;transition:border-color .15s}
+.wa-pos{font-size:.6em;margin-left:6px;letter-spacing:0;color:inherit;vertical-align:middle}
+.wa-delta{color:var(--muted2);font-size:.8em;font-weight:400;margin-left:2px}
+.rwd-nota{font-size:10px;color:var(--muted);text-align:center;margin:10px 0 0}
+.run-badges{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 2px}
+.run-badges:empty{display:none}
+.run-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;border:1px solid var(--accent);background:rgba(232,255,71,0.08);font-size:10px;font-weight:600;color:var(--text)}
+.run-badge i{color:var(--accent);font-size:12px}
+.race-card.rc-compacta{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:default}
+.rc-info{flex:1;min-width:0}
+.rc-info .race-card-name{margin-bottom:2px}
+.rc-meta{font-size:10px;color:var(--muted);line-height:1.4}
+.rc-dists{display:flex;flex-direction:column;gap:4px;align-items:stretch;flex-shrink:0}
+.rc-dist{background:var(--surface);border:1.5px solid var(--blue);border-radius:4px;padding:4px 10px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--blue);cursor:pointer;font-weight:600;white-space:nowrap}
+.rc-dist.inscripto{background:var(--accent);border-color:var(--accent);color:#000;cursor:default}
 .race-card:hover{border-color:var(--accent)}
 .race-card-name{font-weight:600;font-size:13px;margin-bottom:6px}
 .race-meta{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
@@ -440,13 +454,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
       <button class="home-btn" onclick="goTo('runners');clearRunner()"><i class="ti ti-home"></i> Inicio</button>
     </div>
     <div class="runner-hdr" id="runHdr">
-      <div class="runner-name" id="runName"></div>
+      <div class="runner-name"><span id="runName"></span><span id="runWaPos" class="wa-pos"></span></div>
       <div id="runFollowBox" style="display:none;margin:6px 0"></div>
       <div id="runBio" style="display:none;font-size:12px;color:var(--muted);line-height:1.4;margin:4px 0 8px;white-space:pre-wrap"></div>
       <div id="runInstagram" style="display:none;margin-bottom:8px"></div>
       <div id="runResidencia" style="display:none;font-size:11px;color:var(--muted);margin-bottom:8px"></div>
       <div class="runner-tags" id="runTags"></div>
       <div class="stats-row" id="runStats"></div>
+      <div id="runBadges" class="run-badges"></div>
       <div id="runMedallero" style="display:none;margin-top:10px"></div>
       <div id="runCompareBox"></div>
     </div>
@@ -589,6 +604,36 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 </div>
 
 <!-- ZAPAS -->
+<!-- RANKING (puntaje World Athletics, últimos 12 meses) -->
+<div id="sc-ranking" class="screen">
+  <div class="header yellow" data-bg="TOP">
+    <h1>Ranking</h1>
+    <p>Puntaje World Athletics · últimos 12 meses</p>
+    <button class="global-home" onclick="goTo('runners')"><i class="ti ti-home"></i> Inicio</button>
+  </div>
+  <div class="filters" style="flex-wrap:wrap;gap:6px">
+    <div class="chip active" data-rwsexo="M" onclick="setRankingWa('sexo','M')">Caballeros</div>
+    <div class="chip" data-rwsexo="F" onclick="setRankingWa('sexo','F')">Damas</div>
+    <span style="flex:1"></span>
+    <div class="chip active" data-rwmodo="corredores" onclick="setRankingWa('modo','corredores')">Corredores</div>
+    <div class="chip" data-rwmodo="teams" onclick="setRankingWa('modo','teams')">Teams</div>
+  </div>
+  <div class="search-area" style="padding-bottom:0">
+    <div class="search-box">
+      <input type="text" id="rwBuscar" placeholder="Buscar corredor o team..." autocomplete="off" oninput="onBuscarRankingWa()">
+    </div>
+  </div>
+  <div class="filters" id="rwTodosBox" style="padding-top:0">
+    <div class="chip active" data-rwtodos="0" onclick="setRankingWa('todos',false)">2+ carreras en el año</div>
+    <div class="chip" data-rwtodos="1" onclick="setRankingWa('todos',true)">Ver todos</div>
+  </div>
+  <div class="content">
+    <div id="rwLista"></div>
+    <div id="rwPie" style="font-size:10px;color:var(--muted);text-align:center;padding:12px 0;min-height:14px"></div>
+  </div>
+  <div class="bottom-nav" id="nav8"></div>
+</div>
+
 <div id="sc-zapas" class="screen">
   <div class="header yellow" data-bg="ZAP">
     <h1>Zapas</h1>
@@ -910,6 +955,19 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
   </div>
 </div>
 
+<!-- MODAL DETALLE DEL RANKING (carreras de un corredor / integrantes de un team) -->
+<div class="modal-overlay hidden center-modal" id="rankingWaDetalleModal">
+  <div class="modal-sheet" style="padding-bottom:20px;max-height:85vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+      <span id="rwdTitulo" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px;line-height:1.1"></span>
+      <button onclick="hideModal('rankingWaDetalleModal')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;flex-shrink:0"><i class="ti ti-x"></i></button>
+    </div>
+    <div id="rwdSub" style="font-size:11px;color:var(--muted);margin:2px 0 10px"></div>
+    <div id="rwdLista"></div>
+    <button id="rwdBoton" class="btn-confirm" style="margin-top:12px">Ver perfil</button>
+  </div>
+</div>
+
 <!-- MODAL CÓDIGO DE VERIFICACIÓN (dueño de team / atleta protegido) -->
 <div class="modal-overlay hidden center-modal" id="codigoModal">
   <div class="modal-sheet" style="padding-bottom:24px;text-align:center">
@@ -1040,7 +1098,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
         <div onclick="document.getElementById('avatarInputGallery').click();toggleAvatarOptions()" style="padding:9px 10px;font-size:12px;cursor:pointer;border-radius:5px;white-space:nowrap"><i class="ti ti-photo" style="color:var(--muted)"></i> Elegir de la galería</div>
       </div>
     </div>
-    <div class="profile-name" id="pName">—</div>
+    <div class="profile-name"><span id="pName">—</span><span id="pWaPos" class="wa-pos"></span></div>
     <div class="profile-sub" id="pSub">Iniciá sesión para ver tu perfil</div>
     <div id="pInstagramBox" style="display:none;margin-top:6px"></div>
     <div id="pDatosBox" style="display:none;margin-top:6px"></div>
@@ -1621,13 +1679,14 @@ const SECCIONES_OCULTAS = ['feed', 'servicios'];
 const NAV = [
   {id:'runners',icon:'ti-run',label:'Corredores'},
   {id:'teams',icon:'ti-users',label:'Teams'},
+  {id:'ranking',icon:'ti-chart-bar',label:'Ranking'},
   {id:'carreras',icon:'ti-flag',label:'Carreras'},
   {id:'zapas',icon:'ti-shoe',label:'Zapas'},
   {id:'perfil',icon:'ti-user-circle',label:'Yo'}
 ];
 
 function buildNav(active) {
-  ['nav0','nav1','nav2','nav3','nav4','nav5','nav6','nav7'].forEach(nid => {
+  ['nav0','nav1','nav2','nav3','nav4','nav5','nav6','nav7','nav8'].forEach(nid => {
     const el = document.getElementById(nid); if (!el) return;
     el.innerHTML = NAV.map(n => {
       const isAct = n.id === active;
@@ -1651,6 +1710,7 @@ function applyScreen(id) {
   if (id === 'carreras') initCarrerasScreen();
   if (id === 'servicios') initServiciosScreen();
   if (id === 'zapas') initZapasScreen();
+  if (id === 'ranking') initRankingWa();
 }
 
 function goTo(id) {
@@ -1810,6 +1870,7 @@ async function loadRunner(key) {
     const has21 = races.some(r => r.dist==='21');
     document.getElementById('runHdr').classList.add('show');
     document.getElementById('runName').textContent = info.runner;
+    mostrarPosicionWa(key, 'runWaPos');
 
     if (runnerProfile?.avatar_url) {
       const avatarHtml = `<img id="runAvatar" src="${runnerProfile.avatar_url}" onclick="openAvatarLightbox('${runnerProfile.avatar_url.replace(/'/g,"\\'")}')" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);margin-bottom:8px;display:block;cursor:pointer">`;
@@ -1876,6 +1937,10 @@ async function loadRunner(key) {
       `<div class="tag">Team ${team?`<span onclick="showTeam('${team.replace(/'/g,"\\'")}')" style="cursor:pointer;text-decoration:underline;color:var(--blue)">${team}</span>`:'<span>—</span>'}</div>${has42 ? '<div class="tag">✓ <span>Maratonista</span></div>' : ''}${has21 ? '<div class="tag">✓ <span>21K</span></div>' : ''}`;
     document.getElementById('runStats').innerHTML =
       `<div class="stat-pill"><div class="num">${races.length}</div><div class="lbl">Carreras</div></div><div class="stat-pill"><div class="num">${races.filter(x=>x.dist==='42').length}</div><div class="lbl">Maratones</div></div><div class="stat-pill"><div class="num">${races.filter(x=>x.dist==='21').length}</div><div class="lbl">Media Maratón</div></div>`;
+    // Insignias ganadas (en la ficha pública solo se muestran las ganadas)
+    const ganadas = calcularInsignias(races, team).filter(b => b.earned);
+    document.getElementById('runBadges').innerHTML = ganadas.map(b =>
+      `<span class="run-badge" title="${escHtml(b.desc)}"><i class="ti ${b.icon}"></i>${escHtml(b.name)}</span>`).join('');
     // Zapatillas con las que este corredor marcó cada carrera (si tiene cuenta)
     currentRunnerZapas = await cargarZapasDeCarreras(runnerProfile?.id);
     if (!races.length) {
@@ -1894,6 +1959,43 @@ async function loadRunner(key) {
 let cmpBase = null;   // { key, name, races } del corredor que se está viendo
 let cmpOtro = null;   // { key, name, races } del sumado para comparar
 let cmpSearchTimeout = null;
+
+// ─── INSIGNIAS ───────────────────────────────────────────────────────────────
+// Una sola insignia por distancia: la mejor lograda (ej. quien hizo sub 2h no
+// muestra también sub 3h). En "Yo" se ven todas (si no lograste nada en una
+// distancia, aparece bloqueada la primera meta); en la ficha de cada corredor,
+// solo las ganadas. races: [{ dist, time, pm }], con pm < 999 = ritmo válido.
+const ESCALERAS_INSIGNIAS = [
+  { dist: '42', niveles: [
+    { icon: 'ti-crown', name: 'Sub 2h', seg: 2 * 3600, desc: 'Maratón en menos de 2 horas' },
+    { icon: 'ti-flame', name: 'Sub 3h', seg: 3 * 3600, desc: 'Maratón en menos de 3 horas' },
+    { icon: 'ti-bolt', name: 'Sub 3:30', seg: 3.5 * 3600, desc: 'Maratón en menos de 3:30' },
+    { icon: 'ti-trophy', name: 'Primer', seg: Infinity, desc: 'Maratón completada' },
+  ] },
+  { dist: '21', niveles: [
+    { icon: 'ti-crown', name: 'Sub 1:15', seg: 75 * 60, desc: '21K en menos de 1:15' },
+    { icon: 'ti-flame', name: 'Sub 1:30', seg: 90 * 60, desc: '21K en menos de 1:30' },
+    { icon: 'ti-run', name: 'Primer', seg: Infinity, desc: 'Media maratón completada' },
+  ] },
+  { dist: '10', niveles: [
+    { icon: 'ti-crown', name: 'Sub 30', seg: 30 * 60, desc: '10K en menos de 30 minutos' },
+    { icon: 'ti-flame', name: 'Sub 40', seg: 40 * 60, desc: '10K en menos de 40 minutos' },
+  ] },
+];
+
+function calcularInsignias(races, team) {
+  const insignias = ESCALERAS_INSIGNIAS.map(({ dist, niveles }) => {
+    const deLaDistancia = races.filter(r => r.dist === dist);
+    // Mejor tiempo válido en esa distancia (Infinity si solo la terminó sin tiempo válido)
+    const mejor = Math.min(...deLaDistancia.filter(r => r.pm < 999).map(r => tiempoASeg(r.time) ?? Infinity), Infinity);
+    const lograda = deLaDistancia.length ? niveles.find(n => mejor < n.seg || (n.seg === Infinity)) : null;
+    const nivel = lograda || niveles[niveles.length - 1];
+    const name = nivel.name === 'Primer' ? `Primer ${dist}K` : `${nivel.name} · ${dist}K`;
+    return { icon: nivel.icon, name, desc: nivel.desc, earned: !!lograda };
+  });
+  insignias.push({ icon: 'ti-users', name: 'En un Team', desc: 'Pertenece a un team', earned: !!team });
+  return insignias;
+}
 
 function tiempoASeg(t) {
   const p = String(t || '').split(':').map(Number);
@@ -2670,7 +2772,8 @@ async function initTeamFilters() {
   document.getElementById('deqDiasBox').innerHTML = DIAS_SEMANA.map(d => chip('deqDiaChip', d)).join('');
   document.getElementById('deqHorariosBox').innerHTML =
     HORAS_FIJAS.map(h => chip('deqHoraChip', h)).join('') + PERIODOS_FIJOS.map(p => chip('deqPeriodoChip', p)).join('');
-  try { if (localStorage.getItem('teamFiltersCollapsed') === '1') toggleTeamFilters(true); } catch (e) {}
+  // Siempre arranca cerrado al entrar a Teams
+  toggleTeamFilters(true);
   try {
     const provs = await sbFetch('partidos_indec', { select: 'provincia', order: 'provincia.asc' });
     const unicas = [...new Set(provs.map(p => p.provincia))];
@@ -2940,6 +3043,181 @@ async function resolverSolicitud(id, aprobar) {
   }
 }
 
+// ─── RANKING WORLD ATHLETICS ─────────────────────────────────────────────────
+// Promedio de puntos WA de cada corredor en los últimos 12 meses (base:
+// ranking_wa, se actualiza cada hora). Por defecto solo quienes corrieron 2 o
+// más carreras en el año; "Ver todos" incluye al resto. Teams = promedio de
+// sus integrantes activos. Se carga de a 20 al bajar.
+const RW_PASO = 20;
+const rw = { sexo: 'M', modo: 'corredores', todos: false, q: '', datos: [], fin: false, cargando: false, reqId: 0 };
+let rwObserver = null;
+
+function initRankingWa() {
+  if (!rw.datos.length && !rw.cargando) cargarRankingWa();
+}
+
+// Buscador: filtra por nombre (o por team en la vista Teams); los puestos son los del ranking completo
+let rwBuscarTimeout = null;
+function onBuscarRankingWa() {
+  clearTimeout(rwBuscarTimeout);
+  rwBuscarTimeout = setTimeout(() => {
+    const q = document.getElementById('rwBuscar').value.trim();
+    if (q.length === 1 || q === rw.q) return; // una sola letra: esperar a que escriba más
+    rw.q = q;
+    cargarRankingWa();
+  }, 350);
+}
+
+function setRankingWa(clave, valor) {
+  rw[clave] = valor;
+  document.querySelectorAll('[data-rwsexo]').forEach(c => c.classList.toggle('active', c.dataset.rwsexo === rw.sexo));
+  document.querySelectorAll('[data-rwmodo]').forEach(c => c.classList.toggle('active', c.dataset.rwmodo === rw.modo));
+  document.querySelectorAll('[data-rwtodos]').forEach(c => c.classList.toggle('active', c.dataset.rwtodos === (rw.todos ? '1' : '0')));
+  // "Ver todos" no aplica a teams (ya son promedio de activos)
+  document.getElementById('rwTodosBox').style.display = rw.modo === 'teams' ? 'none' : '';
+  cargarRankingWa();
+}
+
+async function cargarRankingWa() {
+  const reqId = ++rw.reqId;
+  rw.datos = []; rw.fin = false; rw.cargando = false;
+  document.getElementById('rwLista').innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando ranking...</div>';
+  document.getElementById('rwPie').textContent = '';
+  await masRankingWa(reqId);
+  if (reqId !== rw.reqId) return;
+  if (!rw.datos.length) {
+    const msg = rw.q
+      ? (rw.modo === 'teams' ? 'Ningún team con ese nombre en este ranking.' : `Nadie con ese nombre en este ranking.${rw.todos ? '' : ' Probá con "Ver todos": puede tener una sola carrera en el año.'}`)
+      : 'Todavía no hay puntajes cargados para este ranking.';
+    document.getElementById('rwLista').innerHTML = `<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0">${escHtml(msg)}</p>`;
+    return;
+  }
+  if (rwObserver) rwObserver.disconnect();
+  if ('IntersectionObserver' in window) {
+    rwObserver = new IntersectionObserver(ents => { if (ents.some(e => e.isIntersecting)) masRankingWa(rw.reqId); }, { rootMargin: '0px 0px 300px 0px' });
+    rwObserver.observe(document.getElementById('rwPie'));
+  }
+}
+
+async function masRankingWa(reqId) {
+  if (rw.fin || rw.cargando || reqId !== rw.reqId) return;
+  rw.cargando = true;
+  try {
+    const { data, error } = await sbClient.rpc('get_ranking_wa', {
+      p_sexo: rw.sexo, p_teams: rw.modo === 'teams', p_todos: rw.todos, p_offset: rw.datos.length, p_limit: RW_PASO, p_q: rw.q || null
+    });
+    if (reqId !== rw.reqId) return;
+    if (error) throw error;
+    const lista = document.getElementById('rwLista');
+    if (!rw.datos.length) lista.innerHTML = '';
+    rw.datos = rw.datos.concat(data || []);
+    if (!data || data.length < RW_PASO) rw.fin = true;
+    lista.insertAdjacentHTML('beforeend', (data || []).map(rwFilaHtml).join(''));
+    document.getElementById('rwPie').textContent = rw.fin
+      ? `${rw.datos.length} en el ranking`
+      : `${rw.datos.length} · bajá para ver más`;
+  } catch (e) {
+    if (reqId === rw.reqId) document.getElementById('rwPie').textContent = 'No se pudo cargar el ranking';
+  } finally {
+    if (reqId === rw.reqId) rw.cargando = false;
+  }
+  // Si el final sigue a la vista (lista corta), volver a observar dispara otra tanda
+  const pie = document.getElementById('rwPie');
+  if (rwObserver && pie && !rw.fin) { rwObserver.unobserve(pie); rwObserver.observe(pie); }
+}
+
+function rwDeltaHtml(d) {
+  if (d == null) return '';
+  return `<span class="wa-delta">${d > 0 ? '+' + d : d < 0 ? '−' + Math.abs(d) : '='}</span>`;
+}
+
+function rwFilaHtml(r) {
+  const miKey = currentProfile?.runner_key;
+  const esTeam = rw.modo === 'teams';
+  // Al tocar: detalle de cómo se forma el puntaje (carreras o integrantes)
+  const click = esTeam
+    ? `abrirDetalleTeamWa(decodeURIComponent('${encAttr(r.nombre)}'), ${r.pos}, ${r.puntaje})`
+    : `abrirDetalleCorredorWa(decodeURIComponent('${encAttr(r.runner_key || '')}'), decodeURIComponent('${encAttr(r.nombre || '')}'), ${r.pos}, ${r.puntaje})`;
+  const meta = esTeam
+    ? `${r.carreras} integrante${r.carreras === 1 ? '' : 's'} activo${r.carreras === 1 ? '' : 's'}`
+    : [esTeamValido(r.team) ? r.team : '', `${r.carreras} carrera${r.carreras === 1 ? '' : 's'}`].filter(Boolean).join(' · ');
+  return `<div class="rk-row ${!esTeam && miKey && r.runner_key === miKey ? 'me' : ''}" onclick="${click}">
+    <div class="rk-pos ${r.pos <= 3 ? 'podio' : ''}">${r.pos}°</div>
+    <div class="rk-info"><div class="rk-name">${escHtml(r.nombre || '')} ${esTeam ? '' : rwDeltaHtml(r.delta)}</div><div class="rk-meta">${escHtml(meta)}</div></div>
+    <div class="rk-time"><div class="t">${Number(r.puntaje).toLocaleString('es-AR')}</div><div class="p">pts</div></div>
+  </div>`;
+}
+
+// Cierra un modal (que hace history.back) y recién después ejecuta la acción,
+// para que el popstate no pise la pantalla nueva
+function cerrarModalY(modalId, accion) {
+  const esTope = history.state?.tipo === 'modal' && history.state?.id === modalId;
+  if (esTope) window.addEventListener('popstate', () => setTimeout(accion, 0), { once: true });
+  hideModal(modalId);
+  if (!esTope) accion();
+}
+
+// ─── Detalle de un puesto del ranking ───
+function abrirDetalleWa(titulo, sub, botonTexto, botonAccion) {
+  document.getElementById('rwdTitulo').textContent = titulo;
+  document.getElementById('rwdSub').textContent = sub;
+  document.getElementById('rwdLista').innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando...</div>';
+  const btn = document.getElementById('rwdBoton');
+  btn.textContent = botonTexto;
+  btn.onclick = botonAccion;
+  showModal('rankingWaDetalleModal');
+}
+
+async function abrirDetalleCorredorWa(runnerKey, nombre, pos, puntaje) {
+  const sexoTxt = rw.sexo === 'F' ? 'damas' : 'caballeros';
+  abrirDetalleWa(nombre, `${pos}° en ${sexoTxt} · promedio ${Number(puntaje).toLocaleString('es-AR')} pts`, 'Ver perfil',
+    () => modalIrACorredor('rankingWaDetalleModal', runnerKey, nombre));
+  try {
+    const { data, error } = await sbClient.rpc('get_ranking_wa_carreras', { p_runner_key: runnerKey, p_sexo: rw.sexo });
+    if (error) throw error;
+    document.getElementById('rwdLista').innerHTML = (data || []).map(c => {
+      const { dist } = parseArchivo(c.archivo_fuente);
+      return `<div class="rk-row" style="cursor:default">
+        <div class="rk-info"><div class="rk-name">${escHtml(archToLabel(c.archivo_fuente))}</div><div class="rk-meta">${fechaCorta(c.fecha)} · ${escHtml(dist)}K · ${escHtml(c.time)}</div></div>
+        <div class="rk-time"><div class="t">${Number(c.pts).toLocaleString('es-AR')}</div><div class="p">pts</div></div>
+      </div>`;
+    }).join('') + `<p class="rwd-nota">Promedio de ${data?.length || 0} carrera${data?.length === 1 ? '' : 's'} de los últimos 12 meses.</p>`;
+  } catch (e) {
+    document.getElementById('rwdLista').innerHTML = '<p class="rwd-nota">No se pudo cargar el detalle.</p>';
+  }
+}
+
+async function abrirDetalleTeamWa(team, pos, puntaje) {
+  const sexoTxt = rw.sexo === 'F' ? 'damas' : 'caballeros';
+  abrirDetalleWa(team, `${pos}° en ${sexoTxt} · promedio ${Number(puntaje).toLocaleString('es-AR')} pts`, 'Ver team',
+    () => cerrarModalY('rankingWaDetalleModal', () => showTeam(team)));
+  try {
+    const { data, error } = await sbClient.rpc('get_ranking_wa_team', { p_team: team, p_sexo: rw.sexo });
+    if (error) throw error;
+    document.getElementById('rwdLista').innerHTML = (data || []).map(m => `<div class="rk-row" onclick="modalIrACorredor('rankingWaDetalleModal', decodeURIComponent('${encAttr(m.runner_key || '')}'), decodeURIComponent('${encAttr(m.nombre || '')}'))">
+        <div class="rk-pos" style="font-size:16px">${m.pos ? m.pos + '°' : ''}</div>
+        <div class="rk-info"><div class="rk-name">${escHtml(m.nombre || '')}</div><div class="rk-meta">${m.carreras} carreras</div></div>
+        <div class="rk-time"><div class="t">${Number(m.puntaje).toLocaleString('es-AR')}</div><div class="p">pts</div></div>
+      </div>`).join('') + `<p class="rwd-nota">Promedio de ${data?.length || 0} integrantes con 2 o más carreras en el año. El número de la izquierda es su puesto en el ranking individual.</p>`;
+  } catch (e) {
+    document.getElementById('rwdLista').innerHTML = '<p class="rwd-nota">No se pudo cargar el detalle.</p>';
+  }
+}
+
+// "#127 +4" junto al nombre (ficha de corredor y "Yo"); solo top 1000
+async function mostrarPosicionWa(runnerKey, elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.innerHTML = '';
+  if (!runnerKey) return;
+  try {
+    const { data } = await sbClient.rpc('get_posicion_wa', { p_runner_key: runnerKey });
+    const p = data?.[0];
+    if (!p || document.getElementById(elId) !== el) return;
+    el.innerHTML = ` #${p.pos}${p.delta != null ? ' ' + rwDeltaHtml(p.delta) : ''}`;
+  } catch (e) {}
+}
+
 // ─── ANUNCIOS DEL TEAM ──────────────────────────────────────────────────────
 async function renderTeamPosts(name, isOwner, canView) {
   const box = document.getElementById('tdPosts');
@@ -3124,6 +3402,7 @@ function clearRunner() {
   document.getElementById('runHdr').classList.remove('show');
   document.getElementById('runBio').style.display = 'none';
   document.getElementById('runInstagram').style.display = 'none';
+  document.getElementById('runWaPos').innerHTML = '';
   document.getElementById('runResidencia').style.display = 'none';
   document.getElementById('runFollowBox').style.display = 'none';
   document.getElementById('runMedallero').style.display = 'none';
@@ -3991,6 +4270,7 @@ async function renderProfile() {
   if (!currentUser) {
     document.getElementById('pAvatar').textContent = '?';
     document.getElementById('pName').textContent = '—';
+    document.getElementById('pWaPos').innerHTML = '';
     document.getElementById('pSub').textContent = 'Explorando sin cuenta';
     renderInstagramBox();
     content.innerHTML = `<div style="text-align:center;padding:30px 0 20px"><div style="font-size:48px;margin-bottom:12px;opacity:.3">🏃</div><p style="color:var(--muted);font-size:12px;margin-bottom:20px">Inicia sesion para ver tu historial</p><button onclick="showModal('authModal')" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:13px 28px;font-size:13px;font-weight:700;cursor:pointer">Iniciar sesion</button></div>`;
@@ -3999,6 +4279,7 @@ async function renderProfile() {
   if (!currentProfile) {
     document.getElementById('pAvatar').textContent = '?';
     document.getElementById('pName').textContent = 'Tu perfil';
+    document.getElementById('pWaPos').innerHTML = '';
     document.getElementById('pSub').textContent = 'Perfil no vinculado';
     renderInstagramBox();
     const servicioHtml = await renderMiServicioSection();
@@ -4017,6 +4298,7 @@ async function renderProfile() {
     if (label) label.style.display = 'flex';
   }
   document.getElementById('pName').textContent = currentProfile.nombre || 'Tu perfil';
+  mostrarPosicionWa(currentProfile.runner_key, 'pWaPos');
   document.getElementById('pSub').textContent = currentProfile.owned_team && currentProfile.owned_team_status === 'confirmed' ? 'Admin de ' + currentProfile.owned_team : (currentProfile.runner_key ? 'Corredor' : 'Sin carreras vinculadas');
   renderInstagramBox();
   // Perfil sin carreras vinculadas: coach que no corre o atleta esperando verificación
@@ -4060,14 +4342,7 @@ async function renderProfile() {
     const medias = races.filter(r=>r.dist==='21').length;
     const paces = races.map(r=>r.pm).filter(p=>p<999);
     const bestPace = paces.length ? (() => { const m=Math.min(...paces); const mins=Math.floor(m); const secs=Math.round((m-mins)*60); return mins+':'+String(secs).padStart(2,'0'); })() : '—';
-    const badges = [
-      {icon:'ti-trophy',name:'Primer 42K',desc:'Maraton completada',earned:maratones>0},
-      {icon:'ti-run',name:'Primer 21K',desc:'Media maraton',earned:medias>0},
-      {icon:'ti-star',name:'5 Carreras',desc:'Alto volumen',earned:total>=5},
-      {icon:'ti-users',name:'En un Team',desc:'Pertenece a un team',earned:!!team},
-      {icon:'ti-bolt',name:'Sub 3:30',desc:'Ritmo elite 42K',earned:races.filter(r=>r.dist==='42'&&r.pm<999).some(r=>r.pm<5)},
-      {icon:'ti-medal',name:'10 Carreras',desc:'Veterano del asfalto',earned:total>=10}
-    ];
+    const badges = calcularInsignias(races, team);
     const totalKm = races.reduce((sum, r) => sum + (parseFloat(r.dist) || 0), 0);
     const miServicioHtml = await renderMiServicioSection();
     content.innerHTML = `
@@ -4129,13 +4404,13 @@ async function renderProfile() {
         </div>
         <div id="misZapasBox"><div class="loading" style="padding:8px 0"><i class="ti ti-refresh"></i>Cargando...</div></div>
       </div>
-      <div class="profile-section">
+      ${badges.some(b=>b.earned) ? `<div class="profile-section">
         <div class="profile-section-title" style="display:flex;justify-content:space-between;align-items:center">
           <span>Badges</span>
           ${badges.some(b=>b.earned)?`<button onclick="openShareModal('badges')" style="background:none;border:1px solid var(--accent);border-radius:4px;padding:4px 10px;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--accent);cursor:pointer"><i class="ti ti-share"></i> Compartir</button>`:''}
         </div>
-        <div class="badge-grid">${badges.map(b=>`<div class="badge ${b.earned?'earned':'locked'}"><i class="ti ${b.icon}"></i><div class="badge-name">${b.name}</div><div class="badge-desc">${b.earned?b.desc:'bloqueado'}</div></div>`).join('')}</div>
-      </div>
+        <div class="badge-grid">${badges.filter(b=>b.earned).map(b=>`<div class="badge earned"><i class="ti ${b.icon}"></i><div class="badge-name">${b.name}</div><div class="badge-desc">${b.desc}</div></div>`).join('')}</div>
+      </div>` : ''}
       <div class="profile-section">
         <div class="profile-section-title" style="display:flex;justify-content:space-between;align-items:center">
           <span>Historial de carreras</span>
@@ -5255,7 +5530,7 @@ async function quitarZapaCarrera() {
 // años anteriores, solo las carreras con resultados cargados.
 const ANIO_ACTUAL = new Date().getFullYear();
 let carrerasResultadosCache = null;
-let carrerasAnioSel = ANIO_ACTUAL;
+let carrerasAnioSel = 'proximas'; // 'proximas' o un año (resultados de ese año)
 let carrerasSearchTimeout = null;
 
 // Para valores que van dentro de onclick="...('...')": encodeURIComponent no
@@ -5297,6 +5572,9 @@ function renderCarrerasYearTabs() {
   (carrerasResultadosCache || []).forEach(c => { if (c.anio) anios.add(c.anio); });
   document.getElementById('carrerasYearTabs').innerHTML = [...anios].sort((a, b) => b - a)
     .map(a => `<div class="chip ${a === carrerasAnioSel ? 'active' : ''}" onclick="selectCarrerasAnio(${a})">${a}</div>`).join('');
+  // "Próximas" va primero, como un botón más de la fila de años
+  document.getElementById('carrerasYearTabs').insertAdjacentHTML('afterbegin',
+    `<div class="chip ${carrerasAnioSel === 'proximas' ? 'active' : ''}" onclick="selectCarrerasAnio('proximas')"><i class="ti ti-calendar-event"></i> Prox.</div>`);
 }
 
 function selectCarrerasAnio(anio) {
@@ -5305,26 +5583,29 @@ function selectCarrerasAnio(anio) {
   renderCarrerasAnio();
 }
 
+// "Próximas": tus próximas carreras + las que vienen. Un año: sus resultados.
 function renderCarrerasAnio() {
   const q = document.getElementById('carrerasSearchInput').value;
-  const esActual = carrerasAnioSel === ANIO_ACTUAL;
-  document.getElementById('carrerasProximasBox').style.display = esActual ? 'block' : 'none';
-  if (esActual) { loadCarrerasSection(q); loadInscripciones(); }
-  renderCarrerasResultados(q);
+  const proximas = carrerasAnioSel === 'proximas';
+  document.getElementById('carrerasProximasBox').style.display = proximas ? 'block' : 'none';
+  document.getElementById('carrerasResultadosTitle').style.display = proximas ? 'none' : '';
+  document.getElementById('carrerasResultadosList').style.display = proximas ? 'none' : '';
+  if (proximas) { loadCarrerasSection(q); loadInscripciones(); }
+  else renderCarrerasResultados(q);
 }
 
 function onCarrerasSearch(q) {
   clearTimeout(carrerasSearchTimeout);
   carrerasSearchTimeout = setTimeout(() => {
-    if (carrerasAnioSel === ANIO_ACTUAL) loadCarrerasSection(q);
-    renderCarrerasResultados(q);
+    if (carrerasAnioSel === 'proximas') loadCarrerasSection(q);
+    else renderCarrerasResultados(q);
   }, 300);
 }
 
 function renderCarrerasResultados(q) {
   const list = document.getElementById('carrerasResultadosList');
   const title = document.getElementById('carrerasResultadosTitle');
-  title.textContent = carrerasAnioSel === ANIO_ACTUAL ? `Ya corridas en ${carrerasAnioSel}` : `Resultados ${carrerasAnioSel}`;
+  title.textContent = `Resultados ${carrerasAnioSel}`;
   if (!carrerasResultadosCache) return;
   const nq = normTxt(q).trim();
   const carreras = carrerasResultadosCache
@@ -5621,23 +5902,22 @@ async function loadCarrerasSection(q) {
       misDistanciaIds = new Set((mias || []).map(m => m.distancia_id));
     }
 
+    // Tarjeta compacta: datos a la izquierda (fecha dd/mm/aaaa) y distancias a la derecha
     list.innerHTML = carreras.map(c => {
       const fechaDate = new Date(c.fecha + 'T00:00:00');
-      const fecha = fechaDate.toLocaleDateString('es-AR', { day:'numeric', month:'long', year:'numeric' });
       const daysLeft = Math.floor((fechaDate - new Date()) / 86400000);
+      const faltan = daysLeft > 1 ? `faltan ${daysLeft} días` : daysLeft === 1 ? 'mañana' : daysLeft === 0 ? 'hoy' : 'ya se corrió';
       const dists = c.carreras_distancias || [];
-      return `<div class="race-card">
-        <div class="race-card-name">${c.nombre}</div>
-        <div class="race-meta">
-          ${dists.map(d=>`<div class="race-tag"><span>${d.distancia}</span></div>`).join('')}
-          <div class="race-tag">${fecha}</div>
-          ${c.ubicacion?`<div class="race-tag">${c.ubicacion}</div>`:''}
+      const meta = [fechaCorta(c.fecha), c.ubicacion, faltan].filter(Boolean).map(escHtml).join(' · ');
+      return `<div class="race-card rc-compacta">
+        <div class="rc-info">
+          <div class="race-card-name">${escHtml(c.nombre)}</div>
+          <div class="rc-meta">${meta}</div>
         </div>
-        <div style="font-size:10px;color:var(--muted);margin-bottom:8px">${daysLeft>=0?`Faltan ${daysLeft} días`:'Ya se corrió'}</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <div class="rc-dists">
           ${dists.map(d => {
             const yaInscripto = misDistanciaIds.has(d.id);
-            return `<button ${yaInscripto?'disabled':''} onclick="inscribirse(${c.id},${d.id},'${c.nombre.replace(/'/g,"\\'")}','${d.distancia}','${c.fecha}')" style="background:${yaInscripto?'var(--accent)':'var(--surface)'};border:1.5px solid var(--blue);border-radius:4px;padding:5px 12px;font-family:'DM Sans',sans-serif;font-size:11px;color:${yaInscripto?'#000':'var(--blue)'};cursor:${yaInscripto?'default':'pointer'};font-weight:600">${yaInscripto?'✓ '+d.distancia:'+ '+d.distancia}</button>`;
+            return `<button class="rc-dist ${yaInscripto?'inscripto':''}" ${yaInscripto?'disabled':''} onclick="inscribirse(${c.id},${d.id},decodeURIComponent('${encAttr(c.nombre)}'),'${escHtml(d.distancia)}','${c.fecha}')">${yaInscripto?'✓ ':'+ '}${escHtml(d.distancia)}</button>`;
           }).join('')}
         </div>
       </div>`;
@@ -5955,7 +6235,7 @@ initAuth();
 // ─── ANDROID BACK BUTTON (Capacitor) ─────────────────────────────────────────
 function handleBackButton() {
   // Si hay un modal abierto, cerrarlo
-  const modals = ['avatarCropModal', 'codigoModal', 'zapaDetalleModal', 'zapaPickerModal', 'rankingCarreraModal', 'newPostModal','comentariosModal', 'linkModal', 'authModal', 'shareModal', 'medalleroModal','notificacionesModal', 'avatarLightboxModal', 'seguidoresModal', 'servicioModal', 'carreraDetalleModal', 'visibilidadMedallasModal', 'clasificacionModal', 'forgotPasswordModal'];
+  const modals = ['rankingWaDetalleModal', 'avatarCropModal', 'codigoModal', 'zapaDetalleModal', 'zapaPickerModal', 'rankingCarreraModal', 'newPostModal','comentariosModal', 'linkModal', 'authModal', 'shareModal', 'medalleroModal','notificacionesModal', 'avatarLightboxModal', 'seguidoresModal', 'servicioModal', 'carreraDetalleModal', 'visibilidadMedallasModal', 'clasificacionModal', 'forgotPasswordModal'];
   for (const id of modals) {
     const el = document.getElementById(id);
     if (el && !el.classList.contains('hidden')) {

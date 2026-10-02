@@ -608,7 +608,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 <div id="sc-ranking" class="screen">
   <div class="header yellow" data-bg="TOP">
     <h1>Ranking</h1>
-    <p>Puntaje World Athletics · últimos 12 meses</p>
     <button class="global-home" onclick="goTo('runners')"><i class="ti ti-home"></i> Inicio</button>
   </div>
   <div class="filters" style="flex-wrap:wrap;gap:6px">
@@ -617,6 +616,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
     <span style="flex:1"></span>
     <div class="chip active" data-rwmodo="corredores" onclick="setRankingWa('modo','corredores')">Corredores</div>
     <div class="chip" data-rwmodo="teams" onclick="setRankingWa('modo','teams')">Teams</div>
+  </div>
+  <div class="filters" style="padding-top:0;gap:6px">
+    <div class="chip active" data-rwdist="0" onclick="setRankingWa('dist',0)">All</div>
+    <div class="chip" data-rwdist="10" onclick="setRankingWa('dist',10)">10K</div>
+    <div class="chip" data-rwdist="21" onclick="setRankingWa('dist',21)">21K</div>
+    <div class="chip" data-rwdist="42" onclick="setRankingWa('dist',42)">42K</div>
   </div>
   <div class="search-area" style="padding-bottom:0">
     <div class="search-box">
@@ -3049,7 +3054,8 @@ async function resolverSolicitud(id, aprobar) {
 // más carreras en el año; "Ver todos" incluye al resto. Teams = promedio de
 // sus integrantes activos. Se carga de a 20 al bajar.
 const RW_PASO = 20;
-const rw = { sexo: 'M', modo: 'corredores', todos: false, q: '', datos: [], fin: false, cargando: false, reqId: 0 };
+// dist 0 = puntaje WA (todas las distancias); 10/21/42 = mejor tiempo en esa distancia
+const rw = { sexo: 'M', modo: 'corredores', dist: 0, todos: false, q: '', datos: [], fin: false, cargando: false, reqId: 0 };
 let rwObserver = null;
 
 function initRankingWa() {
@@ -3073,8 +3079,16 @@ function setRankingWa(clave, valor) {
   document.querySelectorAll('[data-rwsexo]').forEach(c => c.classList.toggle('active', c.dataset.rwsexo === rw.sexo));
   document.querySelectorAll('[data-rwmodo]').forEach(c => c.classList.toggle('active', c.dataset.rwmodo === rw.modo));
   document.querySelectorAll('[data-rwtodos]').forEach(c => c.classList.toggle('active', c.dataset.rwtodos === (rw.todos ? '1' : '0')));
+  document.querySelectorAll('[data-rwdist]').forEach(c => c.classList.toggle('active', Number(c.dataset.rwdist) === rw.dist));
+  // Por distancia solo hay ranking de corredores (sin teams ni filtro de 2+ carreras)
+  if (rw.dist) rw.modo = 'corredores';
+  document.querySelectorAll('[data-rwmodo]').forEach(c => {
+    c.classList.toggle('active', c.dataset.rwmodo === rw.modo);
+    c.style.display = rw.dist ? 'none' : '';
+  });
   // "Ver todos" no aplica a teams (ya son promedio de activos)
-  document.getElementById('rwTodosBox').style.display = rw.modo === 'teams' ? 'none' : '';
+  document.getElementById('rwTodosBox').style.display = rw.modo === 'teams' || rw.dist ? 'none' : '';
+  document.getElementById('rwBuscar').placeholder = rw.dist ? 'Buscar corredor...' : 'Buscar corredor o team...';
   cargarRankingWa();
 }
 
@@ -3087,7 +3101,7 @@ async function cargarRankingWa() {
   if (reqId !== rw.reqId) return;
   if (!rw.datos.length) {
     const msg = rw.q
-      ? (rw.modo === 'teams' ? 'Ningún team con ese nombre en este ranking.' : `Nadie con ese nombre en este ranking.${rw.todos ? '' : ' Probá con "Ver todos": puede tener una sola carrera en el año.'}`)
+      ? (rw.modo === 'teams' ? 'Ningún team con ese nombre en este ranking.' : `Nadie con ese nombre en este ranking.${rw.todos || rw.dist ? '' : ' Probá con "Ver todos": puede tener una sola carrera en el año.'}`)
       : 'Todavía no hay puntajes cargados para este ranking.';
     document.getElementById('rwLista').innerHTML = `<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0">${escHtml(msg)}</p>`;
     return;
@@ -3103,16 +3117,20 @@ async function masRankingWa(reqId) {
   if (rw.fin || rw.cargando || reqId !== rw.reqId) return;
   rw.cargando = true;
   try {
-    const { data, error } = await sbClient.rpc('get_ranking_wa', {
-      p_sexo: rw.sexo, p_teams: rw.modo === 'teams', p_todos: rw.todos, p_offset: rw.datos.length, p_limit: RW_PASO, p_q: rw.q || null
-    });
+    const { data, error } = rw.dist
+      ? await sbClient.rpc('get_ranking_distancia', {
+          p_sexo: rw.sexo, p_dist: rw.dist, p_offset: rw.datos.length, p_limit: RW_PASO, p_q: rw.q || null
+        })
+      : await sbClient.rpc('get_ranking_wa', {
+          p_sexo: rw.sexo, p_teams: rw.modo === 'teams', p_todos: rw.todos, p_offset: rw.datos.length, p_limit: RW_PASO, p_q: rw.q || null
+        });
     if (reqId !== rw.reqId) return;
     if (error) throw error;
     const lista = document.getElementById('rwLista');
     if (!rw.datos.length) lista.innerHTML = '';
     rw.datos = rw.datos.concat(data || []);
     if (!data || data.length < RW_PASO) rw.fin = true;
-    lista.insertAdjacentHTML('beforeend', (data || []).map(rwFilaHtml).join(''));
+    lista.insertAdjacentHTML('beforeend', (data || []).map(rw.dist ? rwFilaDistHtml : rwFilaHtml).join(''));
     document.getElementById('rwPie').textContent = rw.fin
       ? `${rw.datos.length} en el ranking`
       : `${rw.datos.length} · bajá para ver más`;
@@ -3145,6 +3163,18 @@ function rwFilaHtml(r) {
     <div class="rk-pos ${r.pos <= 3 ? 'podio' : ''}">${r.pos}°</div>
     <div class="rk-info"><div class="rk-name">${escHtml(r.nombre || '')} ${esTeam ? '' : rwDeltaHtml(r.delta)}</div><div class="rk-meta">${escHtml(meta)}</div></div>
     <div class="rk-time"><div class="t">${Number(r.puntaje).toLocaleString('es-AR')}</div><div class="p">pts</div></div>
+  </div>`;
+}
+
+// Fila del ranking por distancia: carrera donde hizo su mejor tiempo y el tiempo (con ritmo)
+function rwFilaDistHtml(r) {
+  const miKey = currentProfile?.runner_key;
+  const pace = calcPace(r.tiempo, rw.dist === 21 ? 21.0975 : rw.dist === 42 ? 42.195 : rw.dist);
+  const tiempo = String(r.tiempo || '').replace(/^0:/, '');
+  return `<div class="rk-row ${miKey && r.runner_key === miKey ? 'me' : ''}" onclick="goToRunner(decodeURIComponent('${encAttr(r.runner_key || '')}'), decodeURIComponent('${encAttr(r.nombre || '')}'))">
+    <div class="rk-pos ${r.pos <= 3 ? 'podio' : ''}">${r.pos}°</div>
+    <div class="rk-info"><div class="rk-name">${escHtml(r.nombre || '')}</div><div class="rk-meta">${escHtml(archToLabel(r.archivo_fuente))}</div></div>
+    <div class="rk-time"><div class="t">${escHtml(tiempo)}</div>${pace ? `<div class="p">${pace.pace}/km</div>` : ''}</div>
   </div>`;
 }
 

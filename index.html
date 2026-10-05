@@ -1164,6 +1164,7 @@ const RACE_MEDALS_BY_YEAR = {
   '42nbcor_42_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/42nbcor_42_2025.png?v=2`,
   '9kindep_9_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/9independencia_9_2025.png?v=2`,
   '9kindep_9_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/9independencia_9_2026.png?v=2`,
+  'asics_21_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/asics_21_2025.png?v=1`,
   'berlin_42_2022': `${SUPABASE_URL}/storage/v1/object/public/medallas/berlin_42_2022.png?v=2`,
   'berlin_42_2023': `${SUPABASE_URL}/storage/v1/object/public/medallas/berlin_42_2023.png?v=3`,
   'berlin_42_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/berlin_42_2024.png?v=2`,
@@ -1176,8 +1177,11 @@ const RACE_MEDALS_BY_YEAR = {
   'chicago_42_2023': `${SUPABASE_URL}/storage/v1/object/public/medallas/chicago_42_2023.png?v=2`,
   'chicago_42_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/chicago_42_2024.png?v=2`,
   'chicago_42_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/chicago_42_2025.png?v=2`,
+  'fila_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/fila_10_2026.png?v=1`,
+  'fila_21_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/fila_21_2026.png?v=1`,
   'fma_10_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/fiestasmayas_10_2025.png?v=2`,
   'fma_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/fiestasmayas_10_2026.png?v=3`,
+  'hoka_10_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/hoka_10_2025.png?v=1`,
   'lapampa_42_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/lapampa_42_2026.png?v=2`,
   'mba_42_2022': `${SUPABASE_URL}/storage/v1/object/public/medallas/mba_42_2022.png?v=2`,
   'mba_42_2023': `${SUPABASE_URL}/storage/v1/object/public/medallas/mba_42_2023.png?v=2`,
@@ -1203,9 +1207,22 @@ const RACE_MEDALS = {
   '15adi_15': `${SUPABASE_URL}/storage/v1/object/public/medallas/15adi_15.png?v=2`,
 };
 const GENERIC_MEDAL_URL = `${SUPABASE_URL}/storage/v1/object/public/medallas/generica.png?v=3`;
+// Las distancias cortas de un evento (ej. el 10K de la 42K de Córdoba) usan
+// la medalla de la distancia más larga de ese mismo evento y año
+function medalMismoEvento(prefix, year) {
+  let mejor = null, mejorDist = -1;
+  for (const k in RACE_MEDALS_BY_YEAR) {
+    const m = k.match(/^(.+)_(\d+)_(\d{4})$/);
+    if (m && m[1] === prefix && m[3] === String(year) && Number(m[2]) > mejorDist) {
+      mejorDist = Number(m[2]); mejor = RACE_MEDALS_BY_YEAR[k];
+    }
+  }
+  return mejor;
+}
 function medalUrlFor(race) {
   return RACE_MEDALS_BY_YEAR[`${race.prefix}_${race.dist}_${race.year}`]
     || RACE_MEDALS[`${race.prefix}_${race.dist}`]
+    || medalMismoEvento(race.prefix, race.year)
     || GENERIC_MEDAL_URL;
 }
 
@@ -1643,8 +1660,10 @@ function calcPace(time, distKm) {
   else if (parts.length === 2) secs = parts[0]*60 + parts[1];
   else return null;
   const paceMin = secs / 60 / distKm;
-  const m = Math.floor(paceMin);
-  const s = Math.round((paceMin - m) * 60);
+  // Redondear en segundos totales (si no, 3:59.6 queda como "3:60")
+  const total = Math.round(paceMin * 60);
+  const m = Math.floor(total / 60);
+  const s = total % 60;
   return { pm: paceMin, pace: m + ':' + String(s).padStart(2, '0') };
 }
 
@@ -1655,6 +1674,7 @@ function archToLabel(archivo) {
     'chicago':'Chicago','london':'Londres','londres':'Londres','newyork':'New York',
     '42mdq':'Maraton MdP','21nbcom':'21K NB BSAS','10nbba':'10K BsAs','mmza':'Mendoza',
     'valencia':'Valencia','misanjuan':'San Juan',
+    'mad':'Madrid','santcl':'Santiago','portoale':'Porto Alegre','tokio':'Tokio','sidney':'Sidney','10rex':'10K Rex','15laguna':'15K OpenSports Laguna','21kpuerto':'21K Puerto Norte','10swiss':'10K Swiss Medical',
     'lapampa':'La Pampa','42krosario':'Maraton Rosario','42nbcor':'Maraton Cordoba',
     'fila':'FILA Run','asics':'ASICS','hoka':'HOKA','farma':'Farmacity','fma':'Fiestas Mayas',
     'marat':'Maraton','invierno':'Invierno','verano':'Verano','otono':'Otono',

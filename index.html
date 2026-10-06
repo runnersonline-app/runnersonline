@@ -116,6 +116,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .rc-dist.inscripto{background:var(--accent);border-color:var(--accent);color:#000;cursor:default}
 .race-card:hover{border-color:var(--accent)}
 .race-card-name{font-weight:600;font-size:13px;margin-bottom:6px}
+.rc-titulo{display:flex;align-items:center;gap:8px}
+.rc-medalla{width:36px;height:36px;object-fit:contain;flex-shrink:0}
+.rk-medalla{width:58px;height:58px;object-fit:contain;flex-shrink:0}
 .race-meta{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
 .race-tag{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
 .race-tag span{color:var(--text)}
@@ -999,7 +1002,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 <div class="modal-overlay hidden center-modal" id="rankingCarreraModal">
   <div class="modal-sheet" style="padding-bottom:24px;max-height:85vh;overflow-y:auto">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:4px">
-      <span id="rkNombre" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px;line-height:1.1">Clasificación</span>
+      <div style="display:flex;align-items:center;gap:10px;min-width:0">
+        <img id="rkMedalla" class="rk-medalla" alt="" style="display:none">
+        <span id="rkNombre" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px;line-height:1.1">Clasificación</span>
+      </div>
       <button onclick="hideModal('rankingCarreraModal')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;flex-shrink:0"><i class="ti ti-x"></i></button>
     </div>
     <div id="rkSub" style="font-size:10px;color:var(--muted);margin-bottom:12px"></div>
@@ -1143,6 +1149,27 @@ const LOGO_URL = `${SUPABASE_URL}/storage/v1/object/public/branding/logo.png`;
 // Para agregar una medalla nueva: subí el PNG al bucket "medallas" en Supabase
 // Storage y agregá una línea acá con la clave "prefijo_distancia_año".
 const RACE_MEDALS_BY_YEAR = {
+  '10rex_10_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/10rex_10_2025.png?v=1`,
+  '10rex_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/10rex_10_2026.png?v=1`,
+  '10si_10_2022': `${SUPABASE_URL}/storage/v1/object/public/medallas/10si_10_2022.png?v=1`,
+  '10si_10_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/10si_10_2024.png?v=1`,
+  '10si_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/10si_10_2026.png?v=1`,
+  '10super_10_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/10super_10_2024.png?v=1`,
+  '10super_10_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/10super_10_2025.png?v=1`,
+  '10super_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/10super_10_2026.png?v=1`,
+  '15nbba_15_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/15nbba_15_2024.png?v=1`,
+  'invierno_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/invierno_10_2026.png?v=1`,
+  'otono_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/otono_10_2026.png?v=1`,
+  'primavera_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/primavera_10_2026.png?v=1`,
+  '21kpuerto_21_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/21kpuerto_21_2026.png?v=1`,
+  '21nbmdq_21_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/21nbmdq_21_2025.png?v=1`,
+  '30nbba_30_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/30nbba_30_2024.png?v=1`,
+  'berlin_42_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/berlin_42_2026.png?v=1`,
+  'bimbo_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/bimbo_10_2026.png?v=1`,
+  'fila_10_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/fila_10_2024.png?v=1`,
+  // las de Valencia se subieron con otro nombre de archivo
+  'valencia_42_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/valencia_2024_42.png?v=1`,
+  'valencia_42_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/valencia_2025_42.png?v=1`,
   '10nbba_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/10nbba_10_2026.png?v=3`,
   '15adi_15_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/15adi_15_2025.png?v=2`,
   '15adi_15_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/15adi_15_2026.png?v=2`,
@@ -1180,7 +1207,7 @@ const RACE_MEDALS_BY_YEAR = {
   'fila_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/fila_10_2026.png?v=1`,
   'fila_21_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/fila_21_2026.png?v=1`,
   'fma_10_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/fiestasmayas_10_2025.png?v=2`,
-  'fma_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/fiestasmayas_10_2026.png?v=3`,
+  'fma_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/fiestasmayas_10_2026.png?v=4`,
   'hoka_10_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/hoka_10_2025.png?v=1`,
   'lapampa_42_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/lapampa_42_2026.png?v=2`,
   'mba_42_2022': `${SUPABASE_URL}/storage/v1/object/public/medallas/mba_42_2022.png?v=2`,
@@ -1206,7 +1233,7 @@ const RACE_MEDALS = {
   'mba_42': `${SUPABASE_URL}/storage/v1/object/public/medallas/mba_42.png?v=1`,
   '15adi_15': `${SUPABASE_URL}/storage/v1/object/public/medallas/15adi_15.png?v=2`,
 };
-const GENERIC_MEDAL_URL = `${SUPABASE_URL}/storage/v1/object/public/medallas/generica.png?v=3`;
+const GENERIC_MEDAL_URL = `${SUPABASE_URL}/storage/v1/object/public/medallas/generica_ro.png?v=1`; // antes: generica.png?v=3
 // Las distancias cortas de un evento (ej. el 10K de la 42K de Córdoba) usan
 // la medalla de la distancia más larga de ese mismo evento y año
 function medalMismoEvento(prefix, year) {
@@ -1224,6 +1251,13 @@ function medalUrlFor(race) {
     || RACE_MEDALS[`${race.prefix}_${race.dist}`]
     || medalMismoEvento(race.prefix, race.year)
     || GENERIC_MEDAL_URL;
+}
+// Medalla real de una carrera a partir de su archivo ("fila_2026_10.csv"); null si solo hay la genérica
+function medallaRealDeArchivo(archivo) {
+  const m = String(archivo || '').match(/^([a-z0-9]+)_(20\d{2})_(\d+)k?\.csv$/i);
+  if (!m) return null;
+  const url = medalUrlFor({ prefix: m[1].toLowerCase(), dist: m[3], year: m[2] });
+  return url === GENERIC_MEDAL_URL ? null : url;
 }
 
 let currentUser = null;
@@ -1674,13 +1708,13 @@ function archToLabel(archivo) {
     'chicago':'Chicago','london':'Londres','londres':'Londres','newyork':'New York',
     '42mdq':'Maraton MdP','21nbcom':'21K NB BSAS','10nbba':'10K BsAs','mmza':'Mendoza',
     'valencia':'Valencia','misanjuan':'San Juan',
-    'mad':'Madrid','santcl':'Santiago','portoale':'Porto Alegre','tokio':'Tokio','sidney':'Sidney','10rex':'10K Rex','15laguna':'15K OpenSports Laguna','21kpuerto':'21K Puerto Norte','10swiss':'10K Swiss Medical',
+    'mad':'Madrid','santcl':'Santiago','portoale':'Porto Alegre','tokio':'Tokio','sidney':'Sidney','10rex':'10K Rexona','15laguna':'15K OpenSports Laguna','21kpuerto':'21K Puerto Norte','10swiss':'10K Swiss Medical','10verano':'10K OpenSports','15ciudad':'15K OpenSports Ciudad',
     'lapampa':'La Pampa','42krosario':'Maraton Rosario','42nbcor':'Maraton Cordoba',
     'fila':'FILA Run','asics':'ASICS','hoka':'HOKA','farma':'Farmacity','fma':'Fiestas Mayas',
     'marat':'Maraton','invierno':'Invierno','verano':'Verano','otono':'Otono',
     'primavera':'Primavera','sauco':'El Sauco','sunset':'Sunset Run',
     '15nbba':'15K New Balance','15under':'15K Under','15adi':'15K Adidas','15nbros':'15K Rosario',
-    '25nbba':'25K BsAs','30nbba':'30K BsAs','10si':'10K SI','10super':'10K Super',
+    '25nbba':'25K BsAs','30nbba':'30K BsAs','10si':'10K San Isidro','10super':'10K Super',
     '10vl':'10K VL','10night':'10K Night','21nbsal':'Media Salta','21nbmdq':'Media MdP'
   };
   const base = archivo.replace('.csv','').split('_');
@@ -5668,8 +5702,9 @@ function renderCarrerasResultados(q) {
   list.innerHTML = carreras.map(c => {
     const { dist } = parseArchivo(c.archivo_fuente);
     const fecha = c.fecha ? new Date(c.fecha + 'T00:00:00').toLocaleDateString('es-AR', { day:'numeric', month:'long' }) : '';
+    const medalla = medallaRealDeArchivo(c.archivo_fuente);
     return `<div class="race-card" onclick="openRankingCarrera(decodeURIComponent('${encAttr(c.archivo_fuente)}'))">
-      <div class="race-card-name">${escHtml(nombreCarreraResultado(c))}</div>
+      <div class="race-card-name rc-titulo">${medalla ? `<img class="rc-medalla" src="${medalla}" alt="" loading="lazy">` : ''}<span>${escHtml(nombreCarreraResultado(c))}</span></div>
       <div class="race-meta" style="margin-bottom:0">
         <div class="race-tag"><span>${escHtml(dist)}K</span></div>
         ${fecha ? `<div class="race-tag">${fecha}</div>` : ''}
@@ -5701,6 +5736,9 @@ function openRankingCarrera(archivo, team = null, meta = null) {
   document.getElementById('rkSearchInput').style.display = '';
   document.querySelectorAll('#rkSexoBox .chip').forEach(c => c.classList.toggle('active', c.dataset.s === ''));
   document.getElementById('rkNombre').textContent = nombreCarreraResultado({ archivo_fuente: archivo, ...c });
+  const rkMed = document.getElementById('rkMedalla'), medalla = medallaRealDeArchivo(archivo);
+  rkMed.style.display = medalla ? '' : 'none';
+  if (medalla) rkMed.src = medalla; else rkMed.removeAttribute('src');
   setRankingSub(null);
   document.getElementById('rkSearchInput').value = '';
   const sel = document.getElementById('rkTeamSelect');

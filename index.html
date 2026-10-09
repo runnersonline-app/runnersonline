@@ -190,6 +190,20 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 #zapaDetalleModal{z-index:1010}
 #codigoModal{z-index:1020}
 .claim-btn{width:100%;margin:4px 0 14px;padding:11px;border:1.5px dashed var(--accent);border-radius:8px;background:transparent;color:var(--accent);font-size:13px;font-weight:700;cursor:pointer}
+.tm-box{border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin:4px 0 14px;background:var(--card)}
+.tm-box-simple{padding:4px 12px}
+.tm-titulo{font-size:12px;font-weight:700;margin-bottom:6px}
+.tm-fila{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.tm-fila>span:first-child{flex:1 1 150px;min-width:0}
+.tm-fila:last-child{border-bottom:none}
+.tm-fila small{display:block;color:var(--muted);font-size:10px}
+.tm-fila>span:last-child{display:flex;gap:6px;flex-shrink:0;margin-left:auto}
+.tm-btn{background:none;border:1px solid var(--border);border-radius:5px;padding:5px 10px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--text);cursor:pointer;white-space:nowrap}
+.tm-btn.si{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
+.tm-input{width:100%;box-sizing:border-box;margin-top:8px;background:var(--surface);border:1.5px solid var(--border);border-radius:6px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);outline:none}
+.tm-nota{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.4}
+.tm-quitar{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:14px;padding:2px 4px}
+.tm-quitar:hover{color:var(--muted)}
 .claim-pend{margin:4px 0 14px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text);cursor:pointer;line-height:1.5}
 .claim-pend span{color:var(--accent);text-decoration:underline;margin-left:4px}
 .sol-count{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:#e5484d;color:#fff;font-size:10px;text-align:center;margin-left:6px}
@@ -551,6 +565,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
     <div class="stats-row" style="margin-bottom:14px" id="tdStats"></div>
     <div id="tdContact"></div>
     <div id="tdClaim"></div>
+    <div id="tdMembresia"></div>
     <div id="tdAnnouncement"></div>
     <div id="tdPosts"></div>
     <div class="sect-title">Integrantes</div>
@@ -1875,8 +1890,8 @@ async function loadRunner(key) {
     const info = rows[0];
     let team = null;
     try {
-      const teamRows = await sbFetch('corredores_team_canon', { runner_key: `eq.${key}`, select: 'team_canonico', limit: 1 });
-      team = esTeamValido(teamRows[0]?.team_canonico) ? teamRows[0].team_canonico : null;
+      const { data: t } = await sbClient.rpc('team_actual', { p_runner_key: key });
+      team = esTeamValido(t) ? t : null;
     } catch (e) {}
     const seenArchivos = new Set();
     const filteredRows = rows.filter(r => {
@@ -1993,7 +2008,7 @@ async function loadRunner(key) {
     }
 
     document.getElementById('runTags').innerHTML =
-      `<div class="tag">Team ${team?`<span onclick="showTeam('${team.replace(/'/g,"\\'")}')" style="cursor:pointer;text-decoration:underline;color:var(--blue)">${team}</span>`:'<span>—</span>'}</div>${has42 ? '<div class="tag">✓ <span>Maratonista</span></div>' : ''}${has21 ? '<div class="tag">✓ <span>21K</span></div>' : ''}`;
+      `<div class="tag">Team ${team?`<span onclick="showTeam(decodeURIComponent('${encAttr(team)}'))" style="cursor:pointer;text-decoration:underline;color:var(--blue)">${escHtml(team)}</span>`:'<span>—</span>'}</div>${has42 ? '<div class="tag">✓ <span>Maratonista</span></div>' : ''}${has21 ? '<div class="tag">✓ <span>21K</span></div>' : ''}`;
     document.getElementById('runStats').innerHTML =
       `<div class="stat-pill"><div class="num">${races.length}</div><div class="lbl">Carreras</div></div><div class="stat-pill"><div class="num">${races.filter(x=>x.dist==='42').length}</div><div class="lbl">Maratones</div></div><div class="stat-pill"><div class="num">${races.filter(x=>x.dist==='21').length}</div><div class="lbl">Media Maratón</div></div>`;
     // Insignias ganadas (en la ficha pública solo se muestran las ganadas)
@@ -2218,6 +2233,10 @@ async function loadTeams() {
     ]);
     const counts = {};
     rows.forEach(r => { counts[r.team] = r.member_count; });
+    // Teams cargados a mano (con logo) que todavía no tienen corredores en los resultados.
+    // Si su logo ya lo usa otro team de la lista, es una variante vieja del mismo nombre.
+    const logosEnUso = new Set(Object.keys(counts).map(t => TEAM_LOGOS[t]).filter(Boolean));
+    Object.entries(TEAM_LOGOS).forEach(([t, logo]) => { if (!(t in counts) && !logosEnUso.has(logo)) counts[t] = 0; });
     ALL_TEAMS_CACHE = counts;
     // La lista inicial muestra los teams con foto de Instagram; al buscar o filtrar aparecen todos
     const hayLogos = Object.keys(TEAM_LOGOS).length > 0;
@@ -2315,7 +2334,7 @@ function mostrarMasTeams() {
 }
 
 function teamCardSimpleHtml([name, count]) {
-  return `<div class="team-card" onclick="showTeam(decodeURIComponent('${encAttr(name)}'))"><div class="team-card-body"><div class="team-card-name">${escHtml(name)}</div><div class="team-card-count"><span>${count}${count>=100?'+':''}</span> integrantes</div></div>${teamLogoHtml(name)}</div>`;
+  return `<div class="team-card" onclick="showTeam(decodeURIComponent('${encAttr(name)}'))"><div class="team-card-body"><div class="team-card-name">${escHtml(name)}</div><div class="team-card-count">${count ? `<span>${count}${count>=100?'+':''}</span> integrantes` : 'Nuevo en Runners Online'}</div></div>${teamLogoHtml(name)}</div>`;
 }
 
 function renderTeamsGrid(q) {
@@ -2345,8 +2364,23 @@ async function showTeam(name) {
   const isOwner = currentUser && currentProfile?.owned_team === name && currentProfile?.owned_team_status === 'confirmed';
   renderTeamContact(name, isOwner);
   renderTeamClaim(name, isOwner);
+  renderTeamMembresia(name, isOwner);
   try {
+    const memberList = await cargarIntegrantesTeam(name, isOwner);
+    if (!memberList) return; // ya se abrió otro team
+    const isMember = currentUser && currentProfile?.runner_key && memberList.some(m => m.key === currentProfile.runner_key);
+    const canViewMembers = isOwner || isMember;
+    await renderTeamAnnouncement(name);
+    await renderTeamPosts(name, isOwner, canViewMembers);
+  } catch(e) {
+    document.getElementById('tdMembers').innerHTML = '<div style="color:var(--muted);font-size:12px;padding:16px 0">Error al cargar</div>';
+  }
+}
+
+// Integrantes del team (incluye a los que se sumaron o salieron desde la app, una vez refrescado)
+async function cargarIntegrantesTeam(name, isOwner) {
     const rows = await sbFetchAll('corredores_team_canon', { team_canonico: `eq.${name}`, select: 'runner,runner_key,time,archivo_fuente', order: 'id.asc' });
+    if (document.getElementById('tdName').textContent !== name) return null;
     const members = {};
     rows.forEach(r => {
       const key = r.runner_key || r.runner;
@@ -2359,18 +2393,14 @@ async function showTeam(name) {
     document.getElementById('tdSub').textContent = `${count}${count>=100?'+':''} integrantes`;
     document.getElementById('tdStats').innerHTML = `<div class="stat-pill"><div class="num">${count}${count>=100?'+':''}</div><div class="lbl">Corredores</div></div><div class="stat-pill"><div class="num" style="font-size:18px">${memberList[0]?.bestPace||'—'}</div><div class="lbl">Mejor ritmo</div></div>`;
 
-    const isMember = currentUser && currentProfile?.runner_key && memberList.some(m => m.key === currentProfile.runner_key);
-    const canViewMembers = isOwner || isMember;
-
+    // El administrador del team puede quitar integrantes (x gris al final de la fila)
+    const quitarBtn = m => isOwner
+      ? `<button class="tm-quitar" title="Quitar del team" onclick="event.stopPropagation();teamQuitar(decodeURIComponent('${encAttr(m.key)}'),decodeURIComponent('${encAttr(m.name)}'))"><i class="ti ti-x"></i></button>`
+      : '';
     document.getElementById('tdMembers').innerHTML = memberList.length
-      ? memberList.map(m => `<div class="member-row" onclick="goToRunner(decodeURIComponent('${encAttr(m.key)}'),decodeURIComponent('${encAttr(m.name)}'))"><div class="member-name">${m.name}</div><div class="member-pace">${m.bestPace||'—'} <small style="color:var(--muted);font-size:9px">/km</small></div></div>`).join('')
-      : '<div style="color:var(--muted);font-size:12px;padding:16px 0">Sin datos</div>';
-
-    await renderTeamAnnouncement(name);
-    await renderTeamPosts(name, isOwner, canViewMembers);
-  } catch(e) {
-    document.getElementById('tdMembers').innerHTML = '<div style="color:var(--muted);font-size:12px;padding:16px 0">Error al cargar</div>';
-  }
+      ? memberList.map(m => `<div class="member-row" onclick="goToRunner(decodeURIComponent('${encAttr(m.key)}'),decodeURIComponent('${encAttr(m.name)}'))"><div class="member-name">${m.name}</div><div style="display:flex;align-items:center;gap:6px"><div class="member-pace">${m.bestPace||'—'} <small style="color:var(--muted);font-size:9px">/km</small></div>${quitarBtn(m)}</div></div>`).join('')
+      : '<div style="color:var(--muted);font-size:12px;padding:16px 0">Todavía no hay integrantes</div>';
+    return memberList;
 }
 
 const DIAS_SEMANA = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -3005,6 +3035,172 @@ async function misSolicitudesPendientes() {
 }
 
 // Botón "Soy el dueño de este team" (o el pedido pendiente) en la página del team
+// ─── MEMBRESÍA A TEAMS ───────────────────────────────────────────────────────
+// El administrador invita y el corredor acepta, o el corredor pide y el
+// administrador acepta. El cambio se aplica recién cuando la contraparte acepta.
+// Las listas de integrantes se recalculan en segundo plano (~1 minuto).
+async function teamMiEstado() {
+  const { data, error } = await sbClient.rpc('team_mi_estado');
+  if (error) throw error;
+  return data || { pendientes: [] };
+}
+
+async function teamRpc(fn, args, okMsg) {
+  try {
+    const { error } = await sbClient.rpc(fn, args);
+    if (error) throw error;
+    if (okMsg) alert(okMsg);
+    return true;
+  } catch (e) {
+    alert(e.message || 'No se pudo completar la acción');
+    return false;
+  }
+}
+
+// Después de un cambio: refrescar lo que esté a la vista
+function refrescarVistasTeam() {
+  const tdName = document.getElementById('tdName')?.textContent;
+  if (document.getElementById('sc-td')?.classList.contains('active') && tdName) {
+    const isOwner = currentProfile?.owned_team === tdName && currentProfile?.owned_team_status === 'confirmed';
+    renderTeamMembresia(tdName, isOwner);
+  }
+  if (document.getElementById('miTeamBox')) renderMiTeamBox();
+}
+
+const AVISO_MINUTO = 'Listo. La lista de integrantes se actualiza en alrededor de un minuto.';
+
+async function teamPedir(team) {
+  if (!currentUser) { showModal('authModal'); return; }
+  if (!currentProfile?.runner_key) { alert('Primero vinculá tu nombre de corredor desde "Yo".'); return; }
+  if (await teamRpc('team_pedir', { p_team: team }, `Le mandamos tu pedido a ${team}. Te sumamos cuando lo acepten.`)) refrescarVistasTeam();
+}
+async function teamResponder(id, aceptar) {
+  if (await teamRpc('team_responder', { p_id: id, p_aceptar: aceptar }, aceptar ? AVISO_MINUTO : null)) refrescarVistasTeam();
+}
+async function teamCancelar(id) {
+  if (await teamRpc('team_cancelar', { p_id: id })) refrescarVistasTeam();
+}
+async function teamInvitar(runnerKey, nombre) {
+  if (await teamRpc('team_invitar', { p_runner_key: runnerKey }, `Invitaste a ${nombre}. Se suma cuando acepte desde su perfil.`)) refrescarVistasTeam();
+}
+async function teamQuitar(runnerKey, nombre) {
+  if (!confirm(`¿Quitar a ${nombre} del team?`)) return;
+  if (await teamRpc('team_quitar', { p_runner_key: runnerKey }, AVISO_MINUTO)) refrescarVistasTeam();
+}
+async function teamDejar(team) {
+  if (!confirm(`¿Salir de ${team}? Tu perfil va a quedar sin team.`)) return;
+  if (await teamRpc('team_dejar', {}, 'Listo, tu perfil quedó sin team.')) refrescarVistasTeam();
+}
+
+function teamBtn(txt, onclick, tipo = '') {
+  return `<button class="tm-btn ${tipo}" onclick="${onclick}">${txt}</button>`;
+}
+
+// Bloque en la ficha de un team: sumarse / salir, o (si sos el administrador) gestionar integrantes
+async function renderTeamMembresia(name, isOwner) {
+  const box = document.getElementById('tdMembresia');
+  box.innerHTML = '';
+  if (!currentUser || (!isOwner && !currentProfile?.runner_key)) return;
+  let est, tieneDueno = true;
+  try {
+    [est, tieneDueno] = await Promise.all([
+      teamMiEstado(),
+      isOwner ? true : sbClient.rpc('team_tiene_dueno', { p_team: name }).then(r => !!r.data)
+    ]);
+  } catch (e) { return; }
+  if (document.getElementById('tdName').textContent !== name) return; // ya se abrió otro team
+  const pend = est.pendientes || [];
+  const nAttr = `decodeURIComponent('${encAttr(name)}')`;
+
+  if (isOwner) {
+    const pedidos = pend.filter(p => p.tipo === 'pedido' && p.puedo_responder);
+    const invitaciones = pend.filter(p => p.tipo === 'invitacion' && p.puedo_cancelar);
+    box.innerHTML = `<div class="tm-box">
+      <div class="tm-titulo"><i class="ti ti-users-plus"></i> Administrar integrantes</div>
+      ${pedidos.map(p => `<div class="tm-fila"><span><b>${escHtml(p.nombre)}</b> quiere sumarse</span>
+        <span>${teamBtn('Aceptar', `teamResponder(${p.id}, true)`, 'si')}${teamBtn('Rechazar', `teamResponder(${p.id}, false)`)}</span></div>`).join('')}
+      ${invitaciones.map(p => `<div class="tm-fila"><span>Invitaste a <b>${escHtml(p.nombre)}</b> · esperando</span>
+        <span>${teamBtn('Cancelar', `teamCancelar(${p.id})`)}</span></div>`).join('')}
+      <input type="text" id="tmInvitarInput" class="tm-input" placeholder="Invitar a un corredor: escribí su nombre..." autocomplete="off" oninput="onTeamInvitarBuscar()">
+      <div id="tmInvitarResultados"></div>
+      <div class="tm-nota">El corredor se suma cuando acepta desde su perfil. Para quitar a alguien, tocá la <i class="ti ti-x"></i> en la lista de integrantes.</div>
+    </div>`;
+    return;
+  }
+
+  const invitacion = pend.find(p => p.tipo === 'invitacion' && p.team === name && p.puedo_responder);
+  const pedido = pend.find(p => p.tipo === 'pedido' && p.team === name && p.puedo_cancelar);
+  let html;
+  if (est.team_actual === name) {
+    html = `<div class="tm-fila"><span><i class="ti ti-circle-check" style="color:var(--accent)"></i> Sos parte de este team</span>
+      <span>${teamBtn('Salir del team', `teamDejar(${nAttr})`)}</span></div>`;
+  } else if (invitacion) {
+    html = `<div class="tm-fila"><span><b>Te invitaron a sumarte a este team</b></span>
+      <span>${teamBtn('Aceptar', `teamResponder(${invitacion.id}, true)`, 'si')}${teamBtn('Rechazar', `teamResponder(${invitacion.id}, false)`)}</span></div>`;
+  } else if (pedido) {
+    html = `<div class="tm-fila"><span><i class="ti ti-clock"></i> Pediste sumarte · esperando que el team te acepte</span>
+      <span>${teamBtn('Cancelar', `teamCancelar(${pedido.id})`)}</span></div>
+      ${tieneDueno ? '' : '<div class="tm-nota">Este team todavía no tiene administrador en Runners Online: tu pedido queda pendiente hasta que lo tenga.</div>'}`;
+  } else {
+    html = `<button class="claim-btn" style="border-style:solid" onclick="teamPedir(${nAttr})"><i class="ti ti-user-plus"></i> Quiero sumarme a este team</button>
+      ${est.team_actual ? `<div class="tm-nota" style="margin-top:-8px">Hoy figurás en <b>${escHtml(est.team_actual)}</b>. Si te aceptan, pasás a este.</div>` : ''}`;
+  }
+  box.innerHTML = `<div class="tm-box tm-box-simple">${html}</div>`;
+}
+
+let tmInvitarTimeout = null, tmInvitarReq = 0;
+function onTeamInvitarBuscar() {
+  clearTimeout(tmInvitarTimeout);
+  tmInvitarTimeout = setTimeout(async () => {
+    const q = document.getElementById('tmInvitarInput')?.value.trim() || '';
+    const res = document.getElementById('tmInvitarResultados');
+    if (q.length < 3) { res.innerHTML = ''; return; }
+    const req = ++tmInvitarReq;
+    try {
+      const data = await buscarUnicos(q, 6);
+      if (req !== tmInvitarReq) return;
+      res.innerHTML = data.length ? data.map(r => `<div class="tm-fila">
+          <span><b>${escHtml(r.runner)}</b><small>${[esTeamValido(r.team) ? r.team : '', `${r.carreras} carrera${r.carreras === 1 ? '' : 's'}`].filter(Boolean).map(escHtml).join(' · ')}</small></span>
+          <span>${teamBtn('Invitar', `teamInvitar(decodeURIComponent('${encAttr(r.runner_key)}'), decodeURIComponent('${encAttr(r.runner)}'))`, 'si')}</span></div>`).join('')
+        : '<div class="tm-nota">No encontramos corredores con ese nombre.</div>';
+    } catch (e) { res.innerHTML = ''; }
+  }, 350);
+}
+
+// Bloque "Mi team" en Yo: team actual, invitaciones recibidas, pedido enviado y, si administrás un team, pedidos para aceptar
+async function renderMiTeamBox() {
+  const box = document.getElementById('miTeamBox');
+  if (!box || !currentUser) return;
+  let est;
+  try { est = await teamMiEstado(); } catch (e) { box.innerHTML = ''; return; }
+  const pend = est.pendientes || [];
+  const invitaciones = pend.filter(p => p.tipo === 'invitacion' && p.puedo_responder);
+  const pedido = pend.find(p => p.tipo === 'pedido' && p.puedo_cancelar);
+  const pedidosAMiTeam = pend.filter(p => p.tipo === 'pedido' && p.puedo_responder);
+  const filas = [];
+  if (est.runner_key) {
+    const t = est.team_actual;
+    filas.push(`<div class="tm-fila"><span>${t
+        ? `<a href="#" onclick="showTeam(decodeURIComponent('${encAttr(t)}'));return false" style="color:var(--blue);font-weight:600">${escHtml(t)}</a>`
+        : '<span style="color:var(--muted)">Sin team</span>'}</span>
+      <span>${teamBtn(t ? 'Cambiar' : 'Elegir team', 'elegirTeamDesdePerfil()')}${t ? teamBtn('Quitar', `teamDejar(decodeURIComponent('${encAttr(t)}'))`) : ''}</span></div>`);
+    invitaciones.forEach(p => filas.push(`<div class="tm-fila"><span><b>${escHtml(p.team)}</b> te invitó a sumarte</span>
+      <span>${teamBtn('Aceptar', `teamResponder(${p.id}, true)`, 'si')}${teamBtn('Rechazar', `teamResponder(${p.id}, false)`)}</span></div>`));
+    if (pedido) filas.push(`<div class="tm-fila"><span><i class="ti ti-clock"></i> Pediste sumarte a <b>${escHtml(pedido.team)}</b></span>
+      <span>${teamBtn('Cancelar', `teamCancelar(${pedido.id})`)}</span></div>`);
+  }
+  if (est.team_dueno && pedidosAMiTeam.length) {
+    filas.push(`<div class="tm-fila"><span><b>${pedidosAMiTeam.length}</b> pedido${pedidosAMiTeam.length === 1 ? '' : 's'} para sumarse a ${escHtml(est.team_dueno)}</span>
+      <span>${teamBtn('Ver', `showTeam(decodeURIComponent('${encAttr(est.team_dueno)}'))`, 'si')}</span></div>`);
+  }
+  box.innerHTML = filas.length ? `<div class="profile-section"><div class="profile-section-title">Mi team</div><div class="tm-box tm-box-simple">${filas.join('')}</div></div>` : '';
+}
+
+function elegirTeamDesdePerfil() {
+  goTo('teams');
+  setTimeout(() => alert('Buscá tu team, entrá a su página y tocá "Quiero sumarme a este team". El team tiene que aceptarte.'), 300);
+}
+
 async function renderTeamClaim(name, isOwner) {
   const box = document.getElementById('tdClaim');
   box.innerHTML = '';
@@ -4392,9 +4588,10 @@ async function renderProfile() {
         <p style="color:var(--muted);font-size:12px;margin:0 0 12px">Tu perfil no tiene carreras vinculadas.</p>
         <button onclick="showModal('linkModal')" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:11px 22px;font-size:13px;font-weight:700;cursor:pointer">Buscar mi nombre de corredor</button>
         <p style="color:var(--muted);font-size:11px;margin:12px 0 0">¿Sos coach? Entrá a tu team en <a href="#" onclick="goTo('teams');return false" style="color:var(--text)">Teams</a> y tocá <b>"Soy el dueño de este team"</b>.</p>
-      </div>` + servicioHtml +
+      </div><div id="miTeamBox"></div>` + servicioHtml +
       `<button onclick="signOut()" style="width:100%;background:none;border:1px solid var(--border);border-radius:8px;padding:11px;font-size:12px;color:var(--muted);cursor:pointer;margin-top:4px;margin-bottom:20px">Cerrar sesión</button>`;
     renderBloqueSolicitudes();
+    renderMiTeamBox();
     return;
   }
   content.innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando tu historial...</div>';
@@ -4402,8 +4599,10 @@ async function renderProfile() {
     const rows = await sbFetch('corredores', { runner_key: `eq.${currentProfile.runner_key}`, select: 'runner,runner_key,sex,team,archivo_fuente,time', limit: 200 });
     let team = null;
     try {
-      const teamRows = await sbFetch('corredores_team_canon', { runner_key: `eq.${currentProfile.runner_key}`, select: 'team_canonico', limit: 1 });
-      team = esTeamValido(teamRows[0]?.team_canonico) ? teamRows[0].team_canonico : null;
+      // Team elegido en la app o, si no eligió, el de su carrera más reciente
+      // Team elegido en la app o, si no eligió, el de su carrera más reciente
+      const { data: t } = await sbClient.rpc('team_actual', { p_runner_key: currentProfile.runner_key });
+      team = esTeamValido(t) ? t : null;
     } catch (e) {}
     const seenArchivos = new Set();
     const filteredRows = rows.filter(r => {
@@ -4459,6 +4658,7 @@ async function renderProfile() {
           <div class="stat-pill"><div class="num" style="font-size:10px;color:var(--blue);margin-top:4px;${team?'cursor:pointer;text-decoration:underline':''}" ${team?`onclick="showTeam('${team.replace(/'/g,"\\'")}')"`:''}>${team||'—'}</div><div class="lbl">Mi team</div></div>
         </div>
       </div>
+      <div id="miTeamBox"></div>
       <div class="profile-section">
         <div class="profile-section-title" style="display:flex;justify-content:space-between;align-items:center">
           <span>Mis próximas carreras</span>
@@ -4522,6 +4722,7 @@ async function renderProfile() {
     renderHistorialPerfil(perfilDist);
     loadInscripciones();
     renderBloqueSolicitudes();
+    renderMiTeamBox();
   } catch(e) {
     content.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:16px 0">Error al cargar perfil</div>';
   }

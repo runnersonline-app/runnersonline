@@ -1025,6 +1025,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
       <button onclick="hideModal('rankingCarreraModal')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;flex-shrink:0"><i class="ti ti-x"></i></button>
     </div>
     <div id="rkSub" style="font-size:10px;color:var(--muted);margin-bottom:12px"></div>
+    <div id="rkNota" style="display:none;font-size:11px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin:-4px 0 12px"></div>
     <select id="rkTeamSelect" onchange="onRankingTeamChange()" style="display:none;width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;margin-bottom:8px">
       <option value="">Todos los teams</option>
     </select>
@@ -1165,6 +1166,8 @@ const LOGO_URL = `${SUPABASE_URL}/storage/v1/object/public/branding/logo.png`;
 // Para agregar una medalla nueva: subí el PNG al bucket "medallas" en Supabase
 // Storage y agregá una línea acá con la clave "prefijo_distancia_año".
 const RACE_MEDALS_BY_YEAR = {
+  '21kgaceta_21_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/21kgaceta_21_2025.png?v=1`,
+  '21kgaceta_21_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/21kgaceta_21_2026.png?v=1`,
   '10rex_10_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/10rex_10_2025.png?v=1`,
   '10rex_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/10rex_10_2026.png?v=1`,
   '10si_10_2022': `${SUPABASE_URL}/storage/v1/object/public/medallas/10si_10_2022.png?v=1`,
@@ -1219,6 +1222,7 @@ const RACE_MEDALS_BY_YEAR = {
   'chicago_42_2022': `${SUPABASE_URL}/storage/v1/object/public/medallas/chicago_42_2022.png?v=2`,
   'chicago_42_2023': `${SUPABASE_URL}/storage/v1/object/public/medallas/chicago_42_2023.png?v=2`,
   'chicago_42_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/chicago_42_2024.png?v=2`,
+  'chicago_42_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/chicago_42_2026.png?v=1`,
   'chicago_42_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/chicago_42_2025.png?v=2`,
   'fila_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/fila_10_2026.png?v=1`,
   'fila_21_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/fila_21_2026.png?v=1`,
@@ -1312,6 +1316,7 @@ let currentPostId = null;
 
 // ─── AUTH ─────────────────────────────────────────────────────────────────────
 async function initAuth() {
+  cargarCarrerasFueraRanking();
   const { data: { session } } = await sbClient.auth.getSession();
   if (session) {
     currentUser = session.user;
@@ -1727,7 +1732,7 @@ function archToLabel(archivo) {
     'chicago':'Chicago','london':'Londres','londres':'Londres','newyork':'New York',
     '42mdq':'Maraton MdP','21nbcom':'21K NB BSAS','10nbba':'10K BsAs','mmza':'Mendoza',
     'valencia':'Valencia','misanjuan':'San Juan',
-    'mad':'Madrid','santcl':'Santiago','portoale':'Porto Alegre','tokio':'Tokio','sidney':'Sidney','10rex':'10K Rexona','15laguna':'15K OpenSports Laguna','21kpuerto':'21K Puerto Norte','10swiss':'10K Swiss Medical','10verano':'10K OpenSports','15ciudad':'15K OpenSports Ciudad',
+    'mad':'Madrid','santcl':'Santiago','portoale':'Porto Alegre','tokio':'Tokio','sidney':'Sidney','10rex':'10K Rexona','15laguna':'15K OpenSports Laguna','21kpuerto':'21K Puerto Norte','10swiss':'10K Swiss Medical','10verano':'10K OpenSports','21kgaceta':'21K La Gaceta','15ciudad':'15K OpenSports Ciudad',
     'lapampa':'La Pampa','42krosario':'Maraton Rosario','42nbcor':'Maraton Cordoba',
     'fila':'FILA Run','asics':'ASICS','hoka':'HOKA','farma':'Farmacity','fma':'Fiestas Mayas',
     'marat':'Maraton','invierno':'Invierno','verano':'Verano','otono':'Otono',
@@ -1739,7 +1744,18 @@ function archToLabel(archivo) {
   const base = archivo.replace('.csv','').split('_');
   const prefix = base[0].toLowerCase();
   const year = base.find(p => /^20\d{2}$/.test(p)) || '';
-  return (nameMap[prefix] || prefix.toUpperCase()) + (year ? ' ' + year : '');
+  return (nameMap[prefix] || prefix.toUpperCase()) + (year ? ' ' + year : '') + (CARRERAS_FUERA_RANKING.has(archivo) ? ' *' : '');
+}
+
+// Carreras que se muestran pero no cuentan para rankings ni insignias (ej. circuito más corto).
+// Se marcan con * y se actualizan desde races_meta.fuera_de_ranking.
+let CARRERAS_FUERA_RANKING = new Set(['21kgaceta_2025_21.csv']);
+const NOTA_FUERA_RANKING = '* No cuenta para los rankings: el circuito habría sido más corto que la distancia oficial.';
+async function cargarCarrerasFueraRanking() {
+  try {
+    const rows = await sbFetch('races_meta', { select: 'archivo_fuente', fuera_de_ranking: 'eq.true' });
+    CARRERAS_FUERA_RANKING = new Set(rows.map(r => r.archivo_fuente));
+  } catch (e) {}
 }
 
 function getTimeAgo(dateStr) {
@@ -2129,6 +2145,7 @@ const ESCALERAS_INSIGNIAS = [
 ];
 
 function calcularInsignias(races, team) {
+  races = races.filter(r => !CARRERAS_FUERA_RANKING.has(r.archivo_fuente));
   const insignias = ESCALERAS_INSIGNIAS.map(({ dist, niveles }) => {
     const deLaDistancia = races.filter(r => r.dist === dist);
     // Mejor tiempo válido en esa distancia (Infinity si solo la terminó sin tiempo válido)
@@ -2273,10 +2290,11 @@ function renderRaceHistoryTable(racesList) {
     document.getElementById('raceBody').innerHTML = '<tr><td colspan="5" style="color:var(--muted);font-size:11px;padding:12px">Sin carreras de esa distancia</td></tr>';
     return;
   }
-  const paces = racesList.map(x=>x.pm).filter(p=>p<999);
+  // El PR no considera carreras fuera de ranking (circuito corto)
+  const paces = racesList.filter(x => !CARRERAS_FUERA_RANKING.has(x.archivo_fuente)).map(x=>x.pm).filter(p=>p<999);
   const minP = paces.length ? Math.min(...paces) : 0;
   document.getElementById('raceBody').innerHTML = racesList.map(rc => {
-    const isBest = rc.pm === minP && rc.pm < 999;
+    const isBest = rc.pm === minP && rc.pm < 999 && !CARRERAS_FUERA_RANKING.has(rc.archivo_fuente);
     // (la barra de ritmo se sacó: en su lugar va la zapa, igual que en "Mi perfil")
     return `<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentRunnerKey, decodeURIComponent('${encAttr(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}<br><span style="color:var(--muted);font-size:9px;font-family:'DM Mono',monospace">${rc.year}</span></td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}${badgeRecord(rc.archivo_fuente, currentRunnerKey)}</td><td class="pace-val">${rc.pace}${isBest&&rc.pace!=='—'?'<span class="best-tag">PR</span>':''}</td><td style="text-align:center">${zapaCarreraIcono(currentRunnerZapas[rc.archivo_fuente], true)}</td></tr>`;
   }).join('');
@@ -2457,7 +2475,7 @@ async function cargarIntegrantesTeam(name, isOwner) {
       const key = r.runner_key || r.runner;
       if (!members[key]) members[key] = { name: r.runner, key, bestPm: 999, bestPace: null };
       const dist = parseFloat((r.archivo_fuente||'').replace('.csv','').split('_').pop());
-      if (dist && r.time) { const p = calcPace(r.time, dist); if (p && p.pm < members[key].bestPm) { members[key].bestPm = p.pm; members[key].bestPace = p.pace; } }
+      if (dist && r.time && !CARRERAS_FUERA_RANKING.has(r.archivo_fuente)) { const p = calcPace(r.time, dist); if (p && p.pm < members[key].bestPm) { members[key].bestPm = p.pm; members[key].bestPace = p.pace; } }
     });
     const memberList = Object.values(members).sort((a,b) => a.bestPm-b.bestPm);
     const count = memberList.length;
@@ -4697,7 +4715,7 @@ async function renderProfile() {
     const total = races.length;
     const maratones = races.filter(r=>r.dist==='42').length;
     const medias = races.filter(r=>r.dist==='21').length;
-    const paces = races.map(r=>r.pm).filter(p=>p<999);
+    const paces = races.filter(r => !CARRERAS_FUERA_RANKING.has(r.archivo_fuente)).map(r=>r.pm).filter(p=>p<999);
     const bestPace = paces.length ? (() => { const m=Math.min(...paces); const mins=Math.floor(m); const secs=Math.round((m-mins)*60); return mins+':'+String(secs).padStart(2,'0'); })() : '—';
     const badges = calcularInsignias(races, team);
     const totalKm = races.reduce((sum, r) => sum + (parseFloat(r.dist) || 0), 0);
@@ -6011,6 +6029,9 @@ function openRankingCarrera(archivo, team = null, meta = null) {
   document.getElementById('rkSearchInput').style.display = '';
   document.querySelectorAll('#rkSexoBox .chip').forEach(c => c.classList.toggle('active', c.dataset.s === ''));
   document.getElementById('rkNombre').textContent = nombreCarreraResultado({ archivo_fuente: archivo, ...c });
+  const rkNota = document.getElementById('rkNota');
+  rkNota.textContent = CARRERAS_FUERA_RANKING.has(archivo) ? NOTA_FUERA_RANKING : '';
+  rkNota.style.display = CARRERAS_FUERA_RANKING.has(archivo) ? '' : 'none';
   const rkMed = document.getElementById('rkMedalla'), medalla = medallaRealDeArchivo(archivo);
   rkMed.style.display = medalla ? '' : 'none';
   if (medalla) rkMed.src = medalla; else rkMed.removeAttribute('src');

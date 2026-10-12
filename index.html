@@ -100,6 +100,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .member-pace{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue)}
 .races-list{display:flex;flex-direction:column;gap:8px;padding-top:10px}
 .race-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:13px 14px;cursor:pointer;transition:border-color .15s}
+.flag-pais{display:inline-block;height:.62em;width:auto;aspect-ratio:4/3;object-fit:cover;margin-left:8px;vertical-align:middle;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.25);position:relative;top:-.06em}
 .wa-pos{font-size:.6em;margin-left:6px;letter-spacing:0;color:inherit;vertical-align:middle}
 .wa-delta{color:var(--muted2);font-size:.8em;font-weight:400;margin-left:2px}
 .rwd-nota{font-size:10px;color:var(--muted);text-align:center;margin:10px 0 0}
@@ -364,6 +365,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .rk-pos{font-family:'Bebas Neue',sans-serif;font-size:22px;min-width:40px;text-align:center;line-height:1;color:var(--text)}
 .rk-pos.podio{color:var(--accent)}
 .rk-info{flex:1;min-width:0}
+.rk-name .flag-pais{height:9px;margin-left:5px;top:0}
+.rw-ambito{display:inline-flex;align-items:center;vertical-align:middle;margin-left:6px}
+.rw-ambito .flag-pais{height:.62em;margin-left:0}
+.rw-ambito .ti{font-size:.8em}
+.rw-chip-pais{display:inline-flex;align-items:center;gap:5px}
+.rw-chip-pais .flag-pais{height:10px;margin-left:0;top:0}
 .rk-name{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rk-meta{font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px}
 .rk-time{text-align:right;flex-shrink:0}
@@ -483,7 +490,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
       <button class="home-btn" onclick="goTo('runners');clearRunner()"><i class="ti ti-home"></i> Inicio</button>
     </div>
     <div class="runner-hdr" id="runHdr">
-      <div class="runner-name"><span id="runName"></span><span id="runWaPos" class="wa-pos"></span></div>
+      <div class="runner-name"><span id="runName"></span><span id="runFlag"></span><span id="runWaPos" class="wa-pos"></span></div>
       <div id="runFollowBox" style="display:none;margin:6px 0"></div>
       <div id="runBio" style="display:none;font-size:12px;color:var(--muted);line-height:1.4;margin:4px 0 8px;white-space:pre-wrap"></div>
       <div id="runInstagram" style="display:none;margin-bottom:8px"></div>
@@ -638,7 +645,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 <!-- RANKING (puntaje World Athletics, últimos 12 meses) -->
 <div id="sc-ranking" class="screen">
   <div class="header yellow" data-bg="TOP">
-    <h1>Ranking</h1>
+    <h1>Ranking <span id="rwAmbito" class="rw-ambito" title="Ranking general"><i class="ti ti-world"></i></span></h1>
     <button class="global-home" onclick="goTo('runners')"><i class="ti ti-home"></i> Inicio</button>
   </div>
   <div class="filters" style="flex-wrap:wrap;gap:6px">
@@ -653,6 +660,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
     <div class="chip" data-rwdist="10" onclick="setRankingWa('dist',10)">10K</div>
     <div class="chip" data-rwdist="21" onclick="setRankingWa('dist',21)">21K</div>
     <div class="chip" data-rwdist="42" onclick="setRankingWa('dist',42)">42K</div>
+    <span style="flex:1"></span>
+    <div class="chip rw-chip-pais" id="rwPaisChip" onclick="setRankingWa('pais', rw.pais ? null : 'ARG')" title="Solo argentinos"><img class="flag-pais" src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/ar.svg" alt="">ARG</div>
   </div>
   <div class="search-area" style="padding-bottom:0">
     <div class="search-box">
@@ -1138,7 +1147,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
         <div onclick="document.getElementById('avatarInputGallery').click();toggleAvatarOptions()" style="padding:9px 10px;font-size:12px;cursor:pointer;border-radius:5px;white-space:nowrap"><i class="ti ti-photo" style="color:var(--muted)"></i> Elegir de la galería</div>
       </div>
     </div>
-    <div class="profile-name"><span id="pName">—</span><span id="pWaPos" class="wa-pos"></span></div>
+    <div class="profile-name"><span id="pName">—</span><span id="pFlag"></span><span id="pWaPos" class="wa-pos"></span></div>
     <div class="profile-sub" id="pSub">Iniciá sesión para ver tu perfil</div>
     <div id="pInstagramBox" style="display:none;margin-top:6px"></div>
     <div id="pDatosBox" style="display:none;margin-top:6px"></div>
@@ -1283,6 +1292,36 @@ function medalMismoEvento(prefix, year) {
   }
   return mejor;
 }
+// La carrera cuenta como terminada solo si tiene un tiempo (h:mm o mm:ss); DNF, DSQ, "—" o vacío no
+function terminoCarrera(t) {
+  return /^\d{1,2}:\d{2}/.test(String(t || '').trim());
+}
+
+// Bandera del país en el perfil, según la tabla corredores_pais (códigos ISO de 3 letras:
+// majors → ARG, archivo de Buenos Aires 2026, carga manual). Las imágenes son de flag-icons (ISO de 2 letras).
+const PAIS_ISO2 = {ARG:'ar',BRA:'br',URY:'uy',CHL:'cl',COL:'co',PER:'pe',PRY:'py',MEX:'mx',CRI:'cr',USA:'us',ECU:'ec',BOL:'bo',VEN:'ve',FRA:'fr',ESP:'es',GTM:'gt',DEU:'de',DOM:'do',SLV:'sv',PAN:'pa',GBR:'gb',CAN:'ca',KEN:'ke',ITA:'it',ETH:'et',NIC:'ni',AUS:'au',NLD:'nl',PRI:'pr',RUS:'ru',CHE:'ch',JPN:'jp',POL:'pl',PRT:'pt',ZAF:'za',CHN:'cn',BEL:'be',DNK:'dk',SWE:'se',IRL:'ie',HND:'hn',GRC:'gr',KOR:'kr',AUT:'at',NOR:'no',IND:'in',UGA:'ug',GUY:'gy',FIN:'fi',NZL:'nz',UKR:'ua',TUR:'tr',ABW:'aw',RWA:'rw',LBY:'ly',TWN:'tw',SUR:'sr',BRB:'bb',IDN:'id',SVK:'sk',THA:'th',SVN:'si',HUN:'hu',CUB:'cu',BMU:'bm'};
+let nombresPais = null;
+try { nombresPais = new Intl.DisplayNames(['es'], { type: 'region' }); } catch (e) {}
+function banderaPaisHtml(pais) {
+  const iso2 = PAIS_ISO2[pais];
+  if (!iso2) return `<span class="wa-pos" title="${escHtml(pais)}">${escHtml(pais)}</span>`;
+  const nombre = escHtml((nombresPais && nombresPais.of(iso2.toUpperCase())) || pais);
+  return `<img class="flag-pais" src="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/${iso2}.svg" alt="${nombre}" title="${nombre}" onerror="this.replaceWith(document.createTextNode(' ${pais}'))">`;
+}
+async function mostrarBanderaPais(runnerKey, elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.innerHTML = '';
+  el.dataset.key = runnerKey || '';
+  if (!runnerKey) return;
+  try {
+    const rows = await sbFetch('corredores_pais', { runner_key: `eq.${runnerKey}`, select: 'pais' });
+    const pais = rows?.[0]?.pais;
+    // Si mientras tanto se abrió otro corredor, no pisar su bandera
+    if (pais && el.dataset.key === runnerKey) el.innerHTML = banderaPaisHtml(pais);
+  } catch (e) {}
+}
+
 function medalUrlFor(race) {
   return RACE_MEDALS_BY_YEAR[`${race.prefix}_${race.dist}_${race.year}`]
     || RACE_MEDALS[`${race.prefix}_${race.dist}`]
@@ -2015,6 +2054,8 @@ async function loadRunner(key) {
       team = esTeamValido(t) ? t : null;
     } catch (e) {}
     const seenArchivos = new Set();
+    // Si hay dos filas de la misma carrera, se queda con la que tiene tiempo
+    rows.sort((a, b) => terminoCarrera(b.time) - terminoCarrera(a.time));
     const filteredRows = rows.filter(r => {
       if (!r.archivo_fuente) return false;
       if (r.archivo_fuente === 'corredores_unicos.csv' || r.archivo_fuente === 'runners_base.csv') return false;
@@ -2028,8 +2069,10 @@ async function loadRunner(key) {
         const { year, dist } = parseArchivo(r.archivo_fuente);
         const paceData = calcPace(r.time, parseFloat(dist));
         const prefix = r.archivo_fuente.replace('.csv','').split('_')[0].toLowerCase();
-        return { label: archToLabel(r.archivo_fuente), year, dist, time: r.time||'—', pace: paceData?paceData.pace:'—', pm: paceData?paceData.pm:999, prefix, archivo_fuente: r.archivo_fuente, _sortKey: sortKeyForRace(r.archivo_fuente, year, fechasMap) };
+        return { label: archToLabel(r.archivo_fuente), year, dist, time: r.time||'—', pace: paceData?paceData.pace:'—', pm: paceData?paceData.pm:999, prefix, archivo_fuente: r.archivo_fuente, termino: terminoCarrera(r.time), _sortKey: sortKeyForRace(r.archivo_fuente, year, fechasMap) };
       }).sort((a,b) => b._sortKey - a._sortKey);
+    // Sin tiempo (DNF, DSQ, vacío) no hay medalla ni cuenta en estadísticas/badges; sí queda en el historial
+    const terminadas = races.filter(r => r.termino);
 
     // Sacar la foto de una búsqueda anterior antes de mostrar la nueva
     const oldAvatar = document.getElementById('runAvatar');
@@ -2052,19 +2095,20 @@ async function loadRunner(key) {
 
     // Solo para el MEDALLERO: sacar las carreras que el corredor marcó como ocultas
     // (el historial completo y las estadísticas siguen mostrando todo)
-    let racesParaMedallero = races;
+    let racesParaMedallero = terminadas;
     if (runnerProfile?.id) {
       try {
         const ocultasRows = await sbFetch('medallas_ocultas', { select: 'archivo_fuente', user_id: `eq.${runnerProfile.id}` });
         const ocultasSet = new Set(ocultasRows.map(o => o.archivo_fuente));
-        if (ocultasSet.size) racesParaMedallero = races.filter(r => !ocultasSet.has(r.archivo_fuente));
+        if (ocultasSet.size) racesParaMedallero = terminadas.filter(r => !ocultasSet.has(r.archivo_fuente));
       } catch (e) {}
     }
 
-    const has42 = races.some(r => r.dist==='42');
-    const has21 = races.some(r => r.dist==='21');
+    const has42 = terminadas.some(r => r.dist==='42');
+    const has21 = terminadas.some(r => r.dist==='21');
     document.getElementById('runHdr').classList.add('show');
     document.getElementById('runName').textContent = info.runner;
+    mostrarBanderaPais(key, 'runFlag');
     mostrarPosicionWa(key, 'runWaPos');
 
     if (runnerProfile?.avatar_url) {
@@ -2131,9 +2175,9 @@ async function loadRunner(key) {
     document.getElementById('runTags').innerHTML =
       `<div class="tag">Team ${team?`<span onclick="showTeam(decodeURIComponent('${encAttr(team)}'))" style="cursor:pointer;text-decoration:underline;color:var(--blue)">${escHtml(team)}</span>`:'<span>—</span>'}</div>${has42 ? '<div class="tag">✓ <span>Maratonista</span></div>' : ''}${has21 ? '<div class="tag">✓ <span>21K</span></div>' : ''}`;
     document.getElementById('runStats').innerHTML =
-      `<div class="stat-pill"><div class="num">${races.length}</div><div class="lbl">Carreras</div></div><div class="stat-pill"><div class="num">${races.filter(x=>x.dist==='42').length}</div><div class="lbl">Maratones</div></div><div class="stat-pill"><div class="num">${races.filter(x=>x.dist==='21').length}</div><div class="lbl">Media Maratón</div></div>`;
+      `<div class="stat-pill"><div class="num">${terminadas.length}</div><div class="lbl">Carreras</div></div><div class="stat-pill"><div class="num">${terminadas.filter(x=>x.dist==='42').length}</div><div class="lbl">Maratones</div></div><div class="stat-pill"><div class="num">${terminadas.filter(x=>x.dist==='21').length}</div><div class="lbl">Media Maratón</div></div>`;
     // Insignias ganadas (en la ficha pública solo se muestran las ganadas)
-    const ganadas = calcularInsignias(races, team).filter(b => b.earned);
+    const ganadas = calcularInsignias(terminadas, team).filter(b => b.earned);
     document.getElementById('runBadges').innerHTML = ganadas.map(b =>
       `<span class="run-badge" title="${escHtml(b.desc)}"><i class="ti ${b.icon}"></i>${escHtml(b.name)}</span>`).join('');
     // Zapatillas con las que este corredor marcó cada carrera (si tiene cuenta)
@@ -3428,7 +3472,8 @@ async function resolverSolicitud(id, aprobar) {
 // sus integrantes activos. Se carga de a 20 al bajar.
 const RW_PASO = 20;
 // dist 0 = puntaje WA (todas las distancias); 10/21/42 = mejor tiempo en esa distancia
-const rw = { sexo: 'M', modo: 'corredores', dist: 0, todos: false, q: '', datos: [], fin: false, cargando: false, reqId: 0 };
+// pais: null = ranking general; 'ARG' = sin los de otro país conocido, con puestos renumerados
+const rw = { sexo: 'M', modo: 'corredores', dist: 0, todos: false, pais: null, q: '', datos: [], fin: false, cargando: false, reqId: 0 };
 let rwObserver = null;
 
 function initRankingWa() {
@@ -3461,6 +3506,14 @@ function setRankingWa(clave, valor) {
   });
   // "Ver todos" no aplica a teams (ya son promedio de activos)
   document.getElementById('rwTodosBox').style.display = rw.modo === 'teams' || rw.dist ? 'none' : '';
+  // Filtro ARG: solo para corredores; al lado del título, bandera o mundito
+  const chipPais = document.getElementById('rwPaisChip');
+  chipPais.style.display = rw.modo === 'teams' ? 'none' : '';
+  chipPais.classList.toggle('active', !!rw.pais);
+  const soloArg = !!rw.pais && rw.modo !== 'teams';
+  const ambito = document.getElementById('rwAmbito');
+  ambito.innerHTML = soloArg ? banderaPaisHtml(rw.pais) : '<i class="ti ti-world"></i>';
+  ambito.title = soloArg ? 'Ranking de argentinos' : 'Ranking general';
   document.getElementById('rwBuscar').placeholder = rw.dist ? 'Buscar corredor...' : 'Buscar corredor o team...';
   cargarRankingWa();
 }
@@ -3492,10 +3545,11 @@ async function masRankingWa(reqId) {
   try {
     const { data, error } = rw.dist
       ? await sbClient.rpc('get_ranking_distancia', {
-          p_sexo: rw.sexo, p_dist: rw.dist, p_offset: rw.datos.length, p_limit: RW_PASO, p_q: rw.q || null
+          p_sexo: rw.sexo, p_dist: rw.dist, p_offset: rw.datos.length, p_limit: RW_PASO, p_q: rw.q || null, p_pais: rw.pais
         })
       : await sbClient.rpc('get_ranking_wa', {
-          p_sexo: rw.sexo, p_teams: rw.modo === 'teams', p_todos: rw.todos, p_offset: rw.datos.length, p_limit: RW_PASO, p_q: rw.q || null
+          p_sexo: rw.sexo, p_teams: rw.modo === 'teams', p_todos: rw.todos, p_offset: rw.datos.length, p_limit: RW_PASO, p_q: rw.q || null,
+          p_pais: rw.modo === 'teams' ? null : rw.pais
         });
     if (reqId !== rw.reqId) return;
     if (error) throw error;
@@ -3534,7 +3588,7 @@ function rwFilaHtml(r) {
     : [esTeamValido(r.team) ? r.team : '', `${r.carreras} carrera${r.carreras === 1 ? '' : 's'}`].filter(Boolean).join(' · ');
   return `<div class="rk-row ${!esTeam && miKey && r.runner_key === miKey ? 'me' : ''}" onclick="${click}">
     <div class="rk-pos ${r.pos <= 3 ? 'podio' : ''}">${r.pos}°</div>
-    <div class="rk-info"><div class="rk-name">${escHtml(r.nombre || '')} ${esTeam ? '' : rwDeltaHtml(r.delta)}</div><div class="rk-meta">${escHtml(meta)}</div></div>
+    <div class="rk-info"><div class="rk-name">${escHtml(r.nombre || '')}${!esTeam && r.pais ? banderaPaisHtml(r.pais) : ''} ${esTeam ? '' : rwDeltaHtml(r.delta)}</div><div class="rk-meta">${escHtml(meta)}</div></div>
     <div class="rk-time"><div class="t">${Number(r.puntaje).toLocaleString('es-AR')}</div><div class="p">pts</div></div>
   </div>`;
 }
@@ -3546,7 +3600,7 @@ function rwFilaDistHtml(r) {
   const tiempo = String(r.tiempo || '').replace(/^0:/, '');
   return `<div class="rk-row ${miKey && r.runner_key === miKey ? 'me' : ''}" onclick="goToRunner(decodeURIComponent('${encAttr(r.runner_key || '')}'), decodeURIComponent('${encAttr(r.nombre || '')}'))">
     <div class="rk-pos ${r.pos <= 3 ? 'podio' : ''}">${r.pos}°</div>
-    <div class="rk-info"><div class="rk-name">${escHtml(r.nombre || '')}</div><div class="rk-meta">${escHtml(archToLabel(r.archivo_fuente))}</div></div>
+    <div class="rk-info"><div class="rk-name">${escHtml(r.nombre || '')}${r.pais ? banderaPaisHtml(r.pais) : ''}</div><div class="rk-meta">${escHtml(archToLabel(r.archivo_fuente))}</div></div>
     <div class="rk-time"><div class="t">${escHtml(tiempo)}</div>${pace ? `<div class="p">${pace.pace}/km</div>` : ''}</div>
   </div>`;
 }
@@ -4704,6 +4758,7 @@ async function renderProfile() {
     if (label) label.style.display = 'flex';
   }
   document.getElementById('pName').textContent = currentProfile.nombre || 'Tu perfil';
+  mostrarBanderaPais(currentProfile.runner_key, 'pFlag');
   mostrarPosicionWa(currentProfile.runner_key, 'pWaPos');
   document.getElementById('pSub').textContent = currentProfile.owned_team && currentProfile.owned_team_status === 'confirmed' ? 'Admin de ' + currentProfile.owned_team : (currentProfile.runner_key ? 'Corredor' : 'Sin carreras vinculadas');
   renderInstagramBox();
@@ -4731,6 +4786,8 @@ async function renderProfile() {
       team = esTeamValido(t) ? t : null;
     } catch (e) {}
     const seenArchivos = new Set();
+    // Si hay dos filas de la misma carrera, se queda con la que tiene tiempo
+    rows.sort((a, b) => terminoCarrera(b.time) - terminoCarrera(a.time));
     const filteredRows = rows.filter(r => {
       if (!r.archivo_fuente) return false;
       if (r.archivo_fuente === 'corredores_unicos.csv' || r.archivo_fuente === 'runners_base.csv') return false;
@@ -4744,15 +4801,17 @@ async function renderProfile() {
         const { year, dist } = parseArchivo(r.archivo_fuente);
         const paceData = calcPace(r.time, parseFloat(dist));
         const prefix = r.archivo_fuente.replace('.csv','').split('_')[0].toLowerCase();
-        return { label: archToLabel(r.archivo_fuente), year, dist, time: r.time||'—', pace: paceData?paceData.pace:'—', pm: paceData?paceData.pm:999, prefix, archivo_fuente: r.archivo_fuente, _sortKey: sortKeyForRace(r.archivo_fuente, year, fechasMap) };
+        return { label: archToLabel(r.archivo_fuente), year, dist, time: r.time||'—', pace: paceData?paceData.pace:'—', pm: paceData?paceData.pm:999, prefix, archivo_fuente: r.archivo_fuente, termino: terminoCarrera(r.time), _sortKey: sortKeyForRace(r.archivo_fuente, year, fechasMap) };
       }).sort((a,b) => b._sortKey - a._sortKey);
-    const total = races.length;
-    const maratones = races.filter(r=>r.dist==='42').length;
-    const medias = races.filter(r=>r.dist==='21').length;
+    // Sin tiempo (DNF, DSQ, vacío) no hay medalla ni cuenta en estadísticas/badges; sí queda en el historial
+    const terminadas = races.filter(r => r.termino);
+    const total = terminadas.length;
+    const maratones = terminadas.filter(r=>r.dist==='42').length;
+    const medias = terminadas.filter(r=>r.dist==='21').length;
     const paces = races.filter(r => !CARRERAS_FUERA_RANKING.has(r.archivo_fuente)).map(r=>r.pm).filter(p=>p<999);
     const bestPace = paces.length ? (() => { const m=Math.min(...paces); const mins=Math.floor(m); const secs=Math.round((m-mins)*60); return mins+':'+String(secs).padStart(2,'0'); })() : '—';
-    const badges = calcularInsignias(races, team);
-    const totalKm = races.reduce((sum, r) => sum + (parseFloat(r.dist) || 0), 0);
+    const badges = calcularInsignias(terminadas, team);
+    const totalKm = terminadas.reduce((sum, r) => sum + (parseFloat(r.dist) || 0), 0);
     const miServicioHtml = await renderMiServicioSection();
     content.innerHTML = `
       <div class="profile-section">
@@ -4796,8 +4855,8 @@ async function renderProfile() {
         <div class="profile-section-title" style="display:flex;justify-content:space-between;align-items:center">
           <span>Medallero</span>
           <div style="display:flex;gap:6px">
-            ${races.length?`<button onclick="openVisibilidadMedallasModal()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--muted);cursor:pointer"><svg class="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg> Visibilidad</button>`:''}
-            ${races.length?`<button onclick="openShareModal('medallero')" style="background:none;border:1px solid var(--accent);border-radius:4px;padding:4px 10px;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--accent);cursor:pointer"><i class="ti ti-share"></i> Compartir</button>`:''}
+            ${terminadas.length?`<button onclick="openVisibilidadMedallasModal()" style="background:none;border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--muted);cursor:pointer"><svg class="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg> Visibilidad</button>`:''}
+            ${terminadas.length?`<button onclick="openShareModal('medallero')" style="background:none;border:1px solid var(--accent);border-radius:4px;padding:4px 10px;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--accent);cursor:pointer"><i class="ti ti-share"></i> Compartir</button>`:''}
           </div>
         </div>
         ${races.length ? `
@@ -4836,6 +4895,7 @@ async function renderProfile() {
       <button onclick="desvincularCorredor()" style="width:100%;background:none;border:1px dashed var(--border);border-radius:8px;padding:11px;font-size:12px;color:var(--muted);cursor:pointer;margin-top:4px"><i class="ti ti-unlink"></i> Desvincular mi nombre de corredor</button>
       <button onclick="signOut()" style="width:100%;background:none;border:1px solid var(--border);border-radius:8px;padding:11px;font-size:12px;color:var(--muted);cursor:pointer;margin-top:4px;margin-bottom:20px">Cerrar sesión</button>`;
     myRacesForShare = races;
+    myMedalsForShare = terminadas;
     myBadgesForShare = badges.filter(b => b.earned);
     myStatsForShare = { total, maratones, medias, bestPace, team, totalKm };
     // Se respeta la distancia que tenías elegida (ej. al volver de agregar una zapa)
@@ -4856,6 +4916,7 @@ async function renderProfile() {
 
 // --- COMPARTIR (carreras / medallero / badges) -----------------------------
 let myRacesForShare = [];
+let myMedalsForShare = []; // solo carreras terminadas (con tiempo)
 let myBadgesForShare = [];
 let myStatsForShare = null;
 let shareTab = 'carreras';
@@ -4893,7 +4954,7 @@ async function openVisibilidadMedallasModal() {
   } catch (e) {
     medallasOcultasActuales = new Set();
   }
-  list.innerHTML = myRacesForShare.map((r, i) => `
+  list.innerHTML = myMedalsForShare.map((r, i) => `
     <label style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer">
       <input type="checkbox" class="visMedallaCb" data-af="${r.archivo_fuente}" ${medallasOcultasActuales.has(r.archivo_fuente)?'':'checked'} style="width:16px;height:16px;accent-color:var(--accent)">
       <div style="flex:1"><div style="font-size:12px;font-weight:600">${r.label}</div><div style="font-size:10px;color:var(--muted)">${r.dist}k · ${r.time}</div></div>
@@ -4917,9 +4978,9 @@ async function guardarVisibilidadMedallas() {
 function renderMedalleroStack(distFilter) {
   const box = document.getElementById('medalleroStackBox');
   if (!box) return;
-  const filtradas = distFilter ? myRacesForShare.filter(r => r.dist === distFilter) : myRacesForShare;
+  const filtradas = distFilter ? myMedalsForShare.filter(r => r.dist === distFilter) : myMedalsForShare;
   if (!filtradas.length) {
-    box.innerHTML = `<p style="color:var(--muted);font-size:12px;padding:6px 0">Sin medallas de ${distFilter}K todavía</p>`;
+    box.innerHTML = `<p style="color:var(--muted);font-size:12px;padding:6px 0">Sin medallas${distFilter ? ` de ${distFilter}K` : ''} todavía</p>`;
     return;
   }
   box.innerHTML = `<div onclick='openMedalleroViewer()' style="display:flex;flex-wrap:wrap;align-items:center;row-gap:10px;cursor:pointer;padding:6px 0">
@@ -4953,7 +5014,7 @@ function filtrarMedalleroPerfil(dist) {
 }
 
 function openMedalleroViewer(races) {
-  const list = races || myRacesForShare;
+  const list = races || myMedalsForShare;
   const grid = document.getElementById('medalleroModalGrid');
   grid.innerHTML = list.map(rc => `
     <div style="text-align:center" title="${rc.label}">
@@ -4982,7 +5043,7 @@ function renderShareChecklist() {
         <div style="flex:1"><div style="font-size:12px;font-weight:600">${r.label}</div><div style="font-size:10px;color:var(--muted)">${r.dist}k . ${r.time} . ${r.pace}/km</div></div>
       </label>`).join('') : '<p style="color:var(--muted);font-size:12px">No tenes carreras cargadas todavia</p>';
   } else if (shareTab === 'medallero') {
-    list.innerHTML = myRacesForShare.length ? myRacesForShare.map((r, i) => `
+    list.innerHTML = myMedalsForShare.length ? myMedalsForShare.map((r, i) => `
       <label style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer">
         <input type="checkbox" class="share-medal-cb" data-i="${i}" checked style="width:16px;height:16px;accent-color:var(--accent)">
         <img src="${medalUrlFor(r)}" style="width:36px;height:36px;object-fit:contain;background:transparent" onerror="this.src='${GENERIC_MEDAL_URL}'">
@@ -5159,7 +5220,7 @@ async function generateShareImage() {
     }
 
   } else if (shareTab === 'medallero') {
-    const checked = Array.from(document.querySelectorAll('.share-medal-cb:checked')).map(cb => myRacesForShare[+cb.dataset.i]);
+    const checked = Array.from(document.querySelectorAll('.share-medal-cb:checked')).map(cb => myMedalsForShare[+cb.dataset.i]);
     if (!checked.length) { alert('Elegi al menos una medalla'); return; }
     const cols = 3;
     const rows = Math.ceil(checked.length / cols);

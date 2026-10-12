@@ -1166,6 +1166,8 @@ const LOGO_URL = `${SUPABASE_URL}/storage/v1/object/public/branding/logo.png`;
 // Para agregar una medalla nueva: subí el PNG al bucket "medallas" en Supabase
 // Storage y agregá una línea acá con la clave "prefijo_distancia_año".
 const RACE_MEDALS_BY_YEAR = {
+  // 2024 usa la misma medalla que 2025
+  '21kgaceta_21_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/21kgaceta_21_2025.png?v=1`,
   '21kgaceta_21_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/21kgaceta_21_2025.png?v=1`,
   '21kgaceta_21_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/21kgaceta_21_2026.png?v=1`,
   '10rex_10_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/10rex_10_2025.png?v=1`,

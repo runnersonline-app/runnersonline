@@ -1209,6 +1209,7 @@ const RACE_MEDALS_BY_YEAR = {
   'berlin_42_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/berlin_42_2026.png?v=1`,
   'bimbo_10_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/bimbo_10_2026.png?v=2`,
   'bimbo_10_2025': `${SUPABASE_URL}/storage/v1/object/public/medallas/bimbo_10_2026.png?v=2`, // 2025 usa la misma medalla que 2026
+  'sauco_15_2026': `${SUPABASE_URL}/storage/v1/object/public/medallas/sauco_15_2026.png?v=1`, // el 5K usa la misma
   'fila_10_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/fila_10_2024.png?v=1`,
   // las de Valencia se subieron con otro nombre de archivo
   'valencia_42_2024': `${SUPABASE_URL}/storage/v1/object/public/medallas/valencia_2024_42.png?v=1`,
@@ -1810,7 +1811,7 @@ function archToLabel(archivo) {
     'lapampa':'La Pampa','42krosario':'Maraton Rosario','42nbcor':'Maraton Cordoba',
     'fila':'FILA Run','asics':'ASICS','hoka':'HOKA','farma':'Farmacity','fma':'Fiestas Mayas',
     'marat':'Maraton','invierno':'Invierno','verano':'Verano','otono':'Otono',
-    'primavera':'Primavera','sauco':'El Sauco','sunset':'Sunset Run',
+    'primavera':'Primavera','sauco':'Saucony Baires','sunset':'Sunset Run',
     '15nbba':'15K New Balance','15under':'15K Under','15adi':'15K Adidas','15nbros':'15K Rosario',
     '25nbba':'25K BsAs','30nbba':'30K BsAs','10si':'10K San Isidro','10super':'10K Super',
     '10vl':'10K VL','10night':'10K Night','21nbsal':'Media Salta','21nbmdq':'Media MdP'
@@ -4930,8 +4931,9 @@ function renderMedalleroStackRunner(distFilter) {
     box.innerHTML = `<p style="color:var(--muted);font-size:11px;padding:4px 0">Sin medallas de ${distFilter}K</p>`;
     return;
   }
-  box.innerHTML = `<div onclick="openMedalleroViewer(currentRunnerRaces)" style="display:flex;flex-wrap:wrap;align-items:center;row-gap:8px;cursor:pointer">
-    ${filtradas.map((rc,i) => `<img src="${medalUrlFor(rc)}" loading="lazy" style="width:40px;height:40px;object-fit:contain;background:transparent;margin-left:${i===0?'0':'-20px'}" onerror="this.src='${GENERIC_MEDAL_URL}'">`).join('')}
+  // Todas las medallas se corren -20px (también la primera de cada fila) y el padding lo compensa: las filas quedan alineadas
+  box.innerHTML = `<div onclick="openMedalleroViewer(currentRunnerRaces)" style="display:flex;flex-wrap:wrap;align-items:center;row-gap:8px;cursor:pointer;padding-left:20px">
+    ${filtradas.map((rc,i) => `<img src="${medalUrlFor(rc)}" loading="lazy" style="width:40px;height:40px;object-fit:contain;background:transparent;margin-left:-20px" onerror="this.src='${GENERIC_MEDAL_URL}'">`).join('')}
   </div>`;
 }
 
@@ -4984,8 +4986,9 @@ function renderMedalleroStack(distFilter) {
     box.innerHTML = `<p style="color:var(--muted);font-size:12px;padding:6px 0">Sin medallas${distFilter ? ` de ${distFilter}K` : ''} todavía</p>`;
     return;
   }
-  box.innerHTML = `<div onclick='openMedalleroViewer()' style="display:flex;flex-wrap:wrap;align-items:center;row-gap:10px;cursor:pointer;padding:6px 0">
-    ${filtradas.map((rc,i) => `<img src="${medalUrlFor(rc)}" loading="lazy" title="${rc.label}" style="width:52px;height:52px;object-fit:contain;background:transparent;margin-left:${i===0?'0':'-26px'};position:relative;z-index:${i+1}" onerror="this.src='${GENERIC_MEDAL_URL}'">`).join('')}
+  // Igual que en la ficha pública: corrimiento parejo de -26px y padding que lo compensa
+  box.innerHTML = `<div onclick='openMedalleroViewer()' style="display:flex;flex-wrap:wrap;align-items:center;row-gap:10px;cursor:pointer;padding:6px 0 6px 26px">
+    ${filtradas.map((rc,i) => `<img src="${medalUrlFor(rc)}" loading="lazy" title="${rc.label}" style="width:52px;height:52px;object-fit:contain;background:transparent;margin-left:-26px;position:relative;z-index:${i+1}" onerror="this.src='${GENERIC_MEDAL_URL}'">`).join('')}
     <span style="margin-left:14px;font-size:11px;color:var(--muted)">${filtradas.length} medalla${filtradas.length===1?'':'s'} · tocá para ver</span>
   </div>`;
 }

@@ -21,6 +21,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .bottom-nav{display:flex;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;order:-1}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px 6px;cursor:pointer;background:none;border:none;color:var(--muted);gap:2px;font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:.5px;text-transform:uppercase;transition:color .15s}
 .nav-btn i{font-size:18px}
+.nav-logo,.nav-colapsar{display:none}
+.col-pts{display:none}
 .nav-btn.act-yellow{color:var(--accent)}
 .nav-btn.act-blue{color:var(--blue)}
 .nav-btn.act-orange{color:var(--orange)}
@@ -59,11 +61,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .runner-hdr{padding:14px 0;border-bottom:1px solid var(--border);margin-bottom:12px;display:none}
 .runner-hdr.show{display:block}
 .runner-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;margin-bottom:6px}
-.runner-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
-.tag{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
+.runner-tags{display:flex;flex-wrap:wrap;align-items:stretch;gap:5px;margin-bottom:8px}
+.tag{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;display:inline-flex;align-items:center;gap:4px}
 .tag span{color:var(--text)}
 .stats-row{display:flex;gap:6px}
-.stat-pill{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:7px 10px;text-align:center;flex:1}
+.stat-pill{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:7px 10px;text-align:center;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center}
 .stat-pill .num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);line-height:1}
 .stat-pill .lbl{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
 .sect-title{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--muted);letter-spacing:2px;margin:12px 0 8px}
@@ -376,6 +378,72 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .rk-time{text-align:right;flex-shrink:0}
 .rk-time .t{font-family:'DM Mono',monospace;font-size:12px}
 .rk-time .p{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)}
+
+/* ─── Pantallas anchas (compu): más ancho, listas en columnas, ventanas centradas ───
+   En el celular (menos de 900px) no se aplica nada de esto. */
+@media (min-width: 900px) {
+  body{max-width:1180px;border-left:1px solid var(--border);border-right:1px solid var(--border)}
+  .content{padding:0 32px 48px}
+  .search-area{padding:14px 32px 6px}
+  .filters{padding:6px 32px 8px}
+  .header{padding:22px 32px 14px}
+  .header h1{font-size:38px}
+  /* Menú a la izquierda: barra fija con el logo arriba y las secciones una debajo de otra.
+     Cada pantalla trae su propio menú; se ve el de la pantalla activa. */
+  /* Contraída (por defecto): 72px con el logo y solo íconos. Abierta (body.nav-abierta): 220px con texto. */
+  .screen{padding-left:72px;transition:padding-left .2s}
+  body.nav-abierta .screen{padding-left:220px}
+  .screen.active .bottom-nav{position:fixed;top:0;bottom:0;left:max(0px,calc(50vw - 590px));width:72px;z-index:50;cursor:pointer;
+    flex-direction:column;justify-content:flex-start;align-items:center;gap:2px;padding:0 10px 20px;transition:width .2s;
+    border-bottom:none;border-right:1px solid var(--border);border-left:1px solid var(--border)}
+  body.nav-abierta .screen.active .bottom-nav{width:220px;align-items:stretch;cursor:default}
+  .nav-logo{display:block;background:none;border:none;padding:16px 0 14px;cursor:pointer;align-self:center}
+  .nav-logo img{width:46px;height:46px;border-radius:50%;display:block}
+  body.nav-abierta .nav-logo{align-self:flex-start;padding-left:6px;cursor:default}
+  .nav-colapsar{position:absolute;top:26px;right:10px;width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;align-items:center;justify-content:center}
+  body.nav-abierta .nav-colapsar{display:flex}
+  .nav-colapsar:hover{color:var(--text);border-color:var(--muted)}
+  .nav-btn{flex:0 0 auto;flex-direction:row;justify-content:center;gap:12px;width:100%;font-size:12px;letter-spacing:.8px;padding:12px 0;border-radius:8px}
+  body.nav-abierta .nav-btn{justify-content:flex-start;padding:11px 12px}
+  .nav-btn i{font-size:20px;width:22px;text-align:center}
+  .nav-lbl{display:none}
+  body.nav-abierta .nav-lbl{display:inline}
+  .nav-btn:hover{background:var(--bg);color:var(--text)}
+  .nav-btn.act-yellow,.nav-btn.act-blue,.nav-btn.act-orange{background:var(--bg);font-weight:700}
+  /* Listas de tarjetas en columnas */
+  #teamsLista,.races-list,.zapas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px;align-items:start}
+  #teamsLista .loading,.races-list .loading,.zapas-grid .loading,.races-list>p,.zapas-grid>p{grid-column:1/-1}
+  .badge-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+  /* Listas largas de una columna (feed, rankings): ancho cómodo de lectura, centradas */
+  #feedList,#rwLista,#rwPie,#notifList{max-width:760px;margin-left:auto;margin-right:auto}
+  /* Fotos de los corredores: el doble de grandes, a la izquierda, con el texto a la derecha alineado a la foto */
+  .runner-hdr.show:has(#runAvatar){display:grid;grid-template-columns:140px 1fr;column-gap:26px}
+  #runAvatar{width:140px!important;height:140px!important;margin:0!important;grid-column:1;grid-row:1}
+  /* Nombre, bio, Instagram, residencia y etiquetas: un bloque del mismo alto que la foto, repartido de arriba abajo */
+  .runner-hdr:has(#runAvatar) #runInfo{grid-column:2;grid-row:1;min-height:140px;display:flex;flex-direction:column;justify-content:space-between}
+  .runner-hdr:has(#runAvatar) #runInfo > *{margin-top:0!important;margin-bottom:0!important}
+  .runner-hdr:has(#runAvatar) .runner-name{font-size:34px}
+  #runStats,#runBadges,#runMedallero,#runCompareBox{grid-column:1 / -1}
+  #runStats{margin-top:12px}
+  #profileHeader{display:grid;grid-template-columns:140px 1fr;column-gap:26px;align-content:center;
+    padding-left:max(32px,calc((100% - 900px) / 2));padding-right:max(32px,calc((100% - 900px) / 2))}
+  #profileHeader > :not(#pAvatarWrap):not(.global-home){grid-column:2}
+  #pAvatarWrap{grid-column:1;grid-row:1 / span 8;align-self:center;margin:0!important}
+  .profile-avatar,.profile-avatar img{width:140px;height:140px}
+  .profile-avatar{font-size:52px}
+  #avatarLabel{width:34px!important;height:34px!important;bottom:6px!important;right:6px!important}
+  /* Historial del corredor: columna con los puntos WA de cada carrera */
+  .col-pts{display:table-cell;font-family:'DM Mono',monospace;font-size:12px;color:var(--text)}
+  .race-table th.col-pts{color:var(--muted);font-family:inherit;font-size:9px}
+  /* Columnas de datos (Dist, Tiempo, Ritmo, Pts WA, Zapa) del mismo ancho y centradas; Carrera conserva su ancho */
+  .race-table th:first-child,.race-table td:first-child{width:34%}
+  .race-table th:not(:first-child),.race-table td:not(:first-child){width:auto!important;text-align:center!important}
+  /* Fichas (corredor, detalle de team, mi perfil): una columna de 900px centrada */
+  #sc-runners .content,#sc-td .content,#sc-perfil .content{width:100%;max-width:964px;margin-left:auto;margin-right:auto}
+  /* Ventanas emergentes: cuadro centrado en vez de subir desde abajo */
+  .modal-overlay{align-items:center}
+  .modal-sheet,.modal-link{max-width:560px;border-radius:16px;border:1px solid var(--border);max-height:88vh;overflow-y:auto}
+}
 </style>
 </head>
 <body>
@@ -490,12 +558,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
       <button class="home-btn" onclick="goTo('runners');clearRunner()"><i class="ti ti-home"></i> Inicio</button>
     </div>
     <div class="runner-hdr" id="runHdr">
+      <div id="runInfo">
       <div class="runner-name"><span id="runName"></span><span id="runFlag"></span><span id="runWaPos" class="wa-pos"></span></div>
       <div id="runFollowBox" style="display:none;margin:6px 0"></div>
       <div id="runBio" style="display:none;font-size:12px;color:var(--muted);line-height:1.4;margin:4px 0 8px;white-space:pre-wrap"></div>
       <div id="runInstagram" style="display:none;margin-bottom:8px"></div>
       <div id="runResidencia" style="display:none;font-size:11px;color:var(--muted);margin-bottom:8px"></div>
       <div class="runner-tags" id="runTags"></div>
+      </div>
       <div class="stats-row" id="runStats"></div>
       <div id="runBadges" class="run-badges"></div>
       <div id="runMedallero" style="display:none;margin-top:10px"></div>
@@ -509,7 +579,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
     <div id="similaresBox" style="display:none;margin-top:14px"></div>
     <div class="sect-title" id="raceTitle" style="display:none">Historial</div>
     <table class="race-table" id="raceTable">
-      <thead><tr><th>Carrera</th><th>Dist</th><th>Tiempo</th><th>Ritmo</th><th style="width:44px;text-align:center">Zapa</th></tr></thead>
+      <thead><tr><th>Carrera</th><th>Dist</th><th>Tiempo</th><th>Ritmo</th><th class="col-pts">Pts WA</th><th style="width:44px;text-align:center">Zapa</th></tr></thead>
       <tbody id="raceBody"></tbody>
     </table>
   </div>
@@ -1135,7 +1205,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 <div id="sc-perfil" class="screen">
   <div class="profile-header" id="profileHeader">
     <button class="global-home" onclick="goTo('runners')" style="position:absolute;top:10px;right:14px"><i class="ti ti-home"></i> Inicio</button>
-    <div style="position:relative;display:inline-block;margin-bottom:12px">
+    <div id="pAvatarWrap" style="position:relative;display:inline-block;margin-bottom:12px">
       <div class="profile-avatar" id="pAvatar">?</div>
       <label id="avatarLabel" onclick="event.preventDefault();toggleAvatarOptions()" style="display:none;position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--accent);border-radius:50%;cursor:pointer;align-items:center;justify-content:center;border:2px solid var(--bg)">
         <i class="ti ti-camera" style="font-size:13px;color:#000"></i>
@@ -1149,6 +1219,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
     </div>
     <div class="profile-name"><span id="pName">—</span><span id="pFlag"></span><span id="pWaPos" class="wa-pos"></span></div>
     <div class="profile-sub" id="pSub">Iniciá sesión para ver tu perfil</div>
+    <div id="pTeamBox" style="display:none;margin-top:8px"></div>
     <div id="pInstagramBox" style="display:none;margin-top:6px"></div>
     <div id="pDatosBox" style="display:none;margin-top:6px"></div>
   </div>
@@ -1372,6 +1443,7 @@ let currentPostId = null;
 // ─── AUTH ─────────────────────────────────────────────────────────────────────
 async function initAuth() {
   cargarCarrerasFueraRanking();
+  cargarMedallasDb();
   const { data: { session } } = await sbClient.auth.getSession();
   if (session) {
     currentUser = session.user;
@@ -1833,6 +1905,16 @@ async function cargarCarrerasFueraRanking() {
   } catch (e) {}
 }
 
+// Medallas desde la base (get_medallas): tabla medallas_carrera + imágenes subidas al bucket
+// como medalla_<prefijo>_<año>_<dist>.png. Así una medalla nueva no requiere tocar el index.
+// La lista RACE_MEDALS_BY_YEAR del código queda como respaldo si la base no responde.
+async function cargarMedallasDb() {
+  try {
+    const rows = await sbFetch('rpc/get_medallas');
+    (rows || []).forEach(r => { if (r.clave && r.url) RACE_MEDALS_BY_YEAR[r.clave] = r.url; });
+  } catch (e) {}
+}
+
 function getTimeAgo(dateStr) {
   const diff = (new Date() - new Date(dateStr)) / 1000;
   if (diff < 60) return 'ahora';
@@ -1857,13 +1939,29 @@ const NAV = [
 function buildNav(active) {
   ['nav0','nav1','nav2','nav3','nav4','nav5','nav6','nav7','nav8'].forEach(nid => {
     const el = document.getElementById(nid); if (!el) return;
-    el.innerHTML = NAV.map(n => {
+    // En la compu el menú es una barra a la izquierda: logo (la abre) + flechita (la contrae).
+    // En el celular el logo y la flechita no se ven.
+    el.innerHTML = `<button class="nav-logo" title="Mostrar menú" onclick="toggleNavLateral(true)"><img src="${LOGO_URL}" alt="Runners Online"></button>`
+      + `<button class="nav-colapsar" title="Contraer menú" onclick="toggleNavLateral(false)"><i class="ti ti-chevron-left"></i></button>`
+      + NAV.map(n => {
       const isAct = n.id === active;
       const cls = isAct ? (n.id==='teams'||n.id==='feed'?'act-blue':n.id==='perfil'?'act-orange':'act-yellow') : '';
-      return `<button class="nav-btn ${cls}" onclick="goTo('${n.id}')"><i class="ti ${n.icon}"></i>${n.label}</button>`;
+      return `<button class="nav-btn ${cls}" title="${n.label}" onclick="goTo('${n.id}')"><i class="ti ${n.icon}"></i><span class="nav-lbl">${n.label}</span></button>`;
     }).join('');
+    // Tocar la barra contraída (fuera de los íconos) también la abre
+    el.onclick = e => {
+      if (document.body.classList.contains('nav-abierta') || !window.matchMedia('(min-width: 900px)').matches) return;
+      if (!e.target.closest('.nav-btn, .nav-colapsar')) toggleNavLateral(true);
+    };
   });
 }
+
+// Barra lateral (solo compu): contraída muestra solo íconos; se recuerda si la dejaste abierta
+function toggleNavLateral(abrir) {
+  document.body.classList.toggle('nav-abierta', abrir);
+  try { localStorage.setItem('navLateralAbierta', abrir ? '1' : '0'); } catch (e) {}
+}
+try { if (localStorage.getItem('navLateralAbierta') === '1') document.body.classList.add('nav-abierta'); } catch (e) {}
 
 function applyScreen(id) {
   if (SECCIONES_OCULTAS.includes(id)) id = 'runners';
@@ -2047,13 +2145,15 @@ async function loadRunner(key) {
   document.getElementById('raceBody').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px;font-size:11px">Cargando...</td></tr>';
   document.getElementById('raceTable').classList.add('show');
   try {
-    const rows = await sbFetch('corredores', { runner_key: `eq.${key}`, select: 'runner,runner_key,sex,team,archivo_fuente,time', limit: 200 });
+    const rows = await sbFetch('corredores', { runner_key: `eq.${key}`, select: 'runner,runner_key,sex,team,archivo_fuente,time,wa_points', limit: 200 });
     if (!rows.length) { document.getElementById('raceBody').innerHTML = '<tr><td colspan="5" style="color:var(--muted);font-size:11px;padding:12px">Sin historial</td></tr>'; return; }
     const info = rows[0];
     let team = null;
     try {
       const { data: t } = await sbClient.rpc('team_actual', { p_runner_key: key });
       team = esTeamValido(t) ? t : null;
+      // Logo del team para la etiqueta "Team"
+      if (team && !Object.keys(TEAM_LOGOS).length) await loadTeamLogos();
     } catch (e) {}
     const seenArchivos = new Set();
     // Si hay dos filas de la misma carrera, se queda con la que tiene tiempo
@@ -2071,7 +2171,7 @@ async function loadRunner(key) {
         const { year, dist } = parseArchivo(r.archivo_fuente);
         const paceData = calcPace(r.time, parseFloat(dist));
         const prefix = r.archivo_fuente.replace('.csv','').split('_')[0].toLowerCase();
-        return { label: archToLabel(r.archivo_fuente), year, dist, time: r.time||'—', pace: paceData?paceData.pace:'—', pm: paceData?paceData.pm:999, prefix, archivo_fuente: r.archivo_fuente, termino: terminoCarrera(r.time), _sortKey: sortKeyForRace(r.archivo_fuente, year, fechasMap) };
+        return { label: archToLabel(r.archivo_fuente), year, dist, time: r.time||'—', pace: paceData?paceData.pace:'—', pm: paceData?paceData.pm:999, prefix, archivo_fuente: r.archivo_fuente, termino: terminoCarrera(r.time), wa: Number(r.wa_points) > 0 ? Math.round(Number(r.wa_points)) : null, _sortKey: sortKeyForRace(r.archivo_fuente, year, fechasMap) };
       }).sort((a,b) => b._sortKey - a._sortKey);
     // Sin tiempo (DNF, DSQ, vacío) no hay medalla ni cuenta en estadísticas/badges; sí queda en el historial
     const terminadas = races.filter(r => r.termino);
@@ -2175,7 +2275,7 @@ async function loadRunner(key) {
     }
 
     document.getElementById('runTags').innerHTML =
-      `<div class="tag">Team ${team?`<span onclick="showTeam(decodeURIComponent('${encAttr(team)}'))" style="cursor:pointer;text-decoration:underline;color:var(--blue)">${escHtml(team)}</span>`:'<span>—</span>'}</div>${has42 ? '<div class="tag">✓ <span>Maratonista</span></div>' : ''}${has21 ? '<div class="tag">✓ <span>21K</span></div>' : ''}`;
+      `${team ? `<div class="tag" style="gap:6px">${TEAM_LOGOS[team] ? `<img src="${escHtml(TEAM_LOGOS[team])}" alt="" onerror="this.remove()" onclick="showTeam(decodeURIComponent('${encAttr(team)}'))" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border);cursor:pointer">` : ''}<span onclick="showTeam(decodeURIComponent('${encAttr(team)}'))" style="cursor:pointer;text-decoration:underline;color:var(--blue)">${escHtml(team)}</span></div>` : ''}${has42 ? '<div class="tag">✓ <span>Maratonista</span></div>' : ''}${has21 ? '<div class="tag">✓ <span>21K</span></div>' : ''}`;
     document.getElementById('runStats').innerHTML =
       `<div class="stat-pill"><div class="num">${terminadas.length}</div><div class="lbl">Carreras</div></div><div class="stat-pill"><div class="num">${terminadas.filter(x=>x.dist==='42').length}</div><div class="lbl">Maratones</div></div><div class="stat-pill"><div class="num">${terminadas.filter(x=>x.dist==='21').length}</div><div class="lbl">Media Maratón</div></div>`;
     // Insignias ganadas (en la ficha pública solo se muestran las ganadas)
@@ -2376,7 +2476,7 @@ function renderRaceHistoryTable(racesList) {
   document.getElementById('raceBody').innerHTML = racesList.map(rc => {
     const isBest = rc.pm === minP && rc.pm < 999 && !CARRERAS_FUERA_RANKING.has(rc.archivo_fuente);
     // (la barra de ritmo se sacó: en su lugar va la zapa, igual que en "Mi perfil")
-    return `<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentRunnerKey, decodeURIComponent('${encAttr(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}<br><span style="color:var(--muted);font-size:9px;font-family:'DM Mono',monospace">${rc.year}</span></td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}${badgeRecord(rc.archivo_fuente, currentRunnerKey)}</td><td class="pace-val">${rc.pace}${isBest&&rc.pace!=='—'?'<span class="best-tag">PR</span>':''}</td><td style="text-align:center">${zapaCarreraIcono(currentRunnerZapas[rc.archivo_fuente], true)}</td></tr>`;
+    return `<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentRunnerKey, decodeURIComponent('${encAttr(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}<br><span style="color:var(--muted);font-size:9px;font-family:'DM Mono',monospace">${rc.year}</span></td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}${badgeRecord(rc.archivo_fuente, currentRunnerKey)}</td><td class="pace-val">${rc.pace}${isBest&&rc.pace!=='—'?'<span class="best-tag">PR</span>':''}</td><td class="col-pts">${rc.wa ? rc.wa.toLocaleString('es-AR') : '—'}</td><td style="text-align:center">${zapaCarreraIcono(currentRunnerZapas[rc.archivo_fuente], true)}</td></tr>`;
   }).join('');
 }
 
@@ -4779,14 +4879,22 @@ async function renderProfile() {
   }
   content.innerHTML = '<div class="loading"><i class="ti ti-refresh"></i>Cargando tu historial...</div>';
   try {
-    const rows = await sbFetch('corredores', { runner_key: `eq.${currentProfile.runner_key}`, select: 'runner,runner_key,sex,team,archivo_fuente,time', limit: 200 });
+    const rows = await sbFetch('corredores', { runner_key: `eq.${currentProfile.runner_key}`, select: 'runner,runner_key,sex,team,archivo_fuente,time,wa_points', limit: 200 });
     let team = null;
     try {
       // Team elegido en la app o, si no eligió, el de su carrera más reciente
       // Team elegido en la app o, si no eligió, el de su carrera más reciente
       const { data: t } = await sbClient.rpc('team_actual', { p_runner_key: currentProfile.runner_key });
       team = esTeamValido(t) ? t : null;
+      // Logo del team para la tarjeta "Mi team" y el encabezado
+      if (team && !Object.keys(TEAM_LOGOS).length) await loadTeamLogos();
     } catch (e) {}
+    // Team con su logo en el encabezado del perfil (tocándolo se abre el team)
+    const pTeamBox = document.getElementById('pTeamBox');
+    if (pTeamBox) {
+      pTeamBox.style.display = team ? 'block' : 'none';
+      pTeamBox.innerHTML = team ? `<span onclick="showTeam(decodeURIComponent('${encAttr(team)}'))" style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--blue)">${TEAM_LOGOS[team] ? `<img src="${escHtml(TEAM_LOGOS[team])}" alt="" onerror="this.remove()" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border)">` : '<i class="ti ti-users"></i>'}${escHtml(team)}</span>` : '';
+    }
     const seenArchivos = new Set();
     // Si hay dos filas de la misma carrera, se queda con la que tiene tiempo
     rows.sort((a, b) => terminoCarrera(b.time) - terminoCarrera(a.time));
@@ -4803,7 +4911,7 @@ async function renderProfile() {
         const { year, dist } = parseArchivo(r.archivo_fuente);
         const paceData = calcPace(r.time, parseFloat(dist));
         const prefix = r.archivo_fuente.replace('.csv','').split('_')[0].toLowerCase();
-        return { label: archToLabel(r.archivo_fuente), year, dist, time: r.time||'—', pace: paceData?paceData.pace:'—', pm: paceData?paceData.pm:999, prefix, archivo_fuente: r.archivo_fuente, termino: terminoCarrera(r.time), _sortKey: sortKeyForRace(r.archivo_fuente, year, fechasMap) };
+        return { label: archToLabel(r.archivo_fuente), year, dist, time: r.time||'—', pace: paceData?paceData.pace:'—', pm: paceData?paceData.pm:999, prefix, archivo_fuente: r.archivo_fuente, termino: terminoCarrera(r.time), wa: Number(r.wa_points) > 0 ? Math.round(Number(r.wa_points)) : null, _sortKey: sortKeyForRace(r.archivo_fuente, year, fechasMap) };
       }).sort((a,b) => b._sortKey - a._sortKey);
     // Sin tiempo (DNF, DSQ, vacío) no hay medalla ni cuenta en estadísticas/badges; sí queda en el historial
     const terminadas = races.filter(r => r.termino);
@@ -4842,7 +4950,7 @@ async function renderProfile() {
         </div>
         <div class="stats-row">
           <div class="stat-pill"><div class="num" style="font-size:18px">${bestPace}</div><div class="lbl">Mejor ritmo</div></div>
-          <div class="stat-pill"><div class="num" style="font-size:10px;color:var(--blue);margin-top:4px;${team?'cursor:pointer;text-decoration:underline':''}" ${team?`onclick="showTeam('${team.replace(/'/g,"\\'")}')"`:''}>${team||'—'}</div><div class="lbl">Mi team</div></div>
+          <div class="stat-pill">${team && TEAM_LOGOS[team] ? `<img src="${escHtml(TEAM_LOGOS[team])}" alt="" onerror="this.remove()" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:1px solid var(--border);display:block;margin:0 auto 4px;cursor:pointer" onclick="showTeam('${team.replace(/'/g,"\\'")}')">` : ''}<div class="num" style="font-size:10px;color:var(--blue);margin-top:4px;${team?'cursor:pointer;text-decoration:underline':''}" ${team?`onclick="showTeam('${team.replace(/'/g,"\\'")}')"`:''}>${team||'—'}</div><div class="lbl">Mi team</div></div>
         </div>
       </div>
       <div id="miTeamBox"></div>
@@ -5002,10 +5110,10 @@ function renderHistorialPerfil(distFilter) {
     return;
   }
   // En tu propio perfil, la columna de la zapa permite elegir con cuál corriste cada carrera
-  box.innerHTML = `<table class="race-table show"><thead><tr><th>Carrera</th><th>Dist</th><th>Tiempo</th><th>Ritmo</th><th style="width:44px;text-align:center">Zapa</th></tr></thead><tbody>${filtradas.map(rc=>{
+  box.innerHTML = `<table class="race-table show"><thead><tr><th>Carrera</th><th>Dist</th><th>Tiempo</th><th>Ritmo</th><th class="col-pts">Pts WA</th><th style="width:44px;text-align:center">Zapa</th></tr></thead><tbody>${filtradas.map(rc=>{
     const zid = miCarreraZapas[rc.archivo_fuente];
     const celdaZapa = `<td style="text-align:center" onclick="event.stopPropagation();openZapaPicker(decodeURIComponent('${encAttr(rc.archivo_fuente)}'), decodeURIComponent('${encAttr(rc.label + ' ' + rc.year)}'))">${zid ? zapaCarreraIcono(zid, true) : '<span class="zapa-add" title="¿Con qué zapa la corriste?"><i class="ti ti-shoe"></i>+</span>'}</td>`;
-    return `<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentProfile?.runner_key, decodeURIComponent('${encAttr(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}</td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}${badgeRecord(rc.archivo_fuente, currentProfile?.runner_key)}</td><td class="pace-val">${rc.pace}</td>${celdaZapa}</tr>`;
+    return `<tr onclick="verClasificacion('${(rc.archivo_fuente||'').replace(/'/g,"\\'")}', currentProfile?.runner_key, decodeURIComponent('${encAttr(rc.label)}'), '${rc.dist}', '${rc.year}')" style="cursor:pointer"><td style="font-size:11px;font-weight:500">${rc.label}</td><td><span class="dist-badge">${rc.dist}k</span></td><td class="time-val">${rc.time}${badgeRecord(rc.archivo_fuente, currentProfile?.runner_key)}</td><td class="pace-val">${rc.pace}</td><td class="col-pts">${rc.wa ? rc.wa.toLocaleString('es-AR') : '—'}</td>${celdaZapa}</tr>`;
   }).join('')}</tbody></table>`;
 }
 
@@ -5523,7 +5631,8 @@ async function subirAvatar(archivo, ext, tipo) {
 function updateAvatarUI(url) {
   const avatarEl = document.getElementById('pAvatar');
   if (url) {
-    avatarEl.innerHTML = `<img src="${url}" onclick="openAvatarLightbox('${url.replace(/'/g,"\\'")}')" style="width:70px;height:70px;object-fit:cover;border-radius:50%;cursor:pointer">`;
+    // El tamaño lo da .profile-avatar img (70px en el celular, 140px en la compu)
+    avatarEl.innerHTML = `<img src="${url}" onclick="openAvatarLightbox('${url.replace(/'/g,"\\'")}')" style="object-fit:cover;border-radius:50%;cursor:pointer">`;
     avatarEl.style.background = 'none';
     avatarEl.style.border = '2px solid var(--accent)';
   }

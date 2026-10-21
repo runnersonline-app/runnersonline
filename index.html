@@ -1875,19 +1875,21 @@ function calcPace(time, distKm) {
 function archToLabel(archivo) {
   if (!archivo) return '—';
   const nameMap = {
-    'mba':'Marathon BsAs','mmba':'Media BsAs','berlin':'Berlin','boston':'Boston',
+    'mba':'42K de Buenos Aires','mmba':'21K de Buenos Aires','berlin':'Berlin','boston':'Boston',
     'chicago':'Chicago','london':'Londres','londres':'Londres','newyork':'New York',
     '42mdq':'Maraton MdP','21nbcom':'21K NB BSAS','10nbba':'10K BsAs','mmza':'Mendoza',
     'valencia':'Valencia','misanjuan':'San Juan',
     'mad':'Madrid','santcl':'Santiago','portoale':'Porto Alegre','tokio':'Tokio','sidney':'Sidney','10rex':'10K Rexona','10kaxion':'10K Axion','15laguna':'15K OpenSports Laguna','21kpuerto':'21K Puerto Norte','10swiss':'10K Swiss Medical','10verano':'10K OpenSports','21kgaceta':'21K La Gaceta','15ciudad':'15K OpenSports Ciudad',
     'lapampa':'La Pampa','42krosario':'Maraton Rosario','42nbcor':'Maraton Cordoba',
     'fila':'FILA Run','asics':'ASICS','hoka':'HOKA','farma':'Farmacity','fma':'Fiestas Mayas',
-    'marat':'Maraton','invierno':'Invierno','verano':'Verano','otono':'Otono',
+    'marat':'Maratana','invierno':'Invierno','verano':'Verano','otono':'Otono',
     'primavera':'Primavera','sauco':'Saucony Baires','sunset':'Sunset Run',
     '15nbba':'15K New Balance','15under':'15K Under','15adi':'15K Adidas','15nbros':'15K Rosario',
     '25nbba':'25K BsAs','30nbba':'30K BsAs','10si':'10K San Isidro','10super':'10K Super',
     '10vl':'10K VL','10night':'10K Night','21nbsal':'Media Salta','21nbmdq':'Media MdP'
   };
+  const fuera = CARRERAS_FUERA_RANKING.has(archivo) ? ' *' : '';
+  if (RACE_NAMES[archivo]) return RACE_NAMES[archivo] + fuera;
   const base = archivo.replace('.csv','').split('_');
   const prefix = base[0].toLowerCase();
   const year = base.find(p => /^20\d{2}$/.test(p)) || '';
@@ -1898,10 +1900,16 @@ function archToLabel(archivo) {
 // Se marcan con * y se actualizan desde races_meta.fuera_de_ranking.
 let CARRERAS_FUERA_RANKING = new Set(['21kgaceta_2025_21.csv']);
 const NOTA_FUERA_RANKING = '* No cuenta para los rankings: el circuito habría sido más corto que la distancia oficial.';
+// Nombres de carrera desde races_meta.nombre_corto (así un nombre nuevo no requiere tocar el index).
+// Si la carrera todavía no tiene nombre corto cargado, se usa el nameMap de archToLabel.
+let RACE_NAMES = {};
 async function cargarCarrerasFueraRanking() {
   try {
-    const rows = await sbFetch('races_meta', { select: 'archivo_fuente', fuera_de_ranking: 'eq.true' });
-    CARRERAS_FUERA_RANKING = new Set(rows.map(r => r.archivo_fuente));
+    const rows = await sbFetch('races_meta', { select: 'archivo_fuente,nombre_corto,fuera_de_ranking' });
+    CARRERAS_FUERA_RANKING = new Set(rows.filter(r => r.fuera_de_ranking).map(r => r.archivo_fuente));
+    const nombres = {};
+    rows.forEach(r => { if (r.nombre_corto) nombres[r.archivo_fuente] = r.nombre_corto; });
+    RACE_NAMES = nombres;
   } catch (e) {}
 }
 

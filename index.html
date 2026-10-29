@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Runners Online</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;700&display=swap');
@@ -11,6 +11,8 @@ html{overscroll-behavior:none;overflow:hidden}
 body{overscroll-behavior:none;overflow:hidden}
 :root{--bg:#f5f5f3;--surface:#ffffff;--card:#ffffff;--border:#e2e2df;--accent:#c3d100;--text:#1a1a1a;--muted:#767672;--muted2:#c7c7c2;--blue:#0090c4;--orange:#c47f1f}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column;max-width:420px;margin:0 auto}
+/* App de Android (pantalla completa): no tapar la hora/batería de arriba. Abajo ya lo cuida .content con safe-area-inset-bottom */
+body{padding-top:env(safe-area-inset-top)}
 .screen{display:none;flex-direction:column;height:100%;overflow:hidden}
 .screen.active{display:flex}
 .screen .bottom-nav{order:0}
@@ -21,7 +23,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .bottom-nav{display:flex;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;order:-1}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px 6px;cursor:pointer;background:none;border:none;color:var(--muted);gap:2px;font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:.5px;text-transform:uppercase;transition:color .15s}
 .nav-btn i{font-size:18px}
-.nav-logo,.nav-colapsar{display:none}
+.nav-logo,#lateralDer{display:none}
 .col-pts{display:none}
 .nav-btn.act-yellow{color:var(--accent)}
 .nav-btn.act-blue{color:var(--blue)}
@@ -101,6 +103,34 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .member-name{font-size:12px;font-weight:500}
 .member-pace{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue)}
 .races-list{display:flex;flex-direction:column;gap:8px;padding-top:10px}
+/* Caja para publicar en Pista (como Twitter): foto + texto en gris; el botón Post se pone verde al escribir */
+.composer{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px 10px;margin-bottom:12px}
+.cp-fila{display:flex;gap:10px;align-items:flex-start}
+#cpAvatarBox{display:flex;flex-shrink:0}
+.cp-como{align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+.cp-como-lbl{font-size:10px;color:var(--muted);letter-spacing:.5px;margin-right:2px}
+.cp-como .chip{display:inline-flex;align-items:center;gap:4px}
+.cp-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1.5px solid var(--accent)}
+.cp-iniciales{display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--text);background:rgba(195,209,0,.12)}
+#cpTexto{flex:1;border:none;outline:none;resize:none;background:none;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);padding:9px 0 6px;min-height:38px;max-height:260px;line-height:1.4}
+#cpTexto::placeholder{color:var(--muted2)}
+#cpExtras{margin-left:50px}
+.cp-ubicacion{width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);outline:none;margin:6px 0;background:var(--surface)}
+.cp-imgbox{position:relative;margin:6px 0}
+.cp-imgbox img{width:100%;max-height:260px;object-fit:cover;border-radius:10px;display:block}
+.cp-imgbox button{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.75);color:#fff;border:none;cursor:pointer;font-size:13px}
+.cp-etiquetar{max-height:160px;overflow-y:auto;margin:6px 0;border:1px solid var(--border);border-radius:6px;padding:6px}
+.cp-barra{display:flex;align-items:center;gap:2px;margin:8px 0 0 44px;border-top:1px solid var(--border);padding-top:8px}
+.cp-ico{display:inline-flex;align-items:center;gap:4px;background:none;border:none;color:var(--blue);font-size:18px;padding:6px 8px;border-radius:50%;cursor:pointer}
+.cp-ico span{font-size:11px;font-weight:700}
+.cp-ico:hover,.cp-ico.activo{background:rgba(0,144,196,.1)}
+.cp-ico.activo{border-radius:14px}
+.cp-post{background:var(--accent);color:#1a1a1a;border:none;border-radius:999px;padding:8px 20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s,color .15s}
+.cp-post:disabled{background:var(--border);color:var(--muted);cursor:default}
+/* Franja que separa los años en Próximas carreras (ej. 2026 | 2027) */
+.rc-anio{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin:14px 0 4px;color:var(--text)}
+.rc-anio::before,.rc-anio::after{content:'';flex:1;height:2px;background:var(--accent);border-radius:2px}
+.rc-anio span{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;line-height:1;background:var(--accent);color:#1a1a1a;padding:5px 16px 3px;border-radius:6px}
 .race-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:13px 14px;cursor:pointer;transition:border-color .15s}
 .flag-pais{display:inline-block;height:.62em;width:auto;aspect-ratio:4/3;object-fit:cover;margin-left:8px;vertical-align:middle;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.25);position:relative;top:-.06em}
 .wa-pos{font-size:.6em;margin-left:6px;letter-spacing:0;color:inherit;vertical-align:middle}
@@ -119,7 +149,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .rc-dist.inscripto{background:var(--accent);border-color:var(--accent);color:#000;cursor:default}
 .race-card:hover{border-color:var(--accent)}
 .race-card-name{font-weight:600;font-size:13px;margin-bottom:6px}
-.rc-titulo{display:flex;align-items:center;gap:8px}
+.rc-titulo{display:flex;align-items:center;gap:8px;min-height:36px} /* mismo alto con o sin medalla */
 .rc-medalla{width:36px;height:36px;object-fit:contain;flex-shrink:0}
 .rk-medalla{width:58px;height:58px;object-fit:contain;flex-shrink:0}
 .race-meta{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
@@ -326,6 +356,21 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .zapa-mia{font-size:10px;color:var(--text);font-weight:600}
 .zapa-tu{font-size:10px;color:var(--muted);display:inline-flex;align-items:center;gap:4px}
 .zapa-img-wrap{position:relative;flex-shrink:0;display:flex}
+/* En la lista, + / ✓ es un círculo en la esquina: no suma alto a la tarjeta */
+.zapa-card{position:relative}
+.zapa-card .zapa-body{padding-right:24px}
+.zapa-card .zapa-acciones{position:absolute;top:10px;right:10px;margin:0;padding:0;border:none}
+.zapa-card .zapa-acc-txt,.zapa-card .zapa-tu{display:none}
+.zapa-card .zapa-agregar,.zapa-card .zapa-mia{width:28px;height:28px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:15px}
+.zapa-card .zapa-agregar:hover{background:rgba(195,209,0,.15)}
+.zapa-card .zapa-mia{background:var(--accent);color:#1a1a1a}
+/* En el detalle de la zapa, vuelve a verse con texto y con tu puntaje */
+#zdCard .zapa-body{padding-right:0}
+#zdCard .zapa-acciones{position:static;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border)}
+#zdCard .zapa-acc-txt{display:inline}
+#zdCard .zapa-tu{display:inline-flex}
+#zdCard .zapa-agregar{width:auto;height:auto;border-radius:14px;padding:4px 12px;font-size:11px}
+#zdCard .zapa-mia{width:auto;height:auto;background:none;border-radius:0;font-size:10px}
 .zapa-x{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;opacity:.85;z-index:1}
 .zapa-x:hover{opacity:1;color:var(--text)}
 #zdCard .zapa-img-wrap{display:block}
@@ -373,6 +418,23 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 .rw-ambito .ti{font-size:.8em}
 .rw-chip-pais{display:inline-flex;align-items:center;gap:5px}
 .rw-chip-pais .flag-pais{height:10px;margin-left:0;top:0}
+/* Espacios de publicidad: mismo tamaño que la tarjeta de cada sección */
+.ad-slot{position:relative;background:var(--card);border:1px dashed var(--muted2);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center;color:var(--muted);overflow:hidden;cursor:default}
+.ad-slot .ad-lbl{position:absolute;top:5px;left:8px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.ad-slot b{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--text);line-height:1}
+.ad-slot span{font-size:11px}
+/* Publicidad con imagen: la imagen ocupa toda la tarjeta, sin borde punteado; la etiqueta queda arriba a la izquierda */
+.ad-slot.ad-img{min-height:0;padding:0;border:1px solid var(--border);background:var(--card);display:block}
+.ad-slot.ad-img img{width:100%;height:auto;display:block}
+.ad-slot.ad-img a{display:block}
+.ad-slot.ad-img .ad-lbl{z-index:1;background:rgba(255,255,255,.85);padding:1px 5px;border-radius:3px;top:5px;left:6px}
+.ad-team{min-height:66px;padding:12px 14px}
+.ad-race{min-height:76px;padding:13px 14px}
+.ad-zapa{min-height:130px;padding:12px 14px;border-radius:8px}
+.ad-rank{min-height:58px;margin:8px 0}
+/* Publicidad en la columna derecha de la compu (400x600), arriba de las imágenes de Runners Online */
+.lat-ad{position:relative;display:block;flex-shrink:0}
+.lat-ad .ad-lbl{position:absolute;top:6px;left:6px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.85);padding:1px 5px;border-radius:3px}
 .rk-name{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rk-meta{font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px}
 .rk-time{text-align:right;flex-shrink:0}
@@ -382,38 +444,42 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
 /* ─── Pantallas anchas (compu): más ancho, listas en columnas, ventanas centradas ───
    En el celular (menos de 900px) no se aplica nada de esto. */
 @media (min-width: 900px) {
-  body{max-width:1180px;border-left:1px solid var(--border);border-right:1px solid var(--border)}
+  /* Todo al 90%, como el zoom del navegador en 90%. Con el zoom, vh y vw también quedan al 90%:
+     por eso el alto de la página y la posición de las barras fijas se dividen por .9 */
+  html{zoom:.9}
+  body{height:calc(100vh / .9);height:calc(100dvh / .9)}
+  body{max-width:1328px;border-left:1px solid var(--border);border-right:1px solid var(--border)}
   .content{padding:0 32px 48px}
   .search-area{padding:14px 32px 6px}
   .filters{padding:6px 32px 8px}
   .header{padding:22px 32px 14px}
   .header h1{font-size:38px}
   /* Menú a la izquierda: barra fija con el logo arriba y las secciones una debajo de otra.
-     Cada pantalla trae su propio menú; se ve el de la pantalla activa. */
-  /* Contraída (por defecto): 72px con el logo y solo íconos. Abierta (body.nav-abierta): 220px con texto. */
-  .screen{padding-left:72px;transition:padding-left .2s}
-  body.nav-abierta .screen{padding-left:220px}
-  .screen.active .bottom-nav{position:fixed;top:0;bottom:0;left:max(0px,calc(50vw - 590px));width:72px;z-index:50;cursor:pointer;
-    flex-direction:column;justify-content:flex-start;align-items:center;gap:2px;padding:0 10px 20px;transition:width .2s;
+     Cada pantalla trae su propio menú; se ve el de la pantalla activa.
+     Siempre abierta: 220px con el logo y el texto de cada sección. La parte del medio llega a 1108px. */
+  .screen{padding-left:220px}
+  .screen.active .bottom-nav{position:fixed;top:0;bottom:0;left:max(0px,calc(50vw / .9 - 664px));width:220px;z-index:50;
+    flex-direction:column;justify-content:flex-start;align-items:stretch;gap:2px;padding:0 10px 20px;
     border-bottom:none;border-right:1px solid var(--border);border-left:1px solid var(--border)}
-  body.nav-abierta .screen.active .bottom-nav{width:220px;align-items:stretch;cursor:default}
-  .nav-logo{display:block;background:none;border:none;padding:16px 0 14px;cursor:pointer;align-self:center}
+  .nav-logo{display:block;padding:16px 0 14px 6px;align-self:flex-start}
   .nav-logo img{width:46px;height:46px;border-radius:50%;display:block}
-  body.nav-abierta .nav-logo{align-self:flex-start;padding-left:6px;cursor:default}
-  .nav-colapsar{position:absolute;top:26px;right:10px;width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;align-items:center;justify-content:center}
-  body.nav-abierta .nav-colapsar{display:flex}
-  .nav-colapsar:hover{color:var(--text);border-color:var(--muted)}
-  .nav-btn{flex:0 0 auto;flex-direction:row;justify-content:center;gap:12px;width:100%;font-size:12px;letter-spacing:.8px;padding:12px 0;border-radius:8px}
-  body.nav-abierta .nav-btn{justify-content:flex-start;padding:11px 12px}
+  .nav-btn{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:12px;width:100%;font-size:12px;letter-spacing:.8px;padding:11px 12px;border-radius:8px}
   .nav-btn i{font-size:20px;width:22px;text-align:center}
-  .nav-lbl{display:none}
-  body.nav-abierta .nav-lbl{display:inline}
+  .nav-lbl{display:inline}
   .nav-btn:hover{background:var(--bg);color:var(--text)}
   .nav-btn.act-yellow,.nav-btn.act-blue,.nav-btn.act-orange{background:var(--bg);font-weight:700}
   /* Listas de tarjetas en columnas */
   #teamsLista,.races-list,.zapas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px;align-items:start}
   #teamsLista .loading,.races-list .loading,.zapas-grid .loading,.races-list>p,.zapas-grid>p{grid-column:1/-1}
   .badge-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+  /* Zapas: las tarjetas de una misma fila, todas del mismo alto */
+  .zapas-grid{align-items:stretch}
+  /* Publicidad en las grillas (Teams, Carreras, Zapas): mismo alto que las tarjetas de su fila. La imagen se ve
+     entera (achicada) y lo que sobra se rellena con la misma imagen desenfocada: no se corta el logo ni quedan franjas blancas */
+  #teamsLista .ad-img,.races-list .ad-img,.zapas-grid .ad-img{align-self:stretch;min-height:66px}
+  #teamsLista .ad-img::before,.races-list .ad-img::before,.zapas-grid .ad-img::before{content:'';position:absolute;inset:-12px;background:var(--ad-bg) center/cover;filter:blur(14px);opacity:.7}
+  #teamsLista .ad-img a,.races-list .ad-img a,.zapas-grid .ad-img a{position:absolute;inset:0}
+  #teamsLista .ad-img img,.races-list .ad-img img,.zapas-grid .ad-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
   /* Listas largas de una columna (feed, rankings): ancho cómodo de lectura, centradas */
   #feedList,#rwLista,#rwPie,#notifList{max-width:760px;margin-left:auto;margin-right:auto}
   /* Fotos de los corredores: el doble de grandes, a la izquierda, con el texto a la derecha alineado a la foto */
@@ -444,9 +510,28 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;hei
   .modal-overlay{align-items:center}
   .modal-sheet,.modal-link{max-width:560px;border-radius:16px;border:1px solid var(--border);max-height:88vh;overflow-y:auto}
 }
+/* Pantallas anchas: columna derecha de 220px con imágenes de Runners Online (branding/lateral/ en Supabase),
+   como la estructura de Facebook: 220 + 1108 + 220 = 1548px. Si la pantalla es más chica, las dos barras quedan
+   fijas en los costados y se achica el medio. Por debajo de 1100px no hay lugar y la columna derecha no se muestra. */
+@media (min-width: 1100px) {
+  body{max-width:1548px}
+  .screen{padding-right:220px}
+  .screen.active .bottom-nav{left:max(0px,calc(50vw / .9 - 774px))}
+  #lateralDer{display:flex;flex-direction:column;gap:14px;position:fixed;top:0;bottom:0;right:max(0px,calc(50vw / .9 - 774px));width:220px;
+    z-index:50;padding:16px;overflow-y:auto;background:var(--bg);border-left:1px solid var(--border);border-right:1px solid var(--border);box-sizing:border-box;scrollbar-width:thin}
+  #lateralDer img{width:100%;height:auto;flex-shrink:0;border-radius:10px;display:block}
+  #lateralDer img.ir{cursor:pointer;transition:transform .15s}
+  #lateralDer img.ir:hover{transform:scale(1.02)}
+  .lat-pie{display:flex;flex-direction:column;gap:2px;flex-shrink:0;padding:6px 2px 4px;border-top:1px solid var(--border)}
+  .lat-pie a{display:flex;align-items:center;gap:8px;padding:8px 6px;border-radius:6px;font-size:12px;color:var(--text);text-decoration:none}
+  .lat-pie a:hover{background:var(--card)}
+  .lat-pie a i{font-size:16px;color:var(--muted)}
+  .lat-pie span{font-size:10px;color:var(--muted);padding:6px 6px 0}
+}
 </style>
 </head>
 <body>
+<aside id="lateralDer" aria-label="Runners Online"></aside>
 
 <!-- ══════════════ AUTH MODAL ══════════════ -->
 <div class="modal-overlay center-modal" id="authModal">
@@ -1445,6 +1530,8 @@ let currentPostId = null;
 async function initAuth() {
   cargarCarrerasFueraRanking();
   cargarMedallasDb();
+  cargarPublicidades();
+  cargarImagenesLaterales();
   const { data: { session } } = await sbClient.auth.getSession();
   if (session) {
     currentUser = session.user;
@@ -1948,29 +2035,45 @@ const NAV = [
 function buildNav(active) {
   ['nav0','nav1','nav2','nav3','nav4','nav5','nav6','nav7','nav8'].forEach(nid => {
     const el = document.getElementById(nid); if (!el) return;
-    // En la compu el menú es una barra a la izquierda: logo (la abre) + flechita (la contrae).
-    // En el celular el logo y la flechita no se ven.
-    el.innerHTML = `<button class="nav-logo" title="Mostrar menú" onclick="toggleNavLateral(true)"><img src="${LOGO_URL}" alt="Runners Online"></button>`
-      + `<button class="nav-colapsar" title="Contraer menú" onclick="toggleNavLateral(false)"><i class="ti ti-chevron-left"></i></button>`
+    // En la compu el menú es una barra a la izquierda, siempre abierta, con el logo arriba.
+    // En el celular el logo no se ve.
+    el.innerHTML = `<div class="nav-logo"><img src="${LOGO_URL}" alt="Runners Online"></div>`
       + NAV.map(n => {
       const isAct = n.id === active;
       const cls = isAct ? (n.id==='teams'||n.id==='feed'?'act-blue':n.id==='perfil'?'act-orange':'act-yellow') : '';
       return `<button class="nav-btn ${cls}" title="${n.label}" onclick="goTo('${n.id}')"><i class="ti ${n.icon}"></i><span class="nav-lbl">${n.label}</span></button>`;
     }).join('');
-    // Tocar la barra contraída (fuera de los íconos) también la abre
-    el.onclick = e => {
-      if (document.body.classList.contains('nav-abierta') || !window.matchMedia('(min-width: 900px)').matches) return;
-      if (!e.target.closest('.nav-btn, .nav-colapsar')) toggleNavLateral(true);
-    };
   });
 }
 
-// Barra lateral (solo compu): contraída muestra solo íconos; se recuerda si la dejaste abierta
-function toggleNavLateral(abrir) {
-  document.body.classList.toggle('nav-abierta', abrir);
-  try { localStorage.setItem('navLateralAbierta', abrir ? '1' : '0'); } catch (e) {}
+// Columna derecha (solo compu, pantallas de 1100px o más): imágenes de Runners Online.
+// Salen de la carpeta branding/lateral/ de Supabase (get_imagenes_laterales); para cambiarlas no hace falta tocar el index.
+// Si el nombre del archivo termina en --seccion (ej. 04-zapa--zapas.jpg), al tocar la imagen lleva a esa sección.
+async function cargarImagenesLaterales() {
+  const box = document.getElementById('lateralDer');
+  if (!box) return;
+  try {
+    // Arriba, las publicidades con imagen de 400x600 (como "Sponsored" en Facebook); debajo, las de Runners Online
+    const [rows] = await Promise.all([sbFetch('rpc/get_imagenes_laterales'), cargarPublicidades()]);
+    const ads = PUBLICIDADES.filter(a => a.img_lateral).map(a =>
+      `<div class="lat-ad"><span class="ad-lbl">Publicidad</span>${adLinkHtml(a, `<img src="${escHtml(a.img_lateral)}" alt="${escHtml(a.marca)}" loading="lazy">`)}</div>`).join('');
+    box.innerHTML = ads + (rows || []).map(r => r.seccion
+      ? `<img class="ir" src="${escHtml(r.url)}" alt="Runners Online" loading="lazy" onclick="goTo('${escHtml(r.seccion)}')">`
+      : `<img src="${escHtml(r.url)}" alt="Runners Online" loading="lazy">`).join('') + pieLateralHtml();
+  } catch (e) {
+    box.innerHTML = pieLateralHtml();
+  }
 }
-try { if (localStorage.getItem('navLateralAbierta') === '1') document.body.classList.add('nav-abierta'); } catch (e) {}
+
+// Pie de la columna derecha: privacidad, contacto por mail e Instagram de Runners Online
+function pieLateralHtml() {
+  return `<nav class="lat-pie" aria-label="Runners Online">
+    <a href="privacidad.html" target="_blank" rel="noopener"><i class="ti ti-shield-lock"></i> Privacidad</a>
+    <a href="mailto:${MAIL_RUNNERS_ONLINE}?subject=${encodeURIComponent('Contacto desde Runners Online')}"><i class="ti ti-mail"></i> Contactanos</a>
+    <a href="https://www.instagram.com/${IG_RUNNERS_ONLINE}/" target="_blank" rel="noopener"><i class="ti ti-brand-instagram"></i> @${IG_RUNNERS_ONLINE}</a>
+    <span>© ${new Date().getFullYear()} Runners Online</span>
+  </nav>`;
+}
 
 function applyScreen(id) {
   if (SECCIONES_OCULTAS.includes(id)) id = 'runners';
@@ -2585,6 +2688,54 @@ function mezclar(arr) {
   return a;
 }
 
+// ─── PUBLICIDAD ──────────────────────────────────────────────────────────────
+// Tabla publicidades (activas y vigentes) con imágenes en el bucket publicidad/<marca>/.
+// Se alternan en orden; si no hay ninguna para la sección, queda el espacio "Tu marca acá".
+// Corredores no lleva publicidad.
+let PUBLICIDADES = [];
+let adTurno = 0;
+const AD_SECCION = { team: 'teams', race: 'carreras', rank: 'ranking', zapa: 'zapas' };
+let publicidadesListas = null;
+function cargarPublicidades() {
+  if (!publicidadesListas) publicidadesListas = sbFetch('publicidades', { select: 'marca,img_lista,img_teams,img_zapas,img_lateral,link,secciones', order: 'orden.asc' })
+    .then(rows => { PUBLICIDADES = rows || []; })
+    .catch(() => { PUBLICIDADES = []; });
+  return publicidadesListas;
+}
+
+function adLinkHtml(a, contenido) {
+  return a.link ? `<a href="${escHtml(a.link)}" target="_blank" rel="noopener sponsored" onclick="event.stopPropagation()">${contenido}</a>` : contenido;
+}
+
+function adHtml(tipo) {
+  const ads = PUBLICIDADES.filter(a => (a.secciones || []).includes(AD_SECCION[tipo]) && a.img_lista);
+  if (!ads.length) return `<div class="ad-slot ad-${tipo}"><div class="ad-lbl">Publicidad</div><b>Tu marca acá</b><span>Espacio publicitario</span></div>`;
+  const a = ads[adTurno++ % ads.length];
+  // Cada sección tiene su tamaño (Teams 1000x200, Carreras/Ranking 1000x250, Zapas 1000x500); si falta, usa la de lista
+  const img = (tipo === 'zapa' && a.img_zapas) || (tipo === 'team' && a.img_teams) || a.img_lista;
+  return `<div class="ad-slot ad-img ad-${tipo}" style="--ad-bg:url('${escHtml(img)}')"><div class="ad-lbl">Publicidad</div>${adLinkHtml(a, `<img src="${escHtml(img)}" alt="${escHtml(a.marca)}" loading="lazy">`)}</div>`;
+}
+// Columnas reales de la grilla (1 en el celular, varias en la compu)
+function columnasGrilla(el) {
+  const t = el ? getComputedStyle(el).gridTemplateColumns : '';
+  return t && t !== 'none' ? t.split(' ').length : 1;
+}
+// App de Android (WebView de webtoapp): el user agent trae "; wv)". Se excluyen los navegadores
+// internos de Instagram/Facebook, que también son WebView. ?app=1 fuerza el modo app para probar.
+const ES_APP = (() => {
+  const ua = navigator.userAgent || '';
+  return /[?&]app=1\b/.test(location.search) || /webtoapp/i.test(ua) ||
+    (/; wv\)/.test(ua) && !/Instagram|FBAN|FBAV|FB_IAB|Line\//.test(ua));
+})();
+// Arma la lista intercalando una tarjeta de publicidad: en la app cada 10 tarjetas,
+// en la web del celular (una columna) cada 6, y en la compu cada 4 filas (cada fila tiene varias tarjetas).
+// desde: cuántos ítems ya se mostraron antes (para listas que cargan de a tandas)
+function conPublicidad(items, html, tipo, grilla, desde = 0) {
+  const cols = columnasGrilla(grilla);
+  const cada = ES_APP ? 10 : cols === 1 ? 6 : 4 * cols;
+  return items.map((it, i) => html(it) + ((desde + i + 1) % cada === 0 ? adHtml(tipo) : '')).join('');
+}
+
 function paginarTeams(items, html) {
   const grid = document.getElementById('teamsGrid');
   teamsPag = { items, html, mostrados: 0 };
@@ -2602,7 +2753,7 @@ function mostrarMasTeams() {
   if (!teamsPag || !lista) return;
   const nuevos = teamsPag.items.slice(teamsPag.mostrados, teamsPag.mostrados + TEAMS_PASO);
   if (!nuevos.length) return;
-  lista.insertAdjacentHTML('beforeend', nuevos.map(teamsPag.html).join(''));
+  lista.insertAdjacentHTML('beforeend', conPublicidad(nuevos, teamsPag.html, 'team', lista, teamsPag.mostrados));
   teamsPag.mostrados += nuevos.length;
   const pie = document.getElementById('teamsPie');
   const total = teamsPag.items.length;
@@ -2617,7 +2768,12 @@ function teamCardSimpleHtml([name, count]) {
 
 function renderTeamsGrid(q) {
   const nq = normTxt(q || '').trim();
-  if (!teamsAleatorios) teamsAleatorios = fijarEnPrimeraTanda(mezclar(teamsListCache), TEAMS_FIJOS);
+  // Sin búsqueda: primero los teams con foto (al azar) y, al seguir bajando, el resto por cantidad de integrantes
+  if (!teamsAleatorios) {
+    const conFoto = new Set(teamsListCache.map(([n]) => n));
+    teamsAleatorios = fijarEnPrimeraTanda(mezclar(teamsListCache), TEAMS_FIJOS)
+      .concat(teamsTodosCache.filter(([n]) => !conFoto.has(n)));
+  }
   // Al buscar se ordena por cantidad de integrantes; sin búsqueda, al azar
   // Al buscar aparecen todos los teams (con foto o sin foto), los más grandes primero
   const f = nq ? teamsTodosCache.filter(([n]) => normTxt(n).includes(nq)) : teamsAleatorios;
@@ -3668,7 +3824,13 @@ async function masRankingWa(reqId) {
     if (!rw.datos.length) lista.innerHTML = '';
     rw.datos = rw.datos.concat(data || []);
     if (!data || data.length < RW_PASO) rw.fin = true;
-    lista.insertAdjacentHTML('beforeend', (data || []).map(rw.dist ? rwFilaDistHtml : rwFilaHtml).join(''));
+    // Publicidad: una cada 10 resultados (después del 10°, 20°...)
+    const desde = rw.datos.length - (data || []).length;
+    const fila = rw.dist ? rwFilaDistHtml : rwFilaHtml;
+    lista.insertAdjacentHTML('beforeend', (data || []).map((r, i) => {
+      const n = desde + i;
+      return fila(r) + ((n + 1) % 10 === 0 ? adHtml('rank') : '');
+    }).join(''));
     document.getElementById('rwPie').textContent = rw.fin
       ? `${rw.datos.length} en el ranking`
       : `${rw.datos.length} · bajá para ver más`;
@@ -4178,9 +4340,13 @@ async function loadFeed() {
 
   if (currentUser) {
     const initials = currentProfile ? (currentProfile.nombre || '?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase() : '?';
-    const puedePublicar = await tieneCarrerasCorridas();
-    if (puedePublicar) {
-      newPostArea.innerHTML = `<div onclick="resetPostModal();checkMiTeamParaEtiquetar();checkPublicarComoOpciones();showModal('newPostModal')" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:12px"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,rgba(232,255,71,0.15),rgba(232,255,71,0.05));border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--accent);flex-shrink:0">${initials}</div><span style="color:var(--muted);font-size:13px">Compartí tu entrenamiento...</span></div>`;
+    const conCarreras = await tieneCarrerasCorridas();
+    // Publica quien tiene carreras vinculadas, o el administrador de un team (como el team) aunque no tenga carreras
+    const opcionesComo = await opcionesPublicarComo(conCarreras);
+    if (opcionesComo.length) {
+      newPostArea.innerHTML = composerHtml(initials);
+      cpPrepararPublicarComo(opcionesComo);
+      cpPrepararTeam();
     } else {
       newPostArea.innerHTML = `<div style="background:rgba(255,255,255,0.02);border:1px dashed var(--border);border-radius:8px;padding:12px 14px;margin-bottom:12px;text-align:center"><p style="font-size:11px;color:var(--muted)"><i class="ti ti-lock"></i> Corré (y vinculá) tu primera carrera para poder publicar en Pista</p></div>`;
     }
@@ -4208,6 +4374,132 @@ async function loadFeed() {
   document.getElementById('feedTabTodo').classList.toggle('active', feedTab === 'todo');
   document.getElementById('feedTabMine').classList.toggle('active', feedTab === 'mine');
   await loadFeedPosts();
+}
+
+// ─── Caja para publicar (como Twitter/Facebook) ──────────────────────────────
+// Foto de perfil + texto en gris; el botón Post se activa (verde) cuando hay algo escrito.
+// Publica con publicarPost(): copia lo de la caja a los campos de la ventana (que queda para editar posts).
+let cpTeamMarcado = false;
+
+function composerHtml(initials) {
+  const foto = currentProfile?.avatar_url
+    ? `<img class="cp-avatar" src="${escHtml(currentProfile.avatar_url)}" alt="">`
+    : `<div class="cp-avatar cp-iniciales">${escHtml(initials)}</div>`;
+  return `<div class="composer">
+    <div id="cpComo" class="cp-como" style="display:none"></div>
+    <div class="cp-fila"><span id="cpAvatarBox" data-propio="${escHtml(foto)}">${foto}</span>
+      <textarea id="cpTexto" rows="1" placeholder="¿Qué estás corriendo hoy?" oninput="cpActualizar()"></textarea>
+    </div>
+    <div id="cpExtras">
+      <input type="text" id="cpUbicacion" class="cp-ubicacion" placeholder="Ubicación (ej: Palermo, CABA)" style="display:none">
+      <div id="cpImgBox" class="cp-imgbox" style="display:none"><img id="cpImgPreview" alt=""><button type="button" onclick="cpQuitarImagen()" title="Quitar foto">✕</button></div>
+      <div id="cpEtiquetar" class="cp-etiquetar" style="display:none"></div>
+    </div>
+    <div class="cp-barra">
+      <label class="cp-ico" title="Agregar foto"><i class="ti ti-photo"></i><input type="file" id="cpImagen" accept="image/*" style="display:none" onchange="cpPreview(this)"></label>
+      <button type="button" class="cp-ico" title="Ubicación" onclick="cpToggleUbicacion()"><i class="ti ti-map-pin"></i></button>
+      <button type="button" class="cp-ico" title="Etiquetar amigos" onclick="toggleEtiquetarBox('cpEtiquetar')"><i class="ti ti-user-plus"></i><span id="cpEtiqN"></span></button>
+      <button type="button" class="cp-ico" id="cpTeamBtn" style="display:none" onclick="cpToggleTeam()"><i class="ti ti-users"></i><span id="cpTeamNombre"></span></button>
+      <span style="flex:1"></span>
+      <button type="button" class="cp-post" id="cpPost" disabled onclick="publicarDesdeComposer()">Post</button>
+    </div>
+  </div>`;
+}
+
+// "Publicar como": si sos administrador de un team aparecen los chips Vos / Team arriba de la caja.
+// Al elegir el team, la foto pasa a ser el logo del team.
+function cpPrepararPublicarComo(opciones) {
+  const box = document.getElementById('cpComo');
+  if (!box) return;
+  const actual = opciones.find(o => o.tipo === publicarComoTipo) || opciones[0];
+  publicarComoTipo = actual.tipo;
+  publicarComoNombre = actual.tipo === 'usuario' ? null : actual.nombre;
+  if (opciones.length > 1) {
+    box.innerHTML = `<span class="cp-como-lbl">Publicar como</span>${chipsPublicarComo(opciones)}`;
+    box.style.display = 'flex';
+  }
+  cpActualizarIdentidad();
+  // Los logos de los teams se cargan al entrar a Teams; si todavía no están, se buscan para mostrar el del team
+  if (opciones.some(o => o.tipo === 'team') && !Object.keys(TEAM_LOGOS).length) loadTeamLogos().then(cpActualizarIdentidad);
+}
+
+function cpActualizarIdentidad() {
+  const av = document.getElementById('cpAvatarBox');
+  const t = document.getElementById('cpTexto');
+  if (!av || !t) return;
+  if (publicarComoTipo === 'team' && publicarComoNombre) {
+    av.innerHTML = TEAM_LOGOS[publicarComoNombre]
+      ? `<img class="cp-avatar" src="${escHtml(TEAM_LOGOS[publicarComoNombre])}" alt="">`
+      : `<div class="cp-avatar cp-iniciales"><i class="ti ti-users"></i></div>`;
+    t.placeholder = `¿Qué hay de nuevo en ${publicarComoNombre}?`;
+  } else {
+    av.innerHTML = av.dataset.propio;
+    t.placeholder = '¿Qué estás corriendo hoy?';
+  }
+}
+
+function cpActualizar() {
+  const t = document.getElementById('cpTexto');
+  if (!t) return;
+  t.style.height = 'auto';
+  t.style.height = t.scrollHeight + 'px';
+  document.getElementById('cpPost').disabled = !t.value.trim();
+}
+
+function cpPreview(input) {
+  const file = input.files[0]; if (!file) return;
+  document.getElementById('cpImgPreview').src = URL.createObjectURL(file);
+  document.getElementById('cpImgBox').style.display = 'block';
+}
+
+function cpQuitarImagen() {
+  document.getElementById('cpImagen').value = '';
+  document.getElementById('cpImgPreview').src = '';
+  document.getElementById('cpImgBox').style.display = 'none';
+}
+
+function cpToggleUbicacion() {
+  const u = document.getElementById('cpUbicacion');
+  u.style.display = u.style.display === 'none' ? 'block' : 'none';
+  if (u.style.display === 'block') u.focus();
+}
+
+async function cpPrepararTeam() {
+  cpTeamMarcado = false;
+  await checkMiTeamParaEtiquetar();
+  const btn = document.getElementById('cpTeamBtn');
+  if (!btn || !miTeamParaEtiquetar) return;
+  btn.title = `Etiquetar a mi team: ${miTeamParaEtiquetar}`;
+  btn.style.display = 'inline-flex';
+}
+
+function cpToggleTeam() {
+  cpTeamMarcado = !cpTeamMarcado;
+  document.getElementById('cpTeamBtn').classList.toggle('activo', cpTeamMarcado);
+  document.getElementById('cpTeamNombre').textContent = cpTeamMarcado ? miTeamParaEtiquetar : '';
+}
+
+async function publicarDesdeComposer() {
+  const texto = document.getElementById('cpTexto').value.trim();
+  if (!texto) return;
+  const etiquetados = [...etiquetadosSeleccionados];
+  const comoTipo = publicarComoTipo, comoNombre = publicarComoNombre;
+  resetPostModal();
+  etiquetadosSeleccionados = etiquetados;
+  publicarComoTipo = comoTipo;
+  publicarComoNombre = comoNombre;
+  document.getElementById('postContenido').value = texto;
+  document.getElementById('postUbicacion').value = document.getElementById('cpUbicacion').value;
+  document.getElementById('etiquetarTeamCb').checked = cpTeamMarcado && !!miTeamParaEtiquetar;
+  const f = document.getElementById('cpImagen').files[0];
+  const destino = document.getElementById('postImagen');
+  if (f) { const dt = new DataTransfer(); dt.items.add(f); destino.files = dt.files; } else destino.value = '';
+  const btn = document.getElementById('cpPost');
+  btn.disabled = true; btn.textContent = 'Posteando...';
+  await publicarPost();
+  // Si salió bien, publicarPost recarga Pista con la caja vacía; si falló, la caja sigue con lo escrito
+  const b = document.getElementById('cpPost');
+  if (b) { b.textContent = 'Post'; cpActualizar(); }
 }
 
 function previewImg(input) {
@@ -4243,48 +4535,54 @@ async function checkMiTeamParaEtiquetar() {
   }
 }
 
-async function checkPublicarComoOpciones() {
-  const box = document.getElementById('publicarComoBox');
-  const chipsBox = document.getElementById('publicarComoChips');
-  if (!currentUser) { box.style.display = 'none'; return; }
-
-  // Team del que sos DUEÑO (distinto de simplemente pertenecer/etiquetar)
-  let miTeamComoDueno = null;
-  if (currentProfile?.owned_team && currentProfile?.owned_team_status === 'confirmed') {
-    miTeamComoDueno = currentProfile.owned_team;
-  }
-
-  // Servicio propio
+// Con qué nombre se puede publicar: vos, tu team (si sos su administrador confirmado) o tu servicio.
+// "Vos" solo si tenés carreras vinculadas; el team y el servicio pueden publicar aunque no las tengas.
+// La base controla lo mismo (trigger validar_publicado_como), así nadie publica en nombre de un team ajeno.
+async function opcionesPublicarComo(conCarreras) {
+  if (!currentUser) return [];
+  const miTeamComoDueno = currentProfile?.owned_team && currentProfile?.owned_team_status === 'confirmed' ? currentProfile.owned_team : null;
   try {
     const rows = await sbFetch('servicios', { select: 'nombre_profesional', user_id: `eq.${currentUser.id}` });
     miServicioNombreParaPublicar = rows[0]?.nombre_profesional || null;
   } catch (e) {
     miServicioNombreParaPublicar = null;
   }
-
-  if (!miTeamComoDueno && !miServicioNombreParaPublicar) {
-    box.style.display = 'none';
-    publicarComoTipo = 'usuario';
-    publicarComoNombre = null;
-    return;
-  }
-
-  const opciones = [{ tipo: 'usuario', nombre: currentProfile?.nombre || 'Vos', label: 'Vos' }];
+  const opciones = [];
+  if (conCarreras) opciones.push({ tipo: 'usuario', nombre: currentProfile?.nombre || 'Vos', label: 'Vos' });
   if (miTeamComoDueno) opciones.push({ tipo: 'team', nombre: miTeamComoDueno, label: miTeamComoDueno });
   if (miServicioNombreParaPublicar) opciones.push({ tipo: 'servicio', nombre: miServicioNombreParaPublicar, label: miServicioNombreParaPublicar });
+  return opciones;
+}
 
-  chipsBox.innerHTML = opciones.map(o => `<div class="chip ${o.tipo===publicarComoTipo?'active':''}" data-tipo="${o.tipo}" onclick="setPublicarComo('${o.tipo}', decodeURIComponent('${encAttr(o.nombre)}'))">${o.label}</div>`).join('');
+function chipsPublicarComo(opciones) {
+  return opciones.map(o => `<div class="chip ${o.tipo===publicarComoTipo?'active':''}" data-tipo="${o.tipo}" onclick="setPublicarComo('${o.tipo}', decodeURIComponent('${encAttr(o.nombre)}'))">${o.tipo === 'team' ? '<i class="ti ti-users"></i> ' : ''}${escHtml(o.label)}</div>`).join('');
+}
+
+async function checkPublicarComoOpciones() {
+  const box = document.getElementById('publicarComoBox');
+  const chipsBox = document.getElementById('publicarComoChips');
+  const opciones = await opcionesPublicarComo(await tieneCarrerasCorridas());
+  if (opciones.length < 2) {
+    box.style.display = 'none';
+    if (opciones[0]) { publicarComoTipo = opciones[0].tipo; publicarComoNombre = opciones[0].tipo === 'usuario' ? null : opciones[0].nombre; }
+    return;
+  }
+  chipsBox.innerHTML = chipsPublicarComo(opciones);
   box.style.display = 'block';
 }
 
 function setPublicarComo(tipo, nombre) {
   publicarComoTipo = tipo;
   publicarComoNombre = tipo === 'usuario' ? null : nombre;
-  document.querySelectorAll('#publicarComoChips .chip').forEach(c => c.classList.toggle('active', c.dataset.tipo === tipo));
+  document.querySelectorAll('#publicarComoChips .chip, #cpComo .chip').forEach(c => c.classList.toggle('active', c.dataset.tipo === tipo));
+  cpActualizarIdentidad();
 }
 
-async function toggleEtiquetarBox() {
-  const box = document.getElementById('etiquetarBox');
+// La lista para etiquetar se usa en la ventana de editar (etiquetarBox) y en la caja de Pista (cpEtiquetar)
+let etiquetarBoxId = 'etiquetarBox';
+async function toggleEtiquetarBox(boxId = 'etiquetarBox') {
+  etiquetarBoxId = boxId;
+  const box = document.getElementById(boxId);
   if (box.style.display === 'block') { box.style.display = 'none'; return; }
   if (!siguiendoIds.length) {
     box.innerHTML = '<p style="color:var(--muted);font-size:11px;padding:6px">Todavía no seguís a nadie para etiquetar</p>';
@@ -4307,13 +4605,15 @@ async function toggleEtiquetarBox() {
 }
 
 function onEtiquetadoChange() {
-  etiquetadosSeleccionados = Array.from(document.querySelectorAll('.etiquetadoCb:checked')).map(cb => cb.value);
+  etiquetadosSeleccionados = Array.from(document.querySelectorAll(`#${etiquetarBoxId} .etiquetadoCb:checked`)).map(cb => cb.value);
   updateEtiquetarBtnText();
 }
 
 function updateEtiquetarBtnText() {
   const n = etiquetadosSeleccionados.length;
   document.getElementById('etiquetarBtnText').textContent = n ? `${n} etiquetado${n>1?'s':''}` : 'Etiquetar amigos';
+  const cpN = document.getElementById('cpEtiqN');
+  if (cpN) cpN.textContent = n ? n : '';
 }
 
 // ─── NOTIFICACIONES ─────────────────────────────────────────────────────────
@@ -4446,7 +4746,8 @@ async function publicarPost() {
     return;
   }
 
-  if (!(await tieneCarrerasCorridas())) {
+  // Como team o servicio se puede publicar sin carreras propias (la base controla que seas el administrador)
+  if (publicarComoTipo === 'usuario' && !(await tieneCarrerasCorridas())) {
     alert('Todavía no tenés carreras corridas vinculadas a tu perfil. Vinculá tu corredor para poder publicar en Pista.');
     return;
   }
@@ -5887,7 +6188,7 @@ function renderZapas() {
   const grid = document.getElementById('zapasGrid');
   if (!zapasCache.length) { grid.innerHTML = '<div class="empty"><p>Todavía no hay zapatillas cargadas</p></div>'; return; }
   if (!lista.length) { grid.innerHTML = '<div class="empty"><p>Ninguna zapatilla con esos filtros</p></div>'; return; }
-  grid.innerHTML = lista.map(zapaCardHtml).join('');
+  grid.innerHTML = conPublicidad(lista, zapaCardHtml, 'zapa', grid);
 }
 
 function zapaCardHtml(z) {
@@ -5916,9 +6217,11 @@ function zapaCardHtml(z) {
   let acciones = '';
   if (currentUser) {
     const mia = z.id in misZapas;
+    // En la lista es un círculo en la esquina (+ para agregar, ✓ si ya la tenés) para que todas las tarjetas
+    // midan lo mismo; en el detalle de la zapa se ve con texto y con tu puntaje
     acciones = mia
-      ? `<div class="zapa-acciones"><span class="zapa-mia"><i class="ti ti-check"></i> En mis zapas</span><span class="zapa-tu">Tu puntaje: ${estrellasHtml(misZapas[z.id], z.id)}</span></div>`
-      : `<div class="zapa-acciones"><button class="zapa-agregar" onclick="event.stopPropagation();toggleMiZapa(${z.id})"><i class="ti ti-plus"></i> Agregar a mis zapas</button></div>`;
+      ? `<div class="zapa-acciones"><span class="zapa-mia" title="En mis zapas"><i class="ti ti-check"></i><span class="zapa-acc-txt"> En mis zapas</span></span><span class="zapa-tu">Tu puntaje: ${estrellasHtml(misZapas[z.id], z.id)}</span></div>`
+      : `<div class="zapa-acciones"><button class="zapa-agregar" title="Agregar a mis zapas" onclick="event.stopPropagation();toggleMiZapa(${z.id})"><i class="ti ti-plus"></i><span class="zapa-acc-txt"> Agregar a mis zapas</span></button></div>`;
   }
   const quitar = currentUser && z.id in misZapas ? botonQuitarZapa(z.id) : '';
   return `<div class="zapa-card" id="zapa-${z.id}" onclick="openZapaDetalle(${z.id})"><div class="zapa-img-wrap">${img}${quitar}</div><div class="zapa-body">
@@ -6204,7 +6507,7 @@ function renderCarrerasResultados(q) {
     list.innerHTML = `<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0">${nq ? 'Ninguna carrera coincide con la búsqueda' : 'Todavía no hay resultados cargados de este año'}</p>`;
     return;
   }
-  list.innerHTML = carreras.map(c => {
+  list.innerHTML = conPublicidad(carreras, c => {
     const { dist } = parseArchivo(c.archivo_fuente);
     const fecha = c.fecha ? new Date(c.fecha + 'T00:00:00').toLocaleDateString('es-AR', { day:'numeric', month:'long' }) : '';
     const medalla = medallaRealDeArchivo(c.archivo_fuente);
@@ -6216,7 +6519,7 @@ function renderCarrerasResultados(q) {
         <div class="race-tag" style="margin-left:auto;border-color:var(--accent);color:var(--text)"><i class="ti ti-list-numbers"></i> Clasificación</div>
       </div>
     </div>`;
-  }).join('');
+  }, 'race', list);
 }
 
 // ─── CLASIFICACIÓN DE UNA CARRERA ────────────────────────────────────────────
@@ -6498,8 +6801,21 @@ async function loadCarrerasSection(q) {
       misDistanciaIds = new Set((mias || []).map(m => m.distancia_id));
     }
 
-    // Tarjeta compacta: datos a la izquierda (fecha dd/mm/aaaa) y distancias a la derecha
+    // Tarjeta compacta: datos a la izquierda (fecha dd/mm/aaaa) y distancias a la derecha.
+    // Cuando cambia el año, una franja con el año nuevo separa las carreras (ej. 2026 | 2027)
+    let anioPrevio = null;
     list.innerHTML = carreras.map(c => {
+      const anio = String(c.fecha).slice(0, 4);
+      const franja = anioPrevio && anio !== anioPrevio ? `<div class="rc-anio"><span>${escHtml(anio)}</span></div>` : '';
+      anioPrevio = anio;
+      return franja + tarjetaProximaCarrera(c, misDistanciaIds);
+    }).join('');
+  } catch(e) {
+    list.innerHTML = '<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0">Error al cargar carreras</p>';
+  }
+}
+
+function tarjetaProximaCarrera(c, misDistanciaIds) {
       const fechaDate = new Date(c.fecha + 'T00:00:00');
       const daysLeft = Math.floor((fechaDate - new Date()) / 86400000);
       const faltan = daysLeft > 1 ? `faltan ${daysLeft} días` : daysLeft === 1 ? 'mañana' : daysLeft === 0 ? 'hoy' : 'ya se corrió';
@@ -6517,10 +6833,6 @@ async function loadCarrerasSection(q) {
           }).join('')}
         </div>
       </div>`;
-    }).join('');
-  } catch(e) {
-    list.innerHTML = '<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0">Error al cargar carreras</p>';
-  }
 }
 
 async function buscarCarreras(q) {

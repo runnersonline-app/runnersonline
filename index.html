@@ -23,7 +23,7 @@ body{padding-top:env(safe-area-inset-top)}
 .bottom-nav{display:flex;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;order:-1}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px 6px;cursor:pointer;background:none;border:none;color:var(--muted);gap:2px;font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:.5px;text-transform:uppercase;transition:color .15s}
 .nav-btn i{font-size:18px}
-.nav-logo,#lateralDer{display:none}
+.nav-logo,.nav-pie,#lateralDer{display:none}
 .col-pts{display:none}
 .nav-btn.act-yellow{color:var(--accent)}
 .nav-btn.act-blue{color:var(--blue)}
@@ -468,6 +468,12 @@ body{padding-top:env(safe-area-inset-top)}
   .nav-lbl{display:inline}
   .nav-btn:hover{background:var(--bg);color:var(--text)}
   .nav-btn.act-yellow,.nav-btn.act-blue,.nav-btn.act-orange{background:var(--bg);font-weight:700}
+  /* Pie del menú: privacidad, contacto e Instagram, abajo de todo */
+  .nav-pie{display:flex;flex-direction:column;gap:1px;margin-top:auto;padding-top:10px;border-top:1px solid var(--border)}
+  .nav-pie a{display:flex;align-items:center;gap:10px;padding:7px 12px;border-radius:8px;font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:.3px}
+  .nav-pie a:hover{background:var(--bg);color:var(--text)}
+  .nav-pie a i{font-size:16px;width:22px;text-align:center}
+  .nav-pie span{font-size:10px;color:var(--muted);padding:6px 12px 0}
   /* Listas de tarjetas en columnas */
   #teamsLista,.races-list,.zapas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px;align-items:start}
   #teamsLista .loading,.races-list .loading,.zapas-grid .loading,.races-list>p,.zapas-grid>p{grid-column:1/-1}
@@ -522,11 +528,6 @@ body{padding-top:env(safe-area-inset-top)}
   #lateralDer img{width:100%;height:auto;flex-shrink:0;border-radius:10px;display:block}
   #lateralDer img.ir{cursor:pointer;transition:transform .15s}
   #lateralDer img.ir:hover{transform:scale(1.02)}
-  .lat-pie{display:flex;flex-direction:column;gap:2px;flex-shrink:0;padding:6px 2px 4px;border-top:1px solid var(--border)}
-  .lat-pie a{display:flex;align-items:center;gap:8px;padding:8px 6px;border-radius:6px;font-size:12px;color:var(--text);text-decoration:none}
-  .lat-pie a:hover{background:var(--card)}
-  .lat-pie a i{font-size:16px;color:var(--muted)}
-  .lat-pie span{font-size:10px;color:var(--muted);padding:6px 6px 0}
 }
 </style>
 </head>
@@ -2042,7 +2043,7 @@ function buildNav(active) {
       const isAct = n.id === active;
       const cls = isAct ? (n.id==='teams'||n.id==='feed'?'act-blue':n.id==='perfil'?'act-orange':'act-yellow') : '';
       return `<button class="nav-btn ${cls}" title="${n.label}" onclick="goTo('${n.id}')"><i class="ti ${n.icon}"></i><span class="nav-lbl">${n.label}</span></button>`;
-    }).join('');
+    }).join('') + pieMenuHtml();
   });
 }
 
@@ -2059,15 +2060,13 @@ async function cargarImagenesLaterales() {
       `<div class="lat-ad"><span class="ad-lbl">Publicidad</span>${adLinkHtml(a, `<img src="${escHtml(a.img_lateral)}" alt="${escHtml(a.marca)}" loading="lazy">`)}</div>`).join('');
     box.innerHTML = ads + (rows || []).map(r => r.seccion
       ? `<img class="ir" src="${escHtml(r.url)}" alt="Runners Online" loading="lazy" onclick="goTo('${escHtml(r.seccion)}')">`
-      : `<img src="${escHtml(r.url)}" alt="Runners Online" loading="lazy">`).join('') + pieLateralHtml();
-  } catch (e) {
-    box.innerHTML = pieLateralHtml();
-  }
+      : `<img src="${escHtml(r.url)}" alt="Runners Online" loading="lazy">`).join('');
+  } catch (e) {}
 }
 
-// Pie de la columna derecha: privacidad, contacto por mail e Instagram de Runners Online
-function pieLateralHtml() {
-  return `<nav class="lat-pie" aria-label="Runners Online">
+// Pie del menú de la izquierda (solo compu): privacidad, contacto por mail e Instagram de Runners Online
+function pieMenuHtml() {
+  return `<nav class="nav-pie" aria-label="Runners Online">
     <a href="privacidad.html" target="_blank" rel="noopener"><i class="ti ti-shield-lock"></i> Privacidad</a>
     <a href="mailto:${MAIL_RUNNERS_ONLINE}?subject=${encodeURIComponent('Contacto desde Runners Online')}"><i class="ti ti-mail"></i> Contactanos</a>
     <a href="https://www.instagram.com/${IG_RUNNERS_ONLINE}/" target="_blank" rel="noopener"><i class="ti ti-brand-instagram"></i> @${IG_RUNNERS_ONLINE}</a>
@@ -2730,10 +2729,16 @@ const ES_APP = (() => {
 // Arma la lista intercalando una tarjeta de publicidad: en la app cada 10 tarjetas,
 // en la web del celular (una columna) cada 6, y en la compu cada 4 filas (cada fila tiene varias tarjetas).
 // desde: cuántos ítems ya se mostraron antes (para listas que cargan de a tandas)
-function conPublicidad(items, html, tipo, grilla, desde = 0) {
+function cadaCuantasPublicidad(grilla) {
   const cols = columnasGrilla(grilla);
-  const cada = ES_APP ? 10 : cols === 1 ? 6 : 4 * cols;
-  return items.map((it, i) => html(it) + ((desde + i + 1) % cada === 0 ? adHtml(tipo) : '')).join('');
+  return ES_APP ? 10 : cols === 1 ? 6 : 4 * cols;
+}
+function conPublicidad(items, html, tipo, grilla, desde = 0) {
+  const cada = cadaCuantasPublicidad(grilla);
+  const out = items.map((it, i) => html(it) + ((desde + i + 1) % cada === 0 ? adHtml(tipo) : '')).join('');
+  // Lista corta que no llega a la primera publicidad (ej. un año con pocas carreras): una al final
+  const corta = desde === 0 && items.length >= 2 && items.length < cada;
+  return corta ? out + adHtml(tipo) : out;
 }
 
 function paginarTeams(items, html) {
@@ -6803,13 +6808,15 @@ async function loadCarrerasSection(q) {
 
     // Tarjeta compacta: datos a la izquierda (fecha dd/mm/aaaa) y distancias a la derecha.
     // Cuando cambia el año, una franja con el año nuevo separa las carreras (ej. 2026 | 2027)
+    // Publicidad con la misma frecuencia que en los resultados (la franja del año no cuenta como tarjeta)
     let anioPrevio = null;
-    list.innerHTML = carreras.map(c => {
+    const cada = cadaCuantasPublicidad(list);
+    list.innerHTML = carreras.map((c, i) => {
       const anio = String(c.fecha).slice(0, 4);
       const franja = anioPrevio && anio !== anioPrevio ? `<div class="rc-anio"><span>${escHtml(anio)}</span></div>` : '';
       anioPrevio = anio;
-      return franja + tarjetaProximaCarrera(c, misDistanciaIds);
-    }).join('');
+      return franja + tarjetaProximaCarrera(c, misDistanciaIds) + ((i + 1) % cada === 0 ? adHtml('race') : '');
+    }).join('') + (carreras.length >= 2 && carreras.length < cada ? adHtml('race') : '');
   } catch(e) {
     list.innerHTML = '<p style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0">Error al cargar carreras</p>';
   }

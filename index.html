@@ -310,6 +310,7 @@ body{padding-top:env(safe-area-inset-top)}
 .td-info-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 .td-info-val{font-size:13px;font-weight:600;margin-top:1px}
 .td-info-val.vacio{font-weight:400;color:var(--muted2);font-style:italic}
+.td-bio{font-size:13px;line-height:1.45;white-space:pre-line;overflow-wrap:anywhere;padding:2px 0 10px;margin-bottom:4px;border-bottom:1px solid var(--border)}
 .td-social{display:flex;gap:10px;margin-top:10px}
 .td-social > a,.td-social > span{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--border);border-radius:8px;padding:9px;font-size:12px;font-weight:600;text-decoration:none;color:var(--text)}
 .td-social i{font-size:18px}
@@ -3034,7 +3035,7 @@ async function renderTeamContact(name, isOwner) {
   let trainings = [];
   try {
     const [rows, tr] = await Promise.all([
-      sbFetch('team_contact', { select: 'whatsapp,instagram,head_coach', team: `eq.${name}` }),
+      sbFetch('team_contact', { select: 'whatsapp,instagram,head_coach,bio', team: `eq.${name}` }),
       sbFetch('team_trainings', { select: 'partido,lugar', team: `eq.${name}` }).catch(() => [])
     ]);
     contact = rows[0] || null;
@@ -3048,10 +3049,12 @@ async function renderTeamContact(name, isOwner) {
   const coach = contact?.head_coach;
   const ig = contact?.instagram;
   const wa = contact?.whatsapp;
+  const bio = contact?.bio;
   const vacio = '<div class="td-info-val vacio">Sin cargar</div>';
 
   const info = `
     <div class="td-info">
+      ${bio ? `<div class="td-bio">${escHtml(bio)}</div>` : ''}
       <div class="td-info-row">
         <i class="ti ti-user-star"></i>
         <div><div class="td-info-lbl">Head coach</div>${coach ? `<div class="td-info-val">${escHtml(coach)}</div>` : vacio}</div>
@@ -3073,6 +3076,7 @@ async function renderTeamContact(name, isOwner) {
   const ownerForm = isOwner ? `
     <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:14px">
       <div style="font-size:11px;color:var(--muted);margin-bottom:8px"><i class="ti ti-crown" style="color:var(--accent)"></i> Datos del team</div>
+      <textarea id="tdBioInput" maxlength="300" rows="3" placeholder="Bio del team: quiénes son, cómo entrenan, a quién buscan (máx. 300 caracteres)" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:8px;box-sizing:border-box;resize:vertical;font-family:inherit">${escHtml(bio || '')}</textarea>
       <input type="text" id="tdCoachInput" placeholder="Head coach (nombre y apellido)" value="${escHtml(coach || '')}" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:8px;box-sizing:border-box">
       <input type="text" id="tdWhatsappInput" placeholder="WhatsApp (ej: 11 2388-4268)" value="${escHtml(wa || '')}" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:8px;box-sizing:border-box">
       <input type="text" id="tdInstagramInput" placeholder="Instagram (ej: @miteam)" value="${escHtml(ig || '')}" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:12px;color:var(--text);outline:none;margin-bottom:10px;box-sizing:border-box">
@@ -3088,9 +3092,10 @@ async function saveTeamContact(name) {
   const head_coach = document.getElementById('tdCoachInput').value.trim() || null;
   const whatsapp = document.getElementById('tdWhatsappInput').value.trim() || null;
   const instagram = document.getElementById('tdInstagramInput').value.trim() || null;
+  const bio = document.getElementById('tdBioInput').value.trim().slice(0, 300) || null;
   try {
     const { error } = await sbClient.from('team_contact').upsert({
-      team: name, head_coach, whatsapp, instagram, updated_by: currentUser.id, updated_at: new Date().toISOString()
+      team: name, head_coach, whatsapp, instagram, bio, updated_by: currentUser.id, updated_at: new Date().toISOString()
     }, { onConflict: 'team' });
     if (error) throw error;
     await renderTeamContact(name, true);
@@ -5160,7 +5165,8 @@ async function renderProfile() {
     document.getElementById('pSub').textContent = 'Perfil no vinculado';
     renderInstagramBox();
     const servicioHtml = await renderMiServicioSection();
-    content.innerHTML = `<div style="text-align:center;padding:20px 0"><p style="color:var(--muted);font-size:12px;margin-bottom:16px">Vincula tu nombre de corredor para ver tu historial</p><button onclick="showModal('linkModal')" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:12px 24px;font-size:13px;font-weight:700;cursor:pointer">Vincular corredor</button></div>` + servicioHtml;
+    content.innerHTML = `<div style="text-align:center;padding:20px 0"><p style="color:var(--muted);font-size:12px;margin-bottom:16px">Vincula tu nombre de corredor para ver tu historial</p><button onclick="showModal('linkModal')" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:12px 24px;font-size:13px;font-weight:700;cursor:pointer">Vincular corredor</button></div>` + servicioHtml +
+      `<button onclick="signOut()" style="width:100%;background:none;border:1px solid var(--border);border-radius:8px;padding:11px;font-size:12px;color:var(--muted);cursor:pointer;margin-top:4px;margin-bottom:20px">Cerrar sesión</button>`;
     renderBloqueSolicitudes();
     return;
   }
@@ -5335,7 +5341,8 @@ async function renderProfile() {
     renderBloqueSolicitudes();
     renderMiTeamBox();
   } catch(e) {
-    content.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:16px 0">Error al cargar perfil</div>';
+    content.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:16px 0">Error al cargar perfil</div>' +
+      '<button onclick="signOut()" style="width:100%;background:none;border:1px solid var(--border);border-radius:8px;padding:11px;font-size:12px;color:var(--muted);cursor:pointer;margin-top:4px;margin-bottom:20px">Cerrar sesión</button>';
   }
 }
 
